@@ -47,7 +47,7 @@ Tokens must be:
 - Available through the foundation system
 - Documented in the Design Portal
 - Validated in code
-- Responsive where the category requires desktop, tablet, and mobile behaviour
+- Responsive when the token category affects desktop, tablet, or mobile behaviour
 
 Tokens must not be created locally inside components, layouts, patterns, or pages.
 
@@ -110,6 +110,15 @@ The foundation system must support these token categories:
 
 No category may be bypassed with hardcoded values when an approved token is required.
 
+## Token Architecture Documents
+
+The foundation token architecture is split across these documents:
+
+- [Primitive Tokens](./primitive-tokens.md) defines raw source token architecture.
+- [Semantic Tokens](./semantic-tokens.md) defines meaning-bearing token architecture.
+- [Token Naming](./token-naming.md) defines naming rules for primitive, semantic, component, and product tokens.
+- [Token Portal Experience](./token-portal-experience.md) defines how token decisions appear in the Design Portal.
+
 ## Token Approval Workflow
 
 New tokens must move through the foundation system before they are used anywhere else.
@@ -117,7 +126,7 @@ New tokens must move through the foundation system before they are used anywhere
 Workflow:
 
 1. Identify the visual need and confirm that no existing token solves it.
-2. Propose the token name, category, intended use, responsive behaviour where relevant, and rationale.
+2. Propose the token name, category, intended use, rationale, and responsive behaviour when the token affects desktop, tablet, or mobile behaviour.
 3. Review the proposal against existing tokens, accessibility expectations, brand direction, and product needs.
 4. Add the approved token to the foundation token source.
 5. Document the token in the Design Portal.
@@ -138,7 +147,7 @@ Rules:
 - No component may define new token values locally.
 - Raw visual values must not be introduced in component, layout, pattern, or page code.
 - Temporary hardcoded values are not allowed for token-governed properties.
-- Token usage must preserve desktop, tablet, and mobile support where relevant.
+- Token usage must preserve desktop, tablet, and mobile support when the token affects responsive behaviour.
 
 Implementation may expose tokens through generated CSS variables, theme objects, TypeScript constants, design-token JSON, or another approved system format. Regardless of implementation format, the source of truth must remain the foundation token system.
 
@@ -153,8 +162,8 @@ Each token entry should show:
 - Intended use
 - Status
 - Example rendering where visual
-- Responsive behaviour where relevant
-- Accessibility notes where relevant
+- Responsive behaviour when the token affects desktop, tablet, or mobile behaviour
+- Accessibility notes when the token affects readability, interaction, motion, contrast, focus, or comprehension
 - Usage guidance
 - Related tokens
 
@@ -177,7 +186,7 @@ Validation should confirm that:
 - Code does not introduce random shadows.
 - Code does not introduce random radii.
 - Components do not define new token values locally.
-- Responsive token requirements are covered for desktop, tablet, and mobile where relevant.
+- Responsive token requirements are covered for desktop, tablet, and mobile when the token affects responsive behaviour.
 - Design Portal documentation matches the token source.
 
 Validation may be handled through linting, type checks, token build checks, visual review, documentation checks, or CI workflows.
@@ -191,7 +200,7 @@ Rules:
 - Check existing tokens before proposing a new token.
 - Add new tokens to the foundation system first.
 - Document the token before product usage.
-- Include category, purpose, intended use, and responsive behaviour where relevant.
+- Include category, purpose, intended use, and responsive behaviour when the token affects desktop, tablet, or mobile behaviour.
 - Avoid duplicates with different names.
 - Avoid near-duplicates that make selection ambiguous.
 - Avoid one-off component tokens unless they represent a reusable system rule.
@@ -213,7 +222,7 @@ AI must:
 - Check the foundation system before suggesting new visual values.
 - Propose new tokens through the approval workflow when an approved token does not exist.
 - Keep token architecture, token values, and component implementation separate.
-- Preserve desktop, tablet, and mobile support where relevant.
+- Preserve desktop, tablet, and mobile support when the token affects responsive behaviour.
 
 AI must not:
 

@@ -54,8 +54,12 @@ Folder `README.md` files introduce each documentation area. Detailed documents i
 | `docs/03-foundations/colours.md` | Colour system and usage rules. |
 | `docs/03-foundations/elevation.md` | Elevation scale and layering guidance. |
 | `docs/03-foundations/motion-tokens.md` | Motion token rules. |
+| `docs/03-foundations/primitive-tokens.md` | Primitive token architecture. |
 | `docs/03-foundations/radius.md` | Border radius scale and usage. |
+| `docs/03-foundations/semantic-tokens.md` | Semantic token architecture. |
 | `docs/03-foundations/spacing.md` | Spacing scale and usage. |
+| `docs/03-foundations/token-naming.md` | Token naming rules. |
+| `docs/03-foundations/token-portal-experience.md` | Token Design Portal experience rules. |
 | `docs/03-foundations/typography.md` | Typography system and text rules. |
 | `docs/04-layout/README.md` | Layout area overview. |
 | `docs/04-layout/container.md` | Container rules. |
