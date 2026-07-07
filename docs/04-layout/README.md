@@ -1,4 +1,4 @@
-# Layout System
+# Layout
 
 This document will define PlayBooky layout rules for desktop, tablet, and mobile.
 

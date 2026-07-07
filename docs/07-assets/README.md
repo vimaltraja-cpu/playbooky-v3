@@ -1,4 +1,4 @@
-# Asset Library
+# Assets
 
 This document will define the future structure and governance for PlayBooky assets.
 

@@ -1,4 +1,4 @@
-# Motion System
+# Motion Tokens
 
 This document will define the PlayBooky motion language.
 
