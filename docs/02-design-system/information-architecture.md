@@ -361,19 +361,20 @@ The portal must support status-aware browsing for components, product components
 
 Supported lifecycle statuses:
 
-- Proposed.
-- Draft.
+- Exploring.
+- Improved.
 - Current.
 - Approved.
+- Rejected.
 - Deprecated.
-- Removed.
 
 Status filtering should allow users to:
 
 - View only product-eligible items.
-- Find Draft or Proposed work.
+- Find Exploring or Improved work.
+- Identify Rejected items.
 - Identify Deprecated items.
-- Understand Removed items through historical records where needed.
+- Understand archived historical records when deprecated items are removed from active navigation.
 
 Product-eligible filters must include only Current and Approved components unless a page explicitly explains a different rule.
 
