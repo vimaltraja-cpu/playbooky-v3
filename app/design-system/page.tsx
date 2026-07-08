@@ -2,6 +2,8 @@ const navigationItems = [
   "Foundations",
   "Layout",
   "Components",
+  "Inputs",
+  "AI Composer",
   "Patterns",
   "Motion",
   "Assets",
@@ -23,6 +25,18 @@ const sections = [
     title: "Components",
     description:
       "Approved component statuses, anatomy, variants, and usage guidance will be cataloged here."
+  },
+  {
+    title: "Inputs",
+    description:
+      "Text Input, Textarea, and Search Input previews are ready for design review.",
+    href: "/design-system/components/inputs"
+  },
+  {
+    title: "AI Composer",
+    description:
+      "A prompt composer prototype is ready for visual approval before tokenization.",
+    href: "/design-system/components/ai-composer"
   },
   {
     title: "Patterns",
@@ -72,7 +86,13 @@ export default function DesignSystemPage() {
             {navigationItems.map((item) => (
               <a
                 key={item}
-                href={`#${item.toLowerCase()}`}
+                href={
+                  item === "Inputs" || item === "AI Composer"
+                    ? item === "Inputs"
+                      ? "/design-system/components/inputs"
+                      : "/design-system/components/ai-composer"
+                    : `#${item.toLowerCase()}`
+                }
                 className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--panel)] hover:text-[color:var(--foreground)] lg:rounded-xl"
               >
                 {item}
@@ -110,6 +130,16 @@ export default function DesignSystemPage() {
                 <p className="mt-4 text-sm leading-7 text-[color:var(--muted)]">
                   {section.description}
                 </p>
+                {"href" in section && (
+                  <a
+                    href={section.href}
+                    className="mt-6 inline-flex rounded-full border border-[color:var(--line)] px-4 py-2 text-sm font-semibold text-[color:var(--accent-strong)] transition hover:border-[color:var(--accent)] hover:bg-[color:var(--panel)]"
+                  >
+                    {"title" in section && section.title === "Inputs"
+                      ? "Review inputs"
+                      : "Review component"}
+                  </a>
+                )}
               </article>
             ))}
           </div>

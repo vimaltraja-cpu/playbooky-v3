@@ -4,7 +4,7 @@
 | --- | --- |
 | Status | Current |
 | Confidence | 4 Usability ready |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | Design System |
 | Last updated | 2026-07-07 |
 
@@ -19,6 +19,12 @@ The breakpoint system exists so layout, components, patterns, and Design Portal 
 PlayBooky uses adaptive responsive design.
 
 Interfaces should preserve the same user intent across viewport sizes while adapting layout, density, navigation, and interaction patterns to the available space.
+
+PlayBooky uses a hybrid responsive strategy.
+
+- Customer-facing experiences (Homepage, Diagnosis, Recommendation) are designed mobile-first.
+- Workshop creation experiences (Builder, Facilitator Guide, Design Portal) are designed desktop-first.
+- Every experience must preserve the same product intent regardless of viewport.
 
 Responsive decisions must prioritise:
 
@@ -36,6 +42,29 @@ Responsive decisions must not:
 - Reduce text below readable sizes.
 - Depend on viewport-width-scaled typography.
 - Use mobile behaviour as an afterthought after desktop layout is complete.
+
+## Product Responsive Priorities
+
+Different areas of PlayBooky have different responsive priorities.
+
+| Product Area | Priority |
+| --- | --- |
+| Homepage | Mobile first |
+| Diagnosis | Mobile first |
+| Recommendation | Mobile first |
+| Builder | Desktop first |
+| Facilitator Guide | Desktop first |
+| Workshop Live | Tablet/Desktop |
+| Design Portal | Desktop first |
+
+## Content Width Tokens
+
+| Token | Use |
+| --- | --- |
+| `content.narrow` | Reading-focused layouts |
+| `content.default` | Standard pages |
+| `content.wide` | Application layouts |
+| `content.full` | Builder canvas |
 
 ## Breakpoint Tokens
 
@@ -71,7 +100,7 @@ Desktop validation:
 
 ## Tablet
 
-Tablet is a distinct layout class, not merely a smaller desktop or larger mobile screen.
+Tablet should always be evaluated independently. Where appropriate it may share behaviour with either Desktop or Mobile, provided usability is preserved.
 
 Rules:
 

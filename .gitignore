@@ -1,5 +1,6 @@
 node_modules
 .next
+.next-portal
 out
 dist
 coverage
@@ -9,3 +10,4 @@ coverage
 .env
 .env*
 !.env.example
+.vercel

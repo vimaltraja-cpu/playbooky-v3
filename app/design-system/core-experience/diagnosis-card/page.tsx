@@ -1,0 +1,435 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+import {
+  ComponentAccessibilitySection,
+  ComponentOverviewSection,
+  ComponentPageShell,
+  ComponentStateShowroom,
+  ComponentTokensSection,
+  ComponentViewportShowroom,
+  type ComponentAccessibilityItem,
+  type ComponentShowroomState,
+  type ComponentTokenRow,
+  type ViewportShowroomItem
+} from "@/components/portal/ComponentPage";
+import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
+import {
+  DiagnosisCard,
+  type DiagnosisCardState
+} from "@/components/ui/DiagnosisCard";
+
+type ViewportId = "desktop";
+type ShowroomState = DiagnosisCardState;
+
+const componentMetadata = {
+  category: "Core Experience",
+  confidence: "2 Prototype review",
+  lastUpdated: "2026-07-08",
+  owner: "Design System",
+  status: "Exploring",
+  title: "Diagnosis Card"
+};
+
+const overviewCopy = {
+  statusNote:
+    "Prototype values are intentionally hardcoded for visual approval. They must become tokens before product use.",
+  summary:
+    "Diagnosis Card is the desktop review card for presenting one diagnosis option in the future PlayBooky diagnosis experience.",
+  whatItIs:
+    "A selectable card with a visual icon, title, description, and state indicator.",
+  whenNotToUse:
+    "Do not use it for generic content cards, product navigation, settings, or the future Diagnosis Grid until that grid is separately approved.",
+  whenToUse:
+    "Use it when a user needs to compare and select a diagnosis direction inside the approved Core Experience flow.",
+  whereItAppears:
+    "Inside the Design Portal only for now. It is not approved for product screens yet.",
+  whyItExists:
+    "To create a calm, scannable diagnosis choice that can later scale into a guided selection experience."
+};
+
+const specs = [
+  ["Card width", "445.33px"],
+  ["Card height", "252px"],
+  ["Padding", "16px 32px"],
+  ["Radius", "8px"],
+  ["Layout", "Flex column, center, flex-start, 10px gap"],
+  ["Inner width", "381.33px"],
+  ["Top/text gap", "32px"],
+  ["Diagnosis icon asset", "assets/icons/align-a-team.svg"],
+  ["Diagnosis icon default size", "72px x 70px"],
+  ["Diagnosis icon compressed size", "60.17px x 58.5px"],
+  ["Default background", "rgba(252, 251, 249, 0.5)"],
+  ["Default border", "1px solid #E6E2DC"],
+  ["Selected animation", "Two-path selected stroke"],
+  ["Selected circle animation", "Starts at 88-92% border progress"],
+  [
+    "Hover shadow",
+    "0px 4px 8px -2px rgba(0,0,0,0.1), 0px 2px 4px -2px rgba(0,0,0,0.06)"
+  ],
+  ["Title", "Newsreader 600, 24px / 140%, -0.01em, #062E27"],
+  ["Description", "Geist 400, 20px / 175%, -0.01em, #45413C"]
+];
+
+const viewportItems: Array<ViewportShowroomItem<ViewportId>> = [
+  {
+    id: "desktop",
+    label: "Desktop",
+    notes: [
+      ["Preview assumption", "Desktop component review canvas"],
+      ["Card width", "445.33px fixed"],
+      ["Card height", "252px fixed"],
+      ["Padding", "16px 32px"],
+      ["Product usage", "Not approved for product screens yet"]
+    ]
+  }
+];
+
+const showroomStates: Array<ComponentShowroomState<ShowroomState>> = [
+  {
+    durationMs: 1800,
+    id: "default",
+    label: "Default",
+    notes: [
+      ["Trigger", "Resting state before pointer or keyboard interaction."],
+      [
+        "Behaviour",
+        "Shows the translucent warm surface, neutral border, and no right state icon."
+      ],
+      [
+        "Motion",
+        "No motion while resting. Background and shadow animate when moving to hover."
+      ],
+      [
+        "Accessibility",
+        "The full card remains keyboard focusable and exposes its pressed state."
+      ],
+      [
+        "Tokenisation notes",
+        "Default background, border, dimensions, and typography remain prototype values."
+      ]
+    ]
+  },
+  {
+    durationMs: 2000,
+    id: "hover",
+    label: "Hover",
+    notes: [
+      ["Trigger", "Pointer hover or a visual preview of hover affordance."],
+      [
+        "Behaviour",
+        "Surface becomes opaque, shadow appears, a 1px soft gold stroke remains visible, and an empty gold ring appears."
+      ],
+      [
+        "Motion",
+        "Background, shadow, and right icon transition over 160-240ms."
+      ],
+      [
+        "Accessibility",
+        "Hover must never be the only way to understand the selectable affordance."
+      ],
+      [
+        "Tokenisation notes",
+        "Hover shadow and subtle icon gradient need component tokens after approval."
+      ]
+    ]
+  },
+  {
+    durationMs: 2000,
+    id: "selected",
+    label: "Selected",
+    notes: [
+      ["Trigger", "User selects the diagnosis option."],
+      [
+        "Behaviour",
+        "Card keeps the hover surface, hover stroke, and hover ring stable while a selected layer confirms the choice."
+      ],
+      [
+        "Motion",
+        "Two border paths keep the chosen Version 3 motion path and use the accepted speed profile into the top-right radio."
+      ],
+      [
+        "Accessibility",
+        "Selected state is exposed with aria-pressed and cannot rely on colour alone."
+      ],
+      [
+        "Tokenisation notes",
+        "Selected icon gradient remains a prototype value until brand tokens are approved."
+      ]
+    ]
+  },
+  {
+    durationMs: 2200,
+    id: "maxSelected",
+    label: "Max selected",
+    notes: [
+      ["Trigger", "The user has already selected the maximum number allowed."],
+      [
+        "Behaviour",
+        "Card remains readable but uses muted opacity, no lift, and a not-allowed cursor."
+      ],
+      [
+        "Motion",
+        "No hover lift or activity motion while unavailable for selection."
+      ],
+      [
+        "Accessibility",
+        "Unavailable state is exposed with aria-disabled and must remain understandable without opacity alone."
+      ],
+      [
+        "Tokenisation notes",
+        "This is a suggested review state and needs final availability tokens later."
+      ]
+    ]
+  }
+];
+
+const tokenRows: ComponentTokenRow[] = [
+  {
+    implementationValue: "445.33px / 252px",
+    label: "Card dimensions",
+    status: "hardcoded"
+  },
+  {
+    implementationValue: "8px",
+    label: "Card radius",
+    status: "hardcoded"
+  },
+  {
+    implementationValue: "16px 32px",
+    label: "Padding",
+    status: "hardcoded"
+  },
+  {
+    implementationValue: "Newsreader 600, 24px / 140%",
+    label: "Title typography",
+    status: "hardcoded"
+  },
+  {
+    implementationValue: "Geist 400, 20px / 175%",
+    label: "Description typography",
+    status: "hardcoded"
+  },
+  {
+    implementationValue: "rgba(252, 251, 249, 0.5)",
+    label: "Default background",
+    status: "hardcoded"
+  },
+  {
+    implementationValue: "1px solid #E6E2DC",
+    label: "Default border",
+    status: "hardcoded"
+  },
+  {
+    implementationValue:
+      "0px 4px 8px -2px rgba(0,0,0,0.1), 0px 2px 4px -2px rgba(0,0,0,0.06)",
+    label: "Hover shadow",
+    status: "hardcoded"
+  },
+  {
+    implementationValue: "assets/icons/align-a-team.svg",
+    label: "Diagnosis icon asset",
+    status: "approved"
+  },
+  {
+    implementationValue: "72px x 70px / 60.17px x 58.5px",
+    label: "Diagnosis icon size",
+    status: "hardcoded"
+  },
+  {
+    implementationValue: "linear-gradient(45deg, #7D5330 0%, #D99C56 100%)",
+    label: "Selected ring and dot gradient",
+    status: "hardcoded"
+  },
+  {
+    implementationValue:
+      "820ms accelerating border draw / 260ms radio entrance",
+    label: "Selected animation timing",
+    status: "hardcoded"
+  }
+];
+
+const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
+  contrastNotes: [
+    {
+      description:
+        "Title and description colours need formal contrast checks during tokenisation.",
+      title: "Text contrast"
+    },
+    {
+      description:
+        "The max selected state must remain readable even with reduced opacity.",
+      title: "Muted state"
+    }
+  ],
+  focusBehaviour: [
+    {
+      description:
+        "The card uses a visible focus outline and must not rely on hover-only feedback.",
+      title: "Keyboard focus"
+    }
+  ],
+  keyboardBehaviour: [
+    {
+      description:
+        "The whole card is the touch and keyboard target, exposed as a button for this prototype.",
+      title: "Whole-card target"
+    }
+  ],
+  reducedMotion: [
+    {
+      description:
+        "State transitions use short opacity, background, shadow, perimeter draw, and circle pop changes, with animations disabled for reduced motion.",
+      title: "Motion fallback"
+    }
+  ],
+  screenReaderNotes: [
+    {
+      description:
+        "Selected state is exposed through aria-pressed. Max selected is exposed through aria-disabled.",
+      title: "State semantics"
+    },
+    {
+      description:
+        "The right state icon is decorative because the interactive state is exposed on the card itself.",
+      title: "State icon"
+    }
+  ],
+  unresolvedIssues: [
+    {
+      description:
+        "Final selected, hover, and max selected semantics should be reviewed once the Diagnosis Grid exists.",
+      title: "Grid dependency"
+    }
+  ]
+};
+
+function SpecsSection() {
+  return (
+    <section id="specs" className="scroll-mt-40 py-10">
+      <h3 className="text-2xl font-semibold">Specs</h3>
+      <div className="mt-6 overflow-hidden rounded-[24px] border border-[color:var(--line)] bg-white/55">
+        {specs.map(([label, value]) => (
+          <div
+            key={label}
+            className="grid gap-2 border-b border-[color:var(--line)] p-4 last:border-b-0 sm:grid-cols-[190px_1fr]"
+          >
+            <div className="text-sm font-semibold">{label}</div>
+            <div className="font-mono text-sm text-[color:var(--muted)]">
+              {value}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ViewportPreview() {
+  return (
+    <div className="flex min-h-[360px] items-center justify-center overflow-visible rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-6">
+      <div className="max-w-full overflow-x-auto py-8">
+        <DiagnosisCard state="default" />
+      </div>
+    </div>
+  );
+}
+
+function DiagnosisCardStatePreview({ state }: { state: ShowroomState }) {
+  const [replayCount, setReplayCount] = useState(0);
+  const [selectedPreviewState, setSelectedPreviewState] =
+    useState<DiagnosisCardState>("hover");
+
+  useEffect(() => {
+    if (state !== "selected") {
+      return;
+    }
+
+    setSelectedPreviewState("hover");
+
+    const timeoutId = window.setTimeout(() => {
+      setSelectedPreviewState("selected");
+    }, 120);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [replayCount, state]);
+
+  if (state !== "selected") {
+    return <DiagnosisCard state={state} />;
+  }
+
+  return (
+    <div className="flex w-full flex-col items-center gap-5">
+      <p className="rounded-full border border-[#D8C08A] bg-[#FCFBF9]/80 px-4 py-2 text-sm font-semibold text-[#7D5330]">
+        Selected animation
+      </p>
+      <DiagnosisCard
+        key={`${replayCount}-${selectedPreviewState}`}
+        state={selectedPreviewState}
+      />
+      <p className="max-w-xl text-center text-sm leading-6 text-[color:var(--muted)]">
+        Selected animation uses the accepted Version 3 two-path motion. The
+        path remains unchanged, while timing accelerates into the top-right
+        corner and triggers the radio entrance as the stroke arrives.
+      </p>
+      <button
+        className="rounded-full border border-[#D8C08A] bg-[#FCFBF9]/80 px-4 py-2 text-sm font-semibold text-[#7D5330] shadow-[0_10px_24px_rgba(125,83,48,0.08)] transition hover:bg-[#FCFBF9]"
+        onClick={() => setReplayCount((current) => current + 1)}
+        type="button"
+      >
+        Replay animation
+      </button>
+    </div>
+  );
+}
+
+export default function DiagnosisCardPage() {
+  return (
+    <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
+      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+        <DesignPortalSidebar activeHref="/design-system/core-experience/diagnosis-card" />
+
+        <ComponentPageShell
+          description="A desktop diagnosis selection card for visual approval inside the Design Portal. This component is not used in product screens yet."
+          metadata={componentMetadata}
+        >
+          <ComponentOverviewSection {...overviewCopy} />
+
+          <SpecsSection />
+
+          <ComponentViewportShowroom
+            description="The first review target is the desktop card. Tablet and mobile behaviour will be documented after the desktop card is approved."
+            renderPreview={() => <ViewportPreview />}
+            viewports={viewportItems}
+          />
+
+          <ComponentStateShowroom
+            autoplayEnabled={false}
+            description="A living showroom for reviewing the Diagnosis Card as it moves from resting to hover, selected, and max-selected states."
+            renderPreview={(state) => (
+              <DiagnosisCardStatePreview state={state} />
+            )}
+            states={showroomStates}
+          />
+
+          <ComponentTokensSection
+            description="Prototype values remain hardcoded for review. These must become approved tokens before product use."
+            tokens={tokenRows}
+          />
+
+          <ComponentAccessibilitySection
+            contrastNotes={accessibilityNotes.contrastNotes}
+            focusBehaviour={accessibilityNotes.focusBehaviour}
+            keyboardBehaviour={accessibilityNotes.keyboardBehaviour}
+            reducedMotion={accessibilityNotes.reducedMotion}
+            screenReaderNotes={accessibilityNotes.screenReaderNotes}
+            unresolvedIssues={accessibilityNotes.unresolvedIssues}
+          />
+        </ComponentPageShell>
+      </div>
+    </main>
+  );
+}

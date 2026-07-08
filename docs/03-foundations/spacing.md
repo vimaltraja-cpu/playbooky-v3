@@ -10,28 +10,44 @@
 
 ## Purpose
 
-This document defines the architecture for PlayBooky spacing tokens.
+This document defines how space is used throughout PlayBooky.
 
-Spacing tokens control distance, rhythm, density, and responsive composition across foundations, layouts, components, patterns, portal pages, and product screens.
+Spacing is one of the product's primary design tools. More than simply controlling distance, it creates rhythm, hierarchy and breathing room, helping users focus on thinking rather than navigating the interface.
 
-This document does not define final spacing values.
+The spacing system ensures every screen feels calm, intentional and consistently crafted across desktop, tablet and mobile.
+
+This document defines how spacing is organised, tokenised and applied across foundations, layouts, components, patterns, the Design Portal and PlayBooky itself.
+
+Final spacing values are approved separately. This document defines the system that governs them.
 
 ## Philosophy
 
-Spacing is a system rule, not a local design choice.
+Spacing is a design decision, not a visual adjustment.
 
-PlayBooky spacing must make interfaces feel calm, scannable, and intentional. Space should clarify relationships between content, controls, panels, and workflows. It must not be used as decorative filler or adjusted locally until a layout happens to look acceptable.
+Every spacing decision should help users understand relationships between information, actions and content. Space should never be added simply because something "looks better". Every gap, padding value and layout rhythm should have a clear purpose.
 
-Spacing decisions must support:
+PlayBooky uses generous whitespace to create moments of clarity while remaining efficient enough for real product work. The interface should feel calm, focused and easy to scan rather than crowded or sparse.
 
-- Clear hierarchy.
-- Predictable rhythm.
-- Accessible touch and pointer interaction.
-- Dense but readable product workflows.
-- Responsive behaviour across desktop, tablet, and mobile.
-- Consistent component composition.
+The spacing system should create a predictable rhythm across the entire product so users instinctively understand how content is grouped and where their attention should move next.
 
-All spacing used in product-facing implementation must come from approved spacing tokens, layout primitives, or component contracts.
+PlayBooky spacing should feel:
+
+- Calm
+- Spacious
+- Intentional
+- Consistent
+- Human
+- Efficient
+
+Spacing should never feel:
+
+- Random
+- Decorative
+- Compressed
+- Inconsistent
+- Arbitrary
+
+Every spacing decision must come from the approved spacing system.
 
 ## Primitive Spacing Scale
 
@@ -77,7 +93,18 @@ Primitive spacing rules:
 
 ## Semantic Spacing
 
-Semantic spacing tokens give purpose to primitive spacing.
+Semantic spacing tokens give meaning to primitive spacing tokens.
+
+While primitive spacing tokens define reusable spacing increments, semantic spacing tokens describe where and why spacing is used throughout PlayBooky.
+
+Semantic spacing creates consistency across layouts, components, patterns and product experiences while allowing the underlying primitive spacing scale to evolve over time.
+
+Semantic spacing tokens must:
+
+- Describe purpose rather than value.
+- Reference approved primitive spacing tokens or approved aliases.
+- Remain stable even if primitive spacing values change.
+- Be the primary spacing tokens consumed by layouts and reusable components.
 
 Semantic spacing tokens must use this naming shape:
 
@@ -120,24 +147,40 @@ Semantic spacing rules:
 - Component tokens may reference semantic spacing tokens.
 - Product tokens may reference semantic spacing tokens only through approved product token architecture.
 
+## Rhythm
+
+PlayBooky's visual rhythm is created through consistent spacing rather than decoration.
+
+Interfaces should alternate between areas of generous whitespace and closely related groups of content. This rhythm helps users naturally understand hierarchy without relying on excessive borders, colours or visual effects.
+
+The system should encourage:
+
+- Clear grouping of related information.
+- Comfortable reading rhythm.
+- Consistent vertical flow.
+- Predictable horizontal alignment.
+- Spacious layouts that support collaborative thinking.
+
+Rhythm should remain consistent across desktop, tablet and mobile.
+
 ## Auto Layout Guidance
 
-Auto Layout guidance defines how spacing behaves inside repeatable component and layout structures.
+PlayBooky layouts are built using Auto Layout principles.
+
+Spacing should emerge naturally from layout structure rather than manual adjustment.
 
 Rules:
 
-- Use gap-based spacing for relationships between sibling elements.
-- Use padding tokens for internal space between an element boundary and its content.
-- Use margin-like spacing only through layout primitives or documented composition rules.
-- Do not combine local margins and parent gaps to create hidden spacing.
-- Do not use negative spacing unless a documented component anatomy explicitly requires overlap.
-- Do not use arbitrary offsets to align content that should be handled by grid, stack, or container rules.
-- Auto Layout controls in design tools must reference spacing token names, not visual guesses.
+- Every page should use a single parent Auto Layout.
+- Parent layouts own spacing between sections.
+- Components own their internal spacing.
+- Gaps define relationships between siblings.
+- Padding defines relationships between a container and its content.
+- Components should stretch naturally rather than rely on fixed widths where possible.
+- Absolute positioning should only be used when explicitly documented.
+- Local spacing adjustments should never compensate for poor layout structure.
 
-AI behaviour:
-
-- AI agents must identify whether a spacing need is gap, padding, or layout composition before suggesting a token.
-- AI agents must not compensate for weak layout structure by inventing local spacing.
+Design files and code should describe the same layout behaviour.
 
 ## Container Spacing
 
@@ -159,6 +202,26 @@ Rules:
 - Nested containers must not compound spacing accidentally.
 - Full-bleed sections must document how content returns to the approved container rhythm.
 - Product pages must not set container padding locally.
+
+## Component Anatomy
+
+Every reusable component should document its internal spacing anatomy.
+
+Typical anatomy includes:
+
+- Outer padding
+- Header spacing
+- Content spacing
+- Footer spacing
+- Icon spacing
+- Label spacing
+- Action spacing
+
+Internal spacing belongs to the component.
+
+External spacing belongs to the parent layout.
+
+Components must never assume how much space surrounds them.
 
 ## Grid Spacing
 
