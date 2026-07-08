@@ -19,7 +19,7 @@ Use these settings when importing the GitHub repository into Vercel:
 - Build command: `npm run build`
 - Output directory: leave empty in Vercel project settings
 
-The project uses `next.config.ts` with `distDir: ".next-portal"`. Vercel should run the Next.js build through the framework preset instead of treating the build output as a static directory.
+The project uses the standard Next.js build output. Do not set a custom Vercel output directory unless `next.config.ts` is intentionally changed and the Vercel adapter is verified against that change.
 
 ## Deployment Behaviour
 
