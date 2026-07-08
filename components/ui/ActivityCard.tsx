@@ -12,10 +12,17 @@ export type ActivityCardState =
   | "dragging"
   | "locked";
 
+export type ActivityCardVariant =
+  | "library"
+  | "builder"
+  | "recommendation"
+  | "live";
+
 type ActivityCardProps = {
   activity: Activity;
   hasIllustration?: boolean;
   state?: ActivityCardState;
+  variant?: ActivityCardVariant;
 };
 
 function getValue(activity: Activity, field: string, fallback = "Missing") {
@@ -35,10 +42,116 @@ function MissingIllustration({ slug }: { slug: string }) {
   );
 }
 
+function ControlButton({
+  children,
+  emphasis = "secondary"
+}: {
+  children: string;
+  emphasis?: "primary" | "secondary";
+}) {
+  return (
+    <span
+      className={[
+        "inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm font-semibold transition duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
+        emphasis === "primary"
+          ? "bg-[#7D5330] text-[#FCFBF9] shadow-[0_10px_24px_rgba(125,83,48,0.16)]"
+          : "border border-[#E2D5C2] bg-white/70 text-[#2C2924]"
+      ].join(" ")}
+    >
+      {children}
+    </span>
+  );
+}
+
+function ActivityCardControls({
+  state,
+  variant
+}: {
+  state: ActivityCardState;
+  variant: ActivityCardVariant;
+}) {
+  const isLocked = state === "locked";
+
+  if (variant === "builder") {
+    return (
+      <div className="grid gap-3">
+        <div className="flex items-center justify-between gap-3 rounded-[18px] border border-[#E2D5C2] bg-white/60 px-3 py-2">
+          <span
+            aria-hidden="true"
+            className="grid h-9 w-9 place-items-center rounded-full border border-[#E2D5C2] text-base font-semibold text-[#7D5330]"
+          >
+            ::
+          </span>
+          <span className="text-sm font-medium text-[#45413C]">
+            Builder controls pending provided CSS
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <ControlButton>Move up</ControlButton>
+          <ControlButton>Move down</ControlButton>
+          <ControlButton emphasis="primary">
+            {state === "selected" ? "Selected" : "Select"}
+          </ControlButton>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "recommendation") {
+    return (
+      <div className="grid gap-3">
+        <div className="rounded-[18px] border border-[#E5D2B6] bg-[#FFF8EB] px-4 py-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#B28B4B]">
+            Confidence
+          </p>
+          <p className="mt-1 text-sm font-semibold text-[#2C2924]">
+            Placeholder confidence only
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <ControlButton>Why this activity?</ControlButton>
+          <ControlButton emphasis="primary">Accept</ControlButton>
+          <ControlButton>Replace</ControlButton>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "live") {
+    return (
+      <div className="grid gap-3">
+        <div className="grid gap-2 sm:grid-cols-3">
+          {["Timer", "Progress", "Instructions"].map((label) => (
+            <div
+              className="rounded-[18px] border border-dashed border-[#D8C08A] bg-[#FFF8EB]/70 px-3 py-3 text-sm font-semibold text-[#7D5330]"
+              key={label}
+            >
+              {label}
+            </div>
+          ))}
+        </div>
+        <p className="text-xs leading-5 text-[#6E6253]">
+          Live delivery controls are placeholders only.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      <ControlButton>Preview</ControlButton>
+      <ControlButton emphasis="primary">
+        {isLocked ? "Unavailable" : "Add Activity"}
+      </ControlButton>
+    </div>
+  );
+}
+
 export function ActivityCard({
   activity,
   hasIllustration = false,
-  state = "default"
+  state = "default",
+  variant = "library"
 }: ActivityCardProps) {
   const activityName = getValue(activity, "Activity Name", "Untitled activity");
   const slug = createActivitySlug(activityName);
@@ -50,6 +163,7 @@ export function ActivityCard({
   return (
     <article
       aria-label={`Activity card: ${activityName}`}
+      data-variant={variant}
       className={[
         "relative flex w-full max-w-[420px] flex-col overflow-hidden rounded-[28px] border bg-[#FCFBF9] text-left transition duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
         isSelected
@@ -137,6 +251,10 @@ export function ActivityCard({
             Locked until this activity is available for the selected workshop.
           </p>
         ) : null}
+
+        <div className="min-h-[96px] border-t border-[#EEE4D7] pt-5 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none">
+          <ActivityCardControls state={state} variant={variant} />
+        </div>
       </div>
     </article>
   );

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   ComponentAccessibilitySection,
   ComponentOverviewSection,
@@ -8,6 +10,7 @@ import {
   ComponentTokensSection,
   ComponentViewportShowroom,
   type ComponentAccessibilityItem,
+  type ComponentSectionNavItem,
   type ComponentShowroomState,
   type ComponentTokenRow,
   type ViewportShowroomItem
@@ -15,7 +18,8 @@ import {
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
 import {
   ActivityCard,
-  type ActivityCardState
+  type ActivityCardState,
+  type ActivityCardVariant
 } from "@/components/ui/ActivityCard";
 import {
   activityLibrarySource,
@@ -24,7 +28,6 @@ import {
 } from "@/lib/data/activities";
 
 type ViewportId = "desktop" | "tablet" | "mobile";
-type ShowroomState = ActivityCardState;
 
 const componentMetadata = {
   category: "Core Experience",
@@ -32,24 +35,34 @@ const componentMetadata = {
   lastUpdated: "2026-07-08",
   owner: "Design System",
   status: "Exploring",
-  title: "Activity Card"
+  title: "Activity Card System"
 };
+
+const sectionItems: ComponentSectionNavItem[] = [
+  { id: "overview", label: "Overview" },
+  { id: "variants", label: "Variants" },
+  { id: "states", label: "States" },
+  { id: "viewports", label: "Viewports" },
+  { id: "motion", label: "Motion" },
+  { id: "tokens", label: "Tokens" },
+  { id: "accessibility", label: "Accessibility" }
+];
 
 const overviewCopy = {
   statusNote:
-    "This card uses real canonical activity data and prototype visual values. It is not approved for product screens yet.",
+    "This is a single reusable component with contextual variants. It is not approved for product screens yet.",
   summary:
-    "Activity Card is the first reusable component for previewing one facilitation activity from the Activity Library.",
+    "Activity Card System defines one reusable ActivityCard component that can adapt to Library, Builder, Recommendation, and future Live contexts while keeping the same shared card foundation.",
   whatItIs:
-    "A data-backed card that summarizes activity purpose, stage, duration, inputs, outputs, and illustration availability.",
+    "A data-backed PlayBooky component that summarizes one canonical activity and swaps only the contextual controls required by each experience.",
   whenNotToUse:
-    "Do not use it as the final product Activity Library UI, filtering surface, or workshop builder card until those flows are approved.",
+    "Do not create separate LibraryCard, BuilderActivityCard, or RecommendationCard components. Do not use it as the final product Activity Library or Workshop Builder UI yet.",
   whenToUse:
-    "Use it inside the Design Portal to review how canonical Activity Library data may appear in a reusable component.",
+    "Use it in the Design Portal to review how one activity card foundation can support browse, build, recommendation, and future live-delivery contexts.",
   whereItAppears:
-    "Inside the Design Portal only for now. The component is not wired into product workflows.",
+    "Inside the Design Portal only for now. Future product usage must wait until the component reaches an approved status.",
   whyItExists:
-    "To prove reusable PlayBooky components can consume canonical CSV data without inventing activity content in UI code."
+    "To prevent component drift across PlayBooky experiences and prove that real Activity Library data can power reusable UI without duplicating product knowledge in code."
 };
 
 const viewportItems: Array<ViewportShowroomItem<ViewportId>> = [
@@ -59,7 +72,7 @@ const viewportItems: Array<ViewportShowroomItem<ViewportId>> = [
     notes: [
       ["Preview assumption", "Desktop review canvas"],
       ["Card width", "Max 420px"],
-      ["Layout", "Image/placeholder above content"],
+      ["Layout", "Image or placeholder above shared content"],
       ["Data source", activityLibrarySource]
     ]
   },
@@ -69,7 +82,7 @@ const viewportItems: Array<ViewportShowroomItem<ViewportId>> = [
     notes: [
       ["Preview assumption", "Tablet-width review canvas"],
       ["Card width", "Fluid within constrained preview"],
-      ["Behaviour", "Content remains stacked and readable"],
+      ["Behaviour", "Shared body and variant controls remain stacked"],
       ["Data source", activityLibrarySource]
     ]
   },
@@ -79,13 +92,13 @@ const viewportItems: Array<ViewportShowroomItem<ViewportId>> = [
     notes: [
       ["Preview assumption", "Mobile-width review canvas"],
       ["Card width", "Fluid to available width"],
-      ["Behaviour", "Metadata wraps before content"],
+      ["Behaviour", "Metadata wraps before description and controls"],
       ["Data source", activityLibrarySource]
     ]
   }
 ];
 
-const showroomStates: Array<ComponentShowroomState<ShowroomState>> = [
+const showroomStates: Array<ComponentShowroomState<ActivityCardState>> = [
   {
     durationMs: 1800,
     id: "default",
@@ -97,10 +110,7 @@ const showroomStates: Array<ComponentShowroomState<ShowroomState>> = [
         "Shows canonical activity summary, metadata, and illustration fallback when the asset is missing."
       ],
       ["Motion", "No motion while resting."],
-      [
-        "Accessibility",
-        "Card content remains readable without relying on hover."
-      ],
+      ["Accessibility", "Card content remains readable without hover."],
       [
         "Tokenisation notes",
         "Surface, spacing, radius, and typography are prototype values."
@@ -115,7 +125,7 @@ const showroomStates: Array<ComponentShowroomState<ShowroomState>> = [
       ["Trigger", "Pointer hover or visual preview of hover affordance."],
       [
         "Behaviour",
-        "Uses a warmer border and soft elevation while keeping content unchanged."
+        "Uses a warmer border and soft elevation while keeping shared content unchanged."
       ],
       ["Motion", "Shadow and border transition over 160-240ms."],
       ["Accessibility", "Hover is not the only state cue."],
@@ -127,10 +137,10 @@ const showroomStates: Array<ComponentShowroomState<ShowroomState>> = [
     id: "selected",
     label: "Selected / Added",
     notes: [
-      ["Trigger", "Activity is added to a future workshop selection."],
+      ["Trigger", "Activity is selected or added in a contextual flow."],
       [
         "Behaviour",
-        "Shows a stronger brand border, elevation, and Added label."
+        "Shows stronger brand border, elevation, and selected/addition confirmation while preserving the shared card body."
       ],
       ["Motion", "State transition remains subtle and non-blocking."],
       [
@@ -139,7 +149,7 @@ const showroomStates: Array<ComponentShowroomState<ShowroomState>> = [
       ],
       [
         "Tokenisation notes",
-        "Selected border and badge values are pending tokens."
+        "Selected border and status values are pending tokens."
       ]
     ]
   },
@@ -151,7 +161,7 @@ const showroomStates: Array<ComponentShowroomState<ShowroomState>> = [
       ["Trigger", "Activity is being repositioned in a future builder flow."],
       [
         "Behaviour",
-        "Adds slight scale, rotation, opacity, and stronger elevation."
+        "Adds slight scale, rotation, opacity, and stronger elevation without changing the card body."
       ],
       ["Motion", "Transform should be short and tactile."],
       [
@@ -168,7 +178,7 @@ const showroomStates: Array<ComponentShowroomState<ShowroomState>> = [
     notes: [
       [
         "Trigger",
-        "Activity is not available for the selected workshop context."
+        "Activity is unavailable for the selected workshop context."
       ],
       [
         "Behaviour",
@@ -180,6 +190,55 @@ const showroomStates: Array<ComponentShowroomState<ShowroomState>> = [
         "Unavailable state must be exposed by the future interactive parent control."
       ],
       ["Tokenisation notes", "Locked surface treatment needs final tokens."]
+    ]
+  }
+];
+
+const variantItems: Array<{
+  id: ActivityCardVariant;
+  label: string;
+  notes: Array<[string, string]>;
+}> = [
+  {
+    id: "library",
+    label: "Library",
+    notes: [
+      ["Purpose", "Browse activities in the Activity Library."],
+      ["Controls", "Preview and Add Activity."],
+      ["Constraint", "No drag handle in the Library variant."]
+    ]
+  },
+  {
+    id: "builder",
+    label: "Builder",
+    notes: [
+      ["Purpose", "Build and reorder a workshop."],
+      ["Controls", "Drag handle, reordering controls, and selection."],
+      [
+        "Constraint",
+        "Builder CSS is intentionally placeholder until provided."
+      ]
+    ]
+  },
+  {
+    id: "recommendation",
+    label: "Recommendation",
+    notes: [
+      ["Purpose", "Review AI-recommended activities."],
+      [
+        "Controls",
+        "Placeholder confidence, Why this activity?, Accept, and Replace."
+      ],
+      ["Constraint", "No recommendation logic is invented in this page."]
+    ]
+  },
+  {
+    id: "live",
+    label: "Live",
+    notes: [
+      ["Purpose", "Future workshop delivery context."],
+      ["Controls", "Placeholder areas for timer, progress, and instructions."],
+      ["Constraint", "No live implementation yet."]
     ]
   }
 ];
@@ -206,8 +265,8 @@ const tokenRows: ComponentTokenRow[] = [
     status: "hardcoded"
   },
   {
-    implementationValue: "22px-28px rounded image and card surfaces",
-    label: "Nested radius",
+    implementationValue: "160-300ms cubic-bezier(0.2,0,0,1)",
+    label: "Card and control motion",
     status: "hardcoded"
   },
   {
@@ -233,73 +292,128 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   focusBehaviour: [
     {
       description:
-        "The card is currently a display component. Future interactive use must define focus treatment.",
+        "The card is currently a display component. Future interactive use must define focus treatment for the whole card and contextual controls.",
       title: "Interaction model pending"
     }
   ],
   keyboardBehaviour: [
     {
       description:
-        "Future add, select, and drag behaviours must include keyboard-accessible controls.",
+        "Future add, select, reorder, and replace behaviours must include keyboard-accessible controls.",
       title: "Keyboard operation"
     }
   ],
   reducedMotion: [
     {
       description:
-        "Prototype state changes use basic CSS transitions and must respect reduced-motion when wired into interactions.",
+        "Variant and state transitions use subtle CSS transitions and must respect reduced-motion when wired into product interactions.",
       title: "Motion fallback"
     }
   ],
   screenReaderNotes: [
     {
       description:
-        "The illustration is decorative in this prototype; the canonical text fields provide the activity information.",
+        "The illustration is decorative in this prototype; canonical text fields provide the activity information.",
       title: "Decorative media"
     }
   ],
   unresolvedIssues: [
     {
       description:
-        "Final product semantics should be reviewed when Activity Card is used in a real selection or builder flow.",
+        "Final semantics should be reviewed once Activity Card is used in a real selection, recommendation, or builder flow.",
       title: "Product flow dependency"
     }
   ]
 };
 
-function SpecsSection({
+function InfoRows({ rows }: { rows: Array<[string, string]> }) {
+  return (
+    <dl className="mt-5 space-y-4">
+      {rows.map(([term, description]) => (
+        <div key={term}>
+          <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
+            {term}
+          </dt>
+          <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+            {description}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function VariantsSection({
   activity,
   hasIllustration
 }: {
   activity: Activity;
   hasIllustration: boolean;
 }) {
-  const specs = [
-    ["Representative activity", activity["Activity Name"]],
-    ["Activity slug", createActivitySlug(activity["Activity Name"])],
-    ["Canonical source", activityLibrarySource],
-    ["Illustration available", hasIllustration ? "Yes" : "No"],
-    ["Stage", activity["Stage"] || "Missing"],
-    ["Duration", activity["Duration"] || "Missing"],
-    ["Remote Friendly", activity["Remote Friendly"] || "Missing"],
-    ["Layout Type", activity["Layout Type"] || "Missing"]
-  ];
+  const [activeVariant, setActiveVariant] =
+    useState<ActivityCardVariant>("library");
+  const activeItem =
+    variantItems.find((variant) => variant.id === activeVariant) ??
+    variantItems[0];
 
   return (
-    <section id="specs" className="scroll-mt-40 py-10">
-      <h3 className="text-2xl font-semibold">Specs</h3>
-      <div className="mt-6 overflow-hidden rounded-[24px] border border-[color:var(--line)] bg-white/55">
-        {specs.map(([label, value]) => (
-          <div
-            className="grid gap-2 border-b border-[color:var(--line)] p-4 last:border-b-0 sm:grid-cols-[190px_1fr]"
-            key={label}
-          >
-            <div className="text-sm font-semibold">{label}</div>
-            <div className="font-mono text-sm text-[color:var(--muted)]">
-              {value || "Missing"}
-            </div>
+    <section id="variants" className="scroll-mt-40 py-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-3xl">
+          <h3 className="text-2xl font-semibold">Variants</h3>
+          <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
+            Variants keep the same card foundation and swap only the controls
+            that belong to the current PlayBooky context.
+          </p>
+        </div>
+        <div
+          aria-label="Activity Card variants"
+          className="flex w-fit max-w-full rounded-full border border-[color:var(--line)] bg-white/65 p-1"
+          role="tablist"
+        >
+          {variantItems.map((variant) => (
+            <button
+              aria-controls={`variant-panel-${variant.id}`}
+              aria-selected={activeVariant === variant.id}
+              className={[
+                "rounded-full px-4 py-2 text-sm font-medium transition duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+                activeVariant === variant.id
+                  ? "bg-[#7D5330] !text-[#FCFBF9] shadow-[0_10px_24px_rgba(125,83,48,0.18)]"
+                  : "!text-[#171614] hover:bg-[#EFE3D2]/60"
+              ].join(" ")}
+              id={`variant-tab-${variant.id}`}
+              key={variant.id}
+              onClick={() => setActiveVariant(variant.id)}
+              role="tab"
+              type="button"
+            >
+              {variant.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-5 min-[1500px]:grid-cols-[minmax(820px,1fr)_320px]">
+        <div
+          aria-labelledby={`variant-tab-${activeItem.id}`}
+          className="flex min-h-[590px] min-w-0 items-center justify-center rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-6"
+          id={`variant-panel-${activeItem.id}`}
+          key={activeItem.id}
+          role="tabpanel"
+        >
+          <div className="max-w-full overflow-x-auto py-8">
+            <ActivityCard
+              activity={activity}
+              hasIllustration={hasIllustration}
+              state="default"
+              variant={activeItem.id}
+            />
           </div>
-        ))}
+        </div>
+        <div className="rounded-[24px] border border-[color:var(--line)] bg-white/55 p-5">
+          <h4 className="text-sm font-semibold">{activeItem.label} notes</h4>
+          <InfoRows rows={activeItem.notes} />
+        </div>
       </div>
     </section>
   );
@@ -322,12 +436,13 @@ function ViewportPreview({
         : "max-w-[390px]";
 
   return (
-    <div className="flex min-h-[560px] items-center justify-center overflow-visible rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-5">
+    <div className="flex min-h-[590px] items-center justify-center overflow-visible rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-5">
       <div className={`${widthClass} flex w-full justify-center`}>
         <ActivityCard
           activity={activity}
           hasIllustration={hasIllustration}
           state="default"
+          variant="library"
         />
       </div>
     </div>
@@ -341,7 +456,7 @@ function StatePreview({
 }: {
   activity: Activity;
   hasIllustration: boolean;
-  state: ShowroomState;
+  state: ActivityCardState;
 }) {
   return (
     <div className="flex w-full justify-center">
@@ -349,8 +464,48 @@ function StatePreview({
         activity={activity}
         hasIllustration={hasIllustration}
         state={state}
+        variant={state === "dragging" ? "builder" : "library"}
       />
     </div>
+  );
+}
+
+function MotionSection() {
+  return (
+    <section id="motion" className="scroll-mt-40 py-10">
+      <h3 className="text-2xl font-semibold">Motion</h3>
+      <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
+        Motion keeps the Activity Card stable. The shared foundation does not
+        resize when variants change; only contextual controls transition in and
+        out.
+      </p>
+      <div className="mt-6 grid gap-4 md:grid-cols-3">
+        {[
+          [
+            "Hover",
+            "Border and elevation transition over 160-240ms with cubic-bezier(0.2,0,0,1)."
+          ],
+          [
+            "Variant controls",
+            "Controls appear in the same reserved footer area to avoid layout jumps."
+          ],
+          [
+            "Reduced motion",
+            "State and variant changes must remain readable without animation."
+          ]
+        ].map(([title, description]) => (
+          <div
+            className="rounded-[24px] border border-[color:var(--line)] bg-white/55 p-5"
+            key={title}
+          >
+            <h4 className="text-sm font-semibold">{title}</h4>
+            <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
+              {description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -361,14 +516,17 @@ export function ActivityCardPageClient({
   activity: Activity;
   hasIllustration: boolean;
 }) {
+  const activityName = activity["Activity Name"] || "Untitled activity";
+
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
       <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/core-experience/activity-card" />
 
         <ComponentPageShell
-          description="A reusable activity summary card backed by canonical Activity Library CSV data. This component is for Design Portal review only."
+          description="A reusable activity summary card backed by canonical Activity Library CSV data. The card supports contextual variants without creating separate component types."
           metadata={componentMetadata}
+          sections={sectionItems}
         >
           <ComponentOverviewSection {...overviewCopy} />
 
@@ -383,7 +541,7 @@ export function ActivityCardPageClient({
                   Add the approved illustration later at{" "}
                   <code className="rounded-lg bg-white/70 px-1.5 py-1 text-[#2C2924]">
                     public/assets/activities/
-                    {createActivitySlug(activity["Activity Name"])}
+                    {createActivitySlug(activityName)}
                     /illustration.png
                   </code>
                   .
@@ -392,10 +550,26 @@ export function ActivityCardPageClient({
             </section>
           ) : null}
 
-          <SpecsSection activity={activity} hasIllustration={hasIllustration} />
+          <VariantsSection
+            activity={activity}
+            hasIllustration={hasIllustration}
+          />
+
+          <ComponentStateShowroom
+            autoplayEnabled={false}
+            description="A manual showroom for reviewing Activity Card states before the component is approved for product workflows."
+            renderPreview={(state) => (
+              <StatePreview
+                activity={activity}
+                hasIllustration={hasIllustration}
+                state={state}
+              />
+            )}
+            states={showroomStates}
+          />
 
           <ComponentViewportShowroom
-            description="The card stays as a contained summary surface across desktop, tablet, and mobile review widths."
+            description="The same ActivityCard foundation stays readable across desktop, tablet, and mobile review widths."
             renderPreview={(viewport) => (
               <ViewportPreview
                 activity={activity}
@@ -406,18 +580,7 @@ export function ActivityCardPageClient({
             viewports={viewportItems}
           />
 
-          <ComponentStateShowroom
-            autoplayEnabled={false}
-            description="A living showroom for reviewing Activity Card states before it is used in product workflows."
-            renderPreview={(state) => (
-              <StatePreview
-                activity={activity}
-                hasIllustration={hasIllustration}
-                state={state}
-              />
-            )}
-            states={showroomStates}
-          />
+          <MotionSection />
 
           <ComponentTokensSection
             description="Prototype values remain hardcoded for review. These must become approved tokens before product use."
