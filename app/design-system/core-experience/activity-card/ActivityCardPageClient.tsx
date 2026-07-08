@@ -18,14 +18,12 @@ import {
 } from "@/components/ui/ActivityCard";
 import type { ActivityCardDemoItem } from "@/lib/data/activity-card-demo-data";
 
-type ActivityCardData = ActivityCardDemoItem;
-
 const componentMetadata = {
   category: "Core Experience",
   confidence: "2 Prototype review",
   lastUpdated: "2026-07-08",
   owner: "Design System",
-  status: "Exploring",
+  status: "Concept 2",
   title: "Activity Card"
 };
 
@@ -33,26 +31,25 @@ const sectionItems: ComponentSectionNavItem[] = [
   { id: "overview", label: "Overview" },
   { id: "variants", label: "Variants" },
   { id: "states", label: "States" },
-  { id: "library", label: "Library" },
   { id: "tokens", label: "Tokens" },
   { id: "accessibility", label: "Accessibility" }
 ];
 
 const overviewCopy = {
   statusNote:
-    "Temporary visual approval dataset is in use. Canonical CSV wiring returns after the card is visually approved.",
+    "Concept 2 is a clean-slate Activity Card rebuild for visual approval only. Activity Grid and Add Activity Card are intentionally not implemented in this phase.",
   summary:
-    "Activity Card is a fixed-size visual component for representing one workshop activity with illustration, title, description, duration, and workshop context.",
+    "Activity Card Concept 2 reproduces the approved 256px by 370px Figma card with a dominant illustration, two-line title, short description, and duration/workshop metadata.",
   whatItIs:
-    "A 256px by 370px card with one shared foundation and two current variants: Builder and Library.",
+    "A single reusable ActivityCard component with Builder and Library variants.",
   whenNotToUse:
-    "Do not use this card to inspect database fields, show activity chips, expose inputs or outputs, or add recommendation/live controls.",
+    "Do not use this concept for Activity Grid, Add Activity Card, recommendation cards, or production flows until the card visual is approved.",
   whenToUse:
-    "Use it to review the Figma-faithful card component before it is approved for the Activity Library or Workshop Builder.",
+    "Use this page to compare Concept 2 against the approved Figma Activity Card.",
   whereItAppears:
-    "Inside the Design Portal only for now. Product screens should wait until this component is approved.",
+    "Design Portal review only.",
   whyItExists:
-    "To keep PlayBooky activity presentation consistent across contexts without creating separate card components."
+    "Concept 2 replaces Concept 1 instead of iterating on it, so the card can be judged from the approved measurements."
 };
 
 const showroomStates: Array<ComponentShowroomState<ActivityCardState>> = [
@@ -60,11 +57,11 @@ const showroomStates: Array<ComponentShowroomState<ActivityCardState>> = [
     id: "default",
     label: "Default",
     notes: [
-      ["Trigger", "Resting card."],
-      ["Behaviour", "Shows the fixed Figma structure without extra controls."],
-      ["Motion", "No motion while resting."],
-      ["Accessibility", "Text content remains visible without hover."],
-      ["Tokenisation notes", "Prototype visual values are not tokenised yet."]
+      ["Trigger", "Resting visual review state."],
+      ["Behaviour", "Displays only illustration, title, description, and metadata."],
+      ["Motion", "No motion."],
+      ["Accessibility", "Illustration is decorative; text carries the content."],
+      ["Tokenisation notes", "Prototype values are hardcoded from the spec."]
     ]
   },
   {
@@ -72,10 +69,10 @@ const showroomStates: Array<ComponentShowroomState<ActivityCardState>> = [
     label: "Hover",
     notes: [
       ["Trigger", "Pointer hover preview."],
-      ["Behaviour", "Subtle lift and slightly stronger shadow."],
-      ["Motion", "Short transform and shadow transition."],
-      ["Accessibility", "Hover is decorative and does not expose hidden content."],
-      ["Tokenisation notes", "Hover elevation needs a future token."]
+      ["Behaviour", "Subtle lift only; no hidden information appears."],
+      ["Motion", "Short shadow and transform transition."],
+      ["Accessibility", "Hover does not communicate required information."],
+      ["Tokenisation notes", "Hover elevation remains pending."]
     ]
   },
   {
@@ -83,13 +80,10 @@ const showroomStates: Array<ComponentShowroomState<ActivityCardState>> = [
     label: "Dragging",
     notes: [
       ["Trigger", "Builder reordering preview."],
-      ["Behaviour", "Slight rotation and scale while keeping card dimensions."],
-      ["Motion", "Tactile transform only."],
-      [
-        "Accessibility",
-        "Future drag implementation must include keyboard reordering."
-      ],
-      ["Tokenisation notes", "Dragging treatment is prototype-only."]
+      ["Behaviour", "Builder card keeps the same dimensions with tactile transform."],
+      ["Motion", "Short transform only."],
+      ["Accessibility", "Future drag behaviour must support keyboard reordering."],
+      ["Tokenisation notes", "Dragging treatment remains pending."]
     ]
   }
 ];
@@ -106,13 +100,19 @@ const tokenRows: ComponentTokenRow[] = [
     status: "hardcoded"
   },
   {
+    implementationValue: "2px",
+    label: "Vertical gap",
+    status: "hardcoded"
+  },
+  {
     implementationValue: "16px",
     label: "Card radius",
     status: "hardcoded"
   },
   {
-    implementationValue: "#FCFBFA",
-    label: "Card background",
+    implementationValue:
+      "0px 4px 8px -2px rgba(0,0,0,0.10), 0px 2px 4px -2px rgba(0,0,0,0.06)",
+    label: "Card shadow",
     status: "hardcoded"
   },
   {
@@ -127,18 +127,18 @@ const tokenRows: ComponentTokenRow[] = [
   },
   {
     implementationValue: "Newsreader 600, 22px / 24px, #324236",
-    label: "Title type",
+    label: "Title",
     status: "hardcoded"
   },
   {
     implementationValue: "Geist 400, 10px / 16px, #1F3E29",
-    label: "Description type",
+    label: "Description",
     status: "hardcoded"
   },
   {
-    implementationValue: "lib/data/activity-card-demo-data.ts",
-    label: "Temporary visual data source",
-    status: "pending"
+    implementationValue: "Geist 300, 10px / 16px, gold gradient",
+    label: "Metadata",
+    status: "hardcoded"
   }
 ];
 
@@ -146,77 +146,67 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   contrastNotes: [
     {
       description:
-        "Title, description, and metadata colours need formal contrast checks before approval.",
-      title: "Text contrast"
+        "Title, description, and metadata colours should be checked during visual approval.",
+      title: "Contrast review"
     }
   ],
   focusBehaviour: [
     {
       description:
-        "The card is display-only in the portal. Any future interactive wrapper must define focus styling.",
-      title: "Interaction wrapper pending"
+        "The card is display-only in Concept 2. Interactive wrappers are out of scope until the visual is approved.",
+      title: "Display-only card"
     }
   ],
   keyboardBehaviour: [
     {
       description:
-        "Builder dragging is visual only here. Product reordering must support keyboard controls.",
-      title: "Builder keyboard path"
+        "Builder drag behaviour is represented visually only. Keyboard reordering belongs to a later Activity Grid phase.",
+      title: "Grid behaviour deferred"
     }
   ],
   reducedMotion: [
     {
       description:
-        "Hover and dragging transitions are subtle and disabled by the reduced-motion utility.",
-      title: "Motion reduction"
+        "Hover and dragging transitions use reduced-motion-safe utility classes.",
+      title: "Reduced motion"
     }
   ],
   screenReaderNotes: [
     {
       description:
-        "Illustrations are decorative; the activity name and description carry the content.",
-      title: "Decorative illustration"
+        "The image is decorative and the card label exposes the activity title.",
+      title: "Decorative image"
     }
   ],
   unresolvedIssues: [
     {
       description:
-        "Temporary visual approval data is in use until the card is approved and reconnected to canonical CSV data.",
-      title: "Temporary visual data"
+        "Manual Figma comparison is still required before Activity Grid or Add Activity Card work begins.",
+      title: "Design approval required"
     }
   ]
 };
 
-function VariantsSection({
-  representativeCard
-}: {
-  representativeCard: ActivityCardData;
-}) {
+function VariantsSection({ activity }: { activity: ActivityCardDemoItem }) {
   return (
     <section id="variants" className="scroll-mt-40 py-10">
       <h3 className="text-2xl font-semibold">Variants</h3>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
-        Builder and Library share the exact same component foundation. Builder
-        adds the drag handle; Library removes it.
+        Library removes only the drag handle. No other visual differences are
+        allowed.
       </p>
       <div className="mt-8 flex flex-wrap gap-[22px] rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-8">
         <div>
           <p className="mb-4 text-sm font-semibold text-[color:var(--muted)]">
             Builder
           </p>
-          <ActivityCard
-            activity={representativeCard}
-            variant="builder"
-          />
+          <ActivityCard activity={activity} variant="builder" />
         </div>
         <div>
           <p className="mb-4 text-sm font-semibold text-[color:var(--muted)]">
             Library
           </p>
-          <ActivityCard
-            activity={representativeCard}
-            variant="library"
-          />
+          <ActivityCard activity={activity} variant="library" />
         </div>
       </div>
     </section>
@@ -224,55 +214,25 @@ function VariantsSection({
 }
 
 function StatePreview({
-  representativeCard,
+  activity,
   state
 }: {
-  representativeCard: ActivityCardData;
+  activity: ActivityCardDemoItem;
   state: ActivityCardState;
 }) {
   return (
     <ActivityCard
-      activity={representativeCard}
+      activity={activity}
       state={state}
       variant={state === "dragging" ? "builder" : "library"}
     />
   );
 }
 
-function LibrarySection({
-  activityCards
-}: {
-  activityCards: ActivityCardData[];
-}) {
-  return (
-    <section id="library" className="scroll-mt-40 py-10">
-      <h3 className="text-2xl font-semibold">Library</h3>
-      <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
-        This grid uses the temporary visual approval dataset and exact existing
-        PNG assets while the card design is being refined.
-      </p>
-      <p className="mt-3 text-sm font-medium text-[color:var(--muted)]">
-        {activityCards.length} visual approval cards
-      </p>
-      <div className="mt-8 flex flex-wrap gap-[22px]">
-        {activityCards.map((activity) => (
-          <ActivityCard
-            activity={activity}
-            key={activity.title}
-            variant="library"
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
-
 export function ActivityCardPageClient({
-  activityCards,
   representativeCard
 }: {
-  activityCards: ActivityCardData[];
-  representativeCard: ActivityCardData;
+  representativeCard: ActivityCardDemoItem;
 }) {
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
@@ -280,30 +240,25 @@ export function ActivityCardPageClient({
         <DesignPortalSidebar activeHref="/design-system/core-experience/activity-card" />
 
         <ComponentPageShell
-          description="A Figma-faithful Activity Card component using temporary visual approval data."
+          description="Concept 2 clean-slate Activity Card implementation for visual approval."
           metadata={componentMetadata}
           sections={sectionItems}
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <VariantsSection representativeCard={representativeCard} />
+          <VariantsSection activity={representativeCard} />
 
           <ComponentStateShowroom
             autoplayEnabled={false}
-            description="Only the currently defined visual states are shown."
+            description="Only card-level visual states are shown. Activity Grid behaviour is deferred."
             renderPreview={(state) => (
-              <StatePreview
-                representativeCard={representativeCard}
-                state={state}
-              />
+              <StatePreview activity={representativeCard} state={state} />
             )}
             states={showroomStates}
           />
 
-          <LibrarySection activityCards={activityCards} />
-
           <ComponentTokensSection
-            description="These values are hardcoded from the current Figma reference and should be tokenised only after visual approval."
+            description="Concept 2 uses hardcoded values from the approved Activity Card specification for visual comparison."
             tokens={tokenRows}
           />
 

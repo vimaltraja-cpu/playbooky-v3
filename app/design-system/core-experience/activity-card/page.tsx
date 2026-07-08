@@ -5,7 +5,6 @@ import { ActivityCardPageClient } from "./ActivityCardPageClient";
 export default function ActivityCardPage() {
   return (
     <ActivityCardPageClient
-      activityCards={activityCardDemoItems}
       representativeCard={activityCardDemoItems[0]}
     />
   );
