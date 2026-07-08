@@ -18,9 +18,13 @@ import {
 } from "@/components/ui/ActivityCard";
 import {
   activityLibrarySource,
-  createActivitySlug,
   type Activity
 } from "@/lib/data/activities";
+
+type ActivityCardData = {
+  activity: Activity;
+  illustrationSrc: string;
+};
 
 const componentMetadata = {
   category: "Core Experience",
@@ -183,25 +187,16 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   unresolvedIssues: [
     {
       description:
-        "The current canonical CSV does not include a dedicated workshop-type field; the card falls back to available canonical context.",
-      title: "Workshop type data"
+        "Temporary activity-to-illustration mapping is in use until the final activity library and artwork are aligned.",
+      title: "Temporary artwork mapping"
     }
   ]
 };
 
-function getIllustrationSrc(
-  activity: Activity,
-  illustrationSrcBySlug: Record<string, string>
-) {
-  return illustrationSrcBySlug[createActivitySlug(activity["Activity Name"])] ?? null;
-}
-
 function VariantsSection({
-  activity,
-  illustrationSrc
+  representativeCard
 }: {
-  activity: Activity;
-  illustrationSrc: string | null;
+  representativeCard: ActivityCardData;
 }) {
   return (
     <section id="variants" className="scroll-mt-40 py-10">
@@ -216,8 +211,8 @@ function VariantsSection({
             Builder
           </p>
           <ActivityCard
-            activity={activity}
-            illustrationSrc={illustrationSrc}
+            activity={representativeCard.activity}
+            illustrationSrc={representativeCard.illustrationSrc}
             variant="builder"
           />
         </div>
@@ -226,8 +221,8 @@ function VariantsSection({
             Library
           </p>
           <ActivityCard
-            activity={activity}
-            illustrationSrc={illustrationSrc}
+            activity={representativeCard.activity}
+            illustrationSrc={representativeCard.illustrationSrc}
             variant="library"
           />
         </div>
@@ -237,18 +232,16 @@ function VariantsSection({
 }
 
 function StatePreview({
-  activity,
-  illustrationSrc,
+  representativeCard,
   state
 }: {
-  activity: Activity;
-  illustrationSrc: string | null;
+  representativeCard: ActivityCardData;
   state: ActivityCardState;
 }) {
   return (
     <ActivityCard
-      activity={activity}
-      illustrationSrc={illustrationSrc}
+      activity={representativeCard.activity}
+      illustrationSrc={representativeCard.illustrationSrc}
       state={state}
       variant={state === "dragging" ? "builder" : "library"}
     />
@@ -256,33 +249,25 @@ function StatePreview({
 }
 
 function LibrarySection({
-  activities,
-  illustrationSrcBySlug
+  activityCards
 }: {
-  activities: Activity[];
-  illustrationSrcBySlug: Record<string, string>;
+  activityCards: ActivityCardData[];
 }) {
-  const matchedCount = activities.filter((activity) =>
-    Boolean(getIllustrationSrc(activity, illustrationSrcBySlug))
-  ).length;
-
   return (
     <section id="library" className="scroll-mt-40 py-10">
       <h3 className="text-2xl font-semibold">Library</h3>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
-        This grid uses canonical Activity Library rows. Cards with matching
-        illustrations use the asset; missing illustrations keep the same fixed
-        layout with a subtle placeholder.
+        This grid uses canonical Activity Library rows and temporary mapped
+        illustrations while the final artwork relationship is being aligned.
       </p>
       <p className="mt-3 text-sm font-medium text-[color:var(--muted)]">
-        {activities.length} canonical activities · {matchedCount} exact
-        illustration matches
+        {activityCards.length} activities with valid CSV data and mapped artwork
       </p>
       <div className="mt-8 flex flex-wrap gap-[22px]">
-        {activities.map((activity) => (
+        {activityCards.map(({ activity, illustrationSrc }) => (
           <ActivityCard
             activity={activity}
-            illustrationSrc={getIllustrationSrc(activity, illustrationSrcBySlug)}
+            illustrationSrc={illustrationSrc}
             key={activity["Activity Name"]}
             variant="library"
           />
@@ -293,15 +278,11 @@ function LibrarySection({
 }
 
 export function ActivityCardPageClient({
-  activities,
-  activity,
-  illustrationSrcBySlug,
-  representativeIllustrationSrc
+  activityCards,
+  representativeCard
 }: {
-  activities: Activity[];
-  activity: Activity;
-  illustrationSrcBySlug: Record<string, string>;
-  representativeIllustrationSrc: string | null;
+  activityCards: ActivityCardData[];
+  representativeCard: ActivityCardData;
 }) {
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
@@ -315,28 +296,21 @@ export function ActivityCardPageClient({
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <VariantsSection
-            activity={activity}
-            illustrationSrc={representativeIllustrationSrc}
-          />
+          <VariantsSection representativeCard={representativeCard} />
 
           <ComponentStateShowroom
             autoplayEnabled={false}
             description="Only the currently defined visual states are shown."
             renderPreview={(state) => (
               <StatePreview
-                activity={activity}
-                illustrationSrc={representativeIllustrationSrc}
+                representativeCard={representativeCard}
                 state={state}
               />
             )}
             states={showroomStates}
           />
 
-          <LibrarySection
-            activities={activities}
-            illustrationSrcBySlug={illustrationSrcBySlug}
-          />
+          <LibrarySection activityCards={activityCards} />
 
           <ComponentTokensSection
             description="These values are hardcoded from the current Figma reference and should be tokenised only after visual approval."
