@@ -372,6 +372,26 @@ export function ActivityCardPageClient({
         >
           <ComponentOverviewSection {...overviewCopy} />
 
+          {!hasIllustration ? (
+            <section className="scroll-mt-40 py-4">
+              <div className="rounded-[24px] border border-[#E5D2B6] bg-[#FFF8EB] p-5">
+                <p className="text-sm font-semibold text-[#7D5330]">
+                  Activity illustration missing
+                </p>
+                <p className="mt-2 text-sm leading-6 text-[#6E6253]">
+                  The card is intentionally showing the designed placeholder.
+                  Add the approved illustration later at{" "}
+                  <code className="rounded-lg bg-white/70 px-1.5 py-1 text-[#2C2924]">
+                    public/assets/activities/
+                    {createActivitySlug(activity["Activity Name"])}
+                    /illustration.png
+                  </code>
+                  .
+                </p>
+              </div>
+            </section>
+          ) : null}
+
           <SpecsSection activity={activity} hasIllustration={hasIllustration} />
 
           <ComponentViewportShowroom
