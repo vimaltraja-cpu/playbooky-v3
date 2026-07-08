@@ -16,15 +16,9 @@ import {
   ActivityCard,
   type ActivityCardState
 } from "@/components/ui/ActivityCard";
-import {
-  activityLibrarySource,
-  type Activity
-} from "@/lib/data/activities";
+import type { ActivityCardDemoItem } from "@/lib/data/activity-card-demo-data";
 
-type ActivityCardData = {
-  activity: Activity;
-  illustrationSrc: string;
-};
+type ActivityCardData = ActivityCardDemoItem;
 
 const componentMetadata = {
   category: "Core Experience",
@@ -46,7 +40,7 @@ const sectionItems: ComponentSectionNavItem[] = [
 
 const overviewCopy = {
   statusNote:
-    "Figma CSS is the source of truth for this prototype. The card intentionally hides extra database fields.",
+    "Temporary visual approval dataset is in use. Canonical CSV wiring returns after the card is visually approved.",
   summary:
     "Activity Card is a fixed-size visual component for representing one workshop activity with illustration, title, description, duration, and workshop context.",
   whatItIs:
@@ -142,9 +136,9 @@ const tokenRows: ComponentTokenRow[] = [
     status: "hardcoded"
   },
   {
-    implementationValue: activityLibrarySource,
-    label: "Canonical data source",
-    status: "approved"
+    implementationValue: "lib/data/activity-card-demo-data.ts",
+    label: "Temporary visual data source",
+    status: "pending"
   }
 ];
 
@@ -187,8 +181,8 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   unresolvedIssues: [
     {
       description:
-        "Temporary activity-to-illustration mapping is in use until the final activity library and artwork are aligned.",
-      title: "Temporary artwork mapping"
+        "Temporary visual approval data is in use until the card is approved and reconnected to canonical CSV data.",
+      title: "Temporary visual data"
     }
   ]
 };
@@ -211,8 +205,7 @@ function VariantsSection({
             Builder
           </p>
           <ActivityCard
-            activity={representativeCard.activity}
-            illustrationSrc={representativeCard.illustrationSrc}
+            activity={representativeCard}
             variant="builder"
           />
         </div>
@@ -221,8 +214,7 @@ function VariantsSection({
             Library
           </p>
           <ActivityCard
-            activity={representativeCard.activity}
-            illustrationSrc={representativeCard.illustrationSrc}
+            activity={representativeCard}
             variant="library"
           />
         </div>
@@ -240,8 +232,7 @@ function StatePreview({
 }) {
   return (
     <ActivityCard
-      activity={representativeCard.activity}
-      illustrationSrc={representativeCard.illustrationSrc}
+      activity={representativeCard}
       state={state}
       variant={state === "dragging" ? "builder" : "library"}
     />
@@ -257,18 +248,17 @@ function LibrarySection({
     <section id="library" className="scroll-mt-40 py-10">
       <h3 className="text-2xl font-semibold">Library</h3>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
-        This grid uses canonical Activity Library rows and temporary mapped
-        illustrations while the final artwork relationship is being aligned.
+        This grid uses the temporary visual approval dataset and exact existing
+        PNG assets while the card design is being refined.
       </p>
       <p className="mt-3 text-sm font-medium text-[color:var(--muted)]">
-        {activityCards.length} activities with valid CSV data and mapped artwork
+        {activityCards.length} visual approval cards
       </p>
       <div className="mt-8 flex flex-wrap gap-[22px]">
-        {activityCards.map(({ activity, illustrationSrc }) => (
+        {activityCards.map((activity) => (
           <ActivityCard
             activity={activity}
-            illustrationSrc={illustrationSrc}
-            key={activity["Activity Name"]}
+            key={activity.title}
             variant="library"
           />
         ))}
@@ -290,7 +280,7 @@ export function ActivityCardPageClient({
         <DesignPortalSidebar activeHref="/design-system/core-experience/activity-card" />
 
         <ComponentPageShell
-          description="A Figma-faithful Activity Card component backed by canonical Activity Library data."
+          description="A Figma-faithful Activity Card component using temporary visual approval data."
           metadata={componentMetadata}
           sections={sectionItems}
         >
