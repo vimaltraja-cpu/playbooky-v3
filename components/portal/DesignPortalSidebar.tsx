@@ -175,6 +175,82 @@ const sidebarFolders: SidebarFolder[] = [
     ],
     id: "assets",
     label: "Assets"
+  },
+  {
+    children: [
+      { href: "/design-system/product-system", label: "Overview" },
+      {
+        href: "/design-system/product-system/product-vision",
+        label: "Product Vision"
+      },
+      {
+        href: "/design-system/product-system/architecture",
+        label: "Product Architecture"
+      },
+      { href: "/design-system/product-system/user-journey", label: "User Journey" }
+    ],
+    groups: [
+      {
+        children: [
+          {
+            href: "/design-system/product-system/diagnosis/questions",
+            label: "Diagnosis Questions"
+          },
+          {
+            href: "/design-system/product-system/diagnosis/engine",
+            label: "Diagnosis Engine"
+          },
+          {
+            href: "/design-system/product-system/diagnosis/decision-engine",
+            label: "Decision Engine"
+          }
+        ],
+        id: "product-diagnosis",
+        label: "Diagnosis"
+      },
+      {
+        children: [
+          {
+            href: "/design-system/product-system/libraries/framework-library",
+            label: "Framework Library"
+          },
+          {
+            href: "/design-system/product-system/libraries/workshop-types",
+            label: "Workshop Types"
+          },
+          {
+            href: "/design-system/product-system/libraries/activity-library",
+            label: "Activity Library"
+          },
+          {
+            href: "/design-system/product-system/libraries/prompt-library",
+            label: "Prompt Library"
+          }
+        ],
+        id: "product-libraries",
+        label: "Libraries"
+      },
+      {
+        children: [
+          {
+            href: "/design-system/product-system/workshop/builder",
+            label: "Workshop Builder"
+          },
+          {
+            href: "/design-system/product-system/workshop/facilitator-guide",
+            label: "Facilitator Guide"
+          },
+          {
+            href: "/design-system/product-system/workshop/playbooky-live",
+            label: "PlayBooky Live"
+          }
+        ],
+        id: "product-workshop",
+        label: "Workshop"
+      }
+    ],
+    id: "product-system",
+    label: "Product System"
   }
 ];
 
@@ -402,7 +478,7 @@ export function DesignPortalSidebar({ activeHref }: { activeHref?: string }) {
       <h1 className="mt-2 text-xl font-semibold">Design Portal</h1>
 
       <nav
-        aria-label="Design system component library"
+        aria-label="Design Portal navigation"
         className="mt-7 flex gap-3 overflow-x-auto pb-2 lg:block lg:space-y-2.5 lg:overflow-visible lg:pb-0"
       >
         {sidebarFolders.map((folder) => (
