@@ -1,3 +1,5 @@
+import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
+
 const inputStates = [
   {
     name: "Default",
@@ -320,42 +322,12 @@ const tokenRows = [
 
 export default function InputsPage() {
   return (
-    <main className="min-h-screen px-4 py-4 text-[color:var(--foreground)] sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-7xl grid-cols-1 overflow-hidden rounded-[28px] border border-[color:var(--line)] bg-[color:var(--panel)] shadow-[0_30px_90px_rgba(36,31,24,0.12)] lg:grid-cols-[280px_1fr]">
-        <aside className="border-b border-[color:var(--line)] bg-[color:var(--panel-soft)]/70 p-5 lg:border-b-0 lg:border-r lg:p-7">
-          <a
-            href="/design-system"
-            className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--accent)]"
-          >
-            PlayBooky V3
-          </a>
-          <h1 className="mt-2 text-xl font-semibold">Design Portal</h1>
-          <nav
-            className="mt-8 flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0"
-            aria-label="Input component navigation"
-          >
-            {[
-              "Purpose",
-              "Anatomy",
-              "Variants",
-              "States",
-              "Responsive",
-              "Accessibility",
-              "Tokens",
-              "Previews"
-            ].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--panel)] hover:text-[color:var(--foreground)] lg:rounded-xl"
-              >
-                {item}
-              </a>
-            ))}
-          </nav>
-        </aside>
+    <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
+      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+        <DesignPortalSidebar activeHref="/design-system/components/inputs" />
 
-        <section className="p-6 sm:p-8 lg:p-12">
+        <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
+          <div className="mx-auto max-w-6xl">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--gold)]">
               Components / Forms
@@ -516,6 +488,7 @@ export default function InputsPage() {
               </div>
             </div>
           </section>
+          </div>
         </section>
       </div>
     </main>

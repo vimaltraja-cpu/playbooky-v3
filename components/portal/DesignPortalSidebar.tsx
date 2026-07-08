@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 type SidebarItem = {
-  href: string;
+  badge?: string;
+  href?: string;
   label: string;
 };
 
@@ -24,238 +25,88 @@ type SidebarFolder = {
 const sidebarFolders: SidebarFolder[] = [
   {
     children: [
-      { href: "#", label: "Overview" },
-      { href: "#", label: "Primitive tokens" },
-      { href: "#", label: "Semantic tokens" }
+      { badge: "Coming soon", label: "Foundations" },
+      { badge: "Coming soon", label: "Colours" },
+      { badge: "Coming soon", label: "Typography" },
+      { badge: "Coming soon", label: "Layout" },
+      { badge: "Coming soon", label: "Components" },
+      { badge: "Coming soon", label: "Patterns" },
+      { badge: "Coming soon", label: "Motion" },
+      { badge: "Coming soon", label: "Rules" }
     ],
-    id: "foundations",
-    label: "Foundations"
-  },
-  {
-    children: [
-      { href: "#", label: "Colour tokens" },
-      { href: "#", label: "Accessibility" },
-      { href: "#", label: "Usage" }
-    ],
-    id: "colours",
-    label: "Colours"
-  },
-  {
-    children: [
-      { href: "#", label: "Type scale" },
-      { href: "#", label: "Weights" },
-      { href: "#", label: "Line height" }
-    ],
-    id: "typography",
-    label: "Typography"
-  },
-  {
     groups: [
       {
         children: [
-          {
-            href: "/design-system/components/ai-composer",
-            label: "AI Composer"
-          },
-          {
-            href: "/design-system/core-experience/diagnosis-card",
-            label: "Diagnosis Card"
-          },
-          {
-            href: "/design-system/core-experience/diagnosis-grid",
-            label: "Diagnosis Grid"
-          },
-          {
-            href: "/design-system/core-experience/recommendation-deck",
-            label: "Recommendation Deck"
-          },
-          {
-            href: "/design-system/core-experience/recommendation-loading",
-            label: "Recommendation Loading"
-          },
-          {
-            href: "/design-system/core-experience/activity-card",
-            label: "Activity Card"
-          },
-          {
-            href: "/design-system/core-experience/activity-modal",
-            label: "Activity Modal"
-          }
+          { badge: "Coming soon", label: "Icons" },
+          { badge: "Coming soon", label: "Illustrations" },
+          { badge: "Coming soon", label: "Activity Illustrations" }
         ],
-        id: "core-experience",
-        label: "Core Experience"
-      },
-      {
-        children: [
-          {
-            href: "/design-system/workspace/builder-grid",
-            label: "Builder Grid"
-          },
-          {
-            href: "/design-system/workspace/drag-handle",
-            label: "Drag Handle"
-          },
-          { href: "/design-system/workspace/drop-zone", label: "Drop Zone" },
-          { href: "/design-system/workspace/toolbar", label: "Toolbar" },
-          { href: "/design-system/workspace/selection", label: "Selection" }
-        ],
-        id: "workspace",
-        label: "Workspace"
-      },
-      {
-        children: [
-          { href: "/design-system/navigation/header", label: "Header" },
-          { href: "/design-system/navigation/sidebar", label: "Sidebar" },
-          { href: "/design-system/navigation/tabs", label: "Tabs" },
-          {
-            href: "/design-system/navigation/breadcrumbs",
-            label: "Breadcrumbs"
-          },
-          { href: "/design-system/navigation/menu", label: "Menu" }
-        ],
-        id: "navigation",
-        label: "Navigation"
-      },
-      {
-        children: [
-          { href: "/design-system/feedback/loading", label: "Loading" },
-          { href: "/design-system/feedback/progress", label: "Progress" },
-          { href: "/design-system/feedback/empty-state", label: "Empty State" },
-          { href: "/design-system/feedback/alert", label: "Alert" },
-          { href: "/design-system/feedback/toast", label: "Toast" }
-        ],
-        id: "feedback",
-        label: "Feedback"
-      },
-      {
-        children: [
-          { href: "/design-system/overlays/modal", label: "Modal" },
-          { href: "/design-system/overlays/drawer", label: "Drawer" },
-          { href: "/design-system/overlays/popover", label: "Popover" },
-          { href: "/design-system/overlays/tooltip", label: "Tooltip" },
-          {
-            href: "/design-system/overlays/bottom-sheet",
-            label: "Bottom Sheet"
-          }
-        ],
-        id: "overlays",
-        label: "Overlays"
-      },
-      {
-        children: [
-          { href: "/design-system/components/inputs", label: "Search Input" },
-          { href: "/design-system/components/inputs", label: "Text Input" },
-          { href: "/design-system/components/inputs", label: "Textarea" },
-          { href: "/design-system/utilities/select", label: "Select" },
-          { href: "/design-system/utilities/checkbox", label: "Checkbox" },
-          { href: "/design-system/utilities/radio", label: "Radio" },
-          { href: "/design-system/utilities/switch", label: "Switch" }
-        ],
-        id: "utilities",
-        label: "Utilities"
+        id: "design-assets",
+        label: "Assets"
       }
     ],
-    id: "components",
-    label: "Components"
-  },
-  {
-    children: [
-      { href: "#", label: "Recommendation" },
-      { href: "#", label: "Diagnosis" },
-      { href: "#", label: "Builder" }
-    ],
-    id: "patterns",
-    label: "Patterns"
-  },
-  {
-    children: [
-      { href: "#", label: "Icons" },
-      { href: "#", label: "Illustrations" },
-      { href: "#", label: "Logos" }
-    ],
-    id: "assets",
-    label: "Assets"
+    id: "design-system",
+    label: "Design System"
   },
   {
     children: [
       { href: "/design-system/product-system", label: "Overview" },
-      {
-        href: "/design-system/product-system/product-vision",
-        label: "Product Vision"
-      },
+      { badge: "Coming soon", label: "Product Vision" },
       {
         href: "/design-system/product-system/architecture",
         label: "Product Architecture"
       },
-      { href: "/design-system/product-system/user-journey", label: "User Journey" }
+      { badge: "Coming soon", label: "User Journey" },
+      { badge: "Coming soon", label: "Diagnosis" },
+      { badge: "Coming soon", label: "Decision" },
+      { badge: "Coming soon", label: "Workshop" }
     ],
     groups: [
       {
         children: [
           {
-            href: "/design-system/product-system/diagnosis/questions",
-            label: "Diagnosis Questions"
-          },
-          {
-            href: "/design-system/product-system/diagnosis/engine",
-            label: "Diagnosis Engine"
-          },
-          {
-            href: "/design-system/product-system/diagnosis/decision-engine",
-            label: "Decision Engine"
-          }
-        ],
-        id: "product-diagnosis",
-        label: "Diagnosis"
-      },
-      {
-        children: [
-          {
-            href: "/design-system/product-system/libraries/framework-library",
-            label: "Framework Library"
-          },
-          {
-            href: "/design-system/product-system/libraries/workshop-types",
-            label: "Workshop Types"
-          },
-          {
             href: "/design-system/product-system/libraries/activity-library",
             label: "Activity Library"
-          },
-          {
-            href: "/design-system/product-system/libraries/prompt-library",
-            label: "Prompt Library"
           }
         ],
         id: "product-libraries",
         label: "Libraries"
-      },
-      {
-        children: [
-          {
-            href: "/design-system/product-system/workshop/builder",
-            label: "Workshop Builder"
-          },
-          {
-            href: "/design-system/product-system/workshop/facilitator-guide",
-            label: "Facilitator Guide"
-          },
-          {
-            href: "/design-system/product-system/workshop/playbooky-live",
-            label: "PlayBooky Live"
-          }
-        ],
-        id: "product-workshop",
-        label: "Workshop"
       }
     ],
     id: "product-system",
     label: "Product System"
+  },
+  {
+    children: [
+      {
+        href: "/design-system/components/ai-composer",
+        label: "AI Composer"
+      },
+      {
+        href: "/design-system/core-experience/diagnosis-card",
+        label: "Diagnosis Card"
+      },
+      {
+        href: "/design-system/core-experience/diagnosis-grid",
+        label: "Diagnosis Grid"
+      },
+      {
+        href: "/design-system/core-experience/recommendation-loading",
+        label: "Recommendation Loading"
+      },
+      {
+        href: "/design-system/core-experience/activity-card",
+        label: "Activity Card"
+      },
+      { badge: "Coming soon", label: "Activity Grid" }
+    ],
+    id: "core-experience",
+    label: "Core Experience"
   }
 ];
 
 function itemIsActive(item: SidebarItem, activeHref: string) {
-  return item.href === activeHref;
+  return Boolean(item.href && item.href === activeHref);
 }
 
 function sidebarGroupHasActiveChild(group: SidebarGroup, activeHref: string) {
@@ -267,6 +118,7 @@ function sidebarFolderHasActiveChild(
   activeHref: string
 ) {
   return Boolean(
+    (folder.id === "design-system" && activeHref === "/design-system") ||
     folder.children?.some((child) => itemIsActive(child, activeHref)) ||
     folder.groups?.some((group) =>
       sidebarGroupHasActiveChild(group, activeHref)
@@ -276,25 +128,47 @@ function sidebarFolderHasActiveChild(
 
 function SidebarLink({
   active,
-  href = "#",
-  label
+  item
 }: {
   active?: boolean;
-  href?: string;
-  label: string;
+  item: SidebarItem;
 }) {
+  const baseClassName =
+    "relative block rounded-[18px] px-3 py-[5px] text-[13px] font-medium leading-5 transition";
+  const content = (
+    <>
+      <span>{item.label}</span>
+      {item.badge ? (
+        <span className="ml-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A89C8C]">
+          {item.badge}
+        </span>
+      ) : null}
+    </>
+  );
+
+  if (!item.href) {
+    return (
+      <span
+        aria-disabled="true"
+        className={`${baseClassName} cursor-not-allowed text-[#A9A094]`}
+      >
+        {content}
+      </span>
+    );
+  }
+
   return (
     <a
       aria-current={active ? "page" : undefined}
       className={[
-        "relative block rounded-[18px] px-3 py-[5px] text-[13px] font-medium leading-5 transition",
+        baseClassName,
         active
           ? "bg-white/45 pl-3.5 font-semibold text-[#7D5330] shadow-[inset_2px_0_0_#7D5330]"
           : "text-[#686156] hover:bg-white/65 hover:text-[#171614]"
       ].join(" ")}
-      href={href}
+      href={item.href}
     >
-      {label}
+      {content}
     </a>
   );
 }
@@ -370,9 +244,8 @@ function SidebarFolderView({
             {folder.children?.map((item) => (
               <SidebarLink
                 active={itemIsActive(item, activeHref)}
-                href={item.href}
                 key={item.label}
-                label={item.label}
+                item={item}
               />
             ))}
             {folder.groups?.map((group) => {
@@ -419,9 +292,8 @@ function SidebarFolderView({
                         {group.children.map((item) => (
                           <SidebarLink
                             active={itemIsActive(item, activeHref)}
-                            href={item.href}
                             key={item.label}
-                            label={item.label}
+                            item={item}
                           />
                         ))}
                       </div>
