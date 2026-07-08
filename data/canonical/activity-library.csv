@@ -1,0 +1,525 @@
+﻿Activity Name,Best Used When,Duration,Facilitator Notes,Inputs Required,Instructions,Layout Type,Outputs Produced,Purpose,Remote Friendly,Stage
+OKRs,"The team lacks focus, has unclear goals, or needs measurable success criteria.",60 mins,"Encourage ambitious but realistic objectives.
+
+Avoid creating multiple competing objectives.
+
+Focus discussion on outcomes rather than outputs.
+
+Ensure key results are measurable and time-bound.","Business goal, Team context","1. Define the objective the team wants to achieve.
+
+2. Generate potential objectives individually.
+
+3. Discuss and refine options.
+
+4. Agree on a single objective.
+
+5. Brainstorm measurable indicators of success.
+
+6. Select the most important metrics.
+
+7. Convert metrics into specific key results.
+
+8. Agree ownership and review cadence.",Columns,"Action plan, Shared goal",Help a team define a shared objective and measurable key results.,Yes,Goals
+Journey Map,"The team needs to understand user behaviour, friction, drop-off, or experience gaps.",60 mins,"Focus on the current experience before discussing solutions.
+
+Use evidence wherever possible.
+
+Encourage participants from different disciplines to contribute.
+
+Pay particular attention to moments of confusion, frustration and drop-off.","Analytics, Existing research, User feedback","1. Define the journey being explored.
+
+2. Identify the key stages of the experience.
+
+3. Capture user actions at each stage.
+
+4. Capture thoughts, emotions and questions.
+
+5. Identify pain points and friction.
+
+6. Discuss opportunities for improvement.
+
+7. Agree key insights.",Columns,"Insights, Journey map",Map the user or customer experience from start to finish.,Yes,Understand
+Five Whys,The team sees symptoms but does not yet understand the underlying cause.,30 mins,"Do not force exactly five iterations.
+
+Stop when the conversation reaches a meaningful root cause.
+
+Avoid blaming people.
+
+Focus on systems, behaviours and contributing factors.",Problem statement,"1. Define the problem clearly.
+
+2. Ask why the problem is occurring.
+
+3. Record the answer.
+
+4. Ask why again based on the previous answer.
+
+5. Repeat until the root cause becomes visible.
+
+6. Review findings and identify themes.
+
+7. Agree areas requiring further investigation.",Rows,Insights,Explore root causes by repeatedly asking why a problem is happening.,Yes,Understand
+Stakeholder Map,"The team needs to understand who is involved, affected, or influential.",60 mins,"Encourage participants to consider both obvious and hidden stakeholders.
+
+Look for conflicting incentives.
+
+Use the exercise to identify engagement risks and opportunities.","Stakeholders, Team context","1. List all stakeholders involved.
+
+2. Capture their interests, goals and concerns.
+
+3. Identify influence and decision-making authority.
+
+4. Map relationships between stakeholders.
+
+5. Identify areas of alignment and conflict.
+
+6. Discuss engagement strategies.
+
+7. Agree next steps.",Map,"Alignment, Insights","Identify stakeholders, influence, needs, and relationships.",Yes,Understand
+Problem Statement,The team has different interpretations of the problem or the challenge feels too broad.,60 mins,"Prevent participants from jumping to solutions.
+
+Focus on the problem itself.
+
+Keep statements specific and evidence-based.
+
+Challenge vague language.","Existing research, Problem statement, User feedback","1. Present available evidence and findings.
+
+2. Discuss observations and patterns.
+
+3. Capture possible problem statements.
+
+4. Refine statements collaboratively.
+
+5. Challenge assumptions and ambiguity.
+
+6. Agree a clear and concise problem statement.
+
+7. Validate that everyone understands it.",Canvas,"Alignment, Problem statement",Turn a broad or unclear challenge into a focused problem statement.,Yes,Frame
+How Might We,The team understands the problem and needs to create useful opportunity statements.,60 mins,"Encourage open-ended questions.
+
+Avoid leading questions that imply a solution.
+
+Focus on creating opportunity spaces rather than constraints.","Insights, Problem statement","1. Present available evidence and findings.
+
+2. Discuss observations and patterns.
+
+3. Capture possible problem statements.
+
+4. Refine statements collaboratively.
+
+5. Challenge assumptions and ambiguity.
+
+6. Agree a clear and concise problem statement.
+
+7. Validate that everyone understands it.",Rows,"Ideas, Problem statement",Reframe problems into opportunity-focused prompts for ideation.,Yes,Frame
+Crazy Eights,"The team needs options, concepts, or alternative approaches.",30 mins,"Emphasise speed over quality.
+
+Encourage participants to avoid self-editing.
+
+The goal is variety and exploration rather than polished ideas.","Opportunities, Problem statement","1. Present the challenge or opportunity.
+
+2. Divide paper or canvas into eight sections.
+
+3. Give participants one minute per section.
+
+4. Generate one idea in each section.
+
+5. Continue until all eight spaces are complete.
+
+6. Share ideas with the group.
+
+7. Discuss promising concepts.",Canvas,Ideas,Generate a range of solution ideas quickly.,Yes,Ideas
+Impact Effort Map,The team has several options and needs to prioritise.,30 mins,"Focus on relative comparison rather than precise scoring.
+
+Challenge assumptions around effort and impact.
+
+Look for opportunities to create alignment across the group.","Ideas, Opportunities","1. List all ideas or opportunities.
+
+2. Create a four-quadrant Impact vs Effort matrix.
+
+3. Discuss and place items on the matrix.
+
+4. Review placement collaboratively.
+
+5. Identify quick wins.
+
+6. Identify strategic investments.
+
+7. Agree priorities.",Matrix,"Decision, Prioritised list",Compare ideas or opportunities based on expected impact and effort.,Yes,Evaluate
+Blind Vote,The team needs to choose between options fairly and quickly.,5 mins,"Use when dominant personalities may influence decisions.
+
+Avoid debating options during voting.
+
+The objective is to reveal genuine preferences.","Ideas, Opportunities","1. Present the available options.
+
+2. Ensure participants understand each option.
+
+3. Ask participants to vote privately.
+
+4. Collect votes simultaneously.
+
+5. Reveal results.
+
+6. Discuss outcomes if necessary.
+
+7. Confirm the final decision.",Voting,Decision,Help the group make a quick decision without influence from louder voices.,Yes,Decide
+Who What When,The team has made a decision and needs to agree next steps.,10 mins,"Do not leave actions unassigned.
+
+Push for clear ownership.
+
+Ensure deadlines are realistic.
+
+End the workshop with visible accountability.","Decision, Stakeholders","1. Review decisions made during the workshop.
+
+2. Identify required actions.
+
+3. Assign ownership for each action.
+
+4. Agree deadlines.
+
+5. Capture dependencies and risks.
+
+6. Confirm understanding.
+
+7. Publish actions and commitments.",Rows,Action plan,"Turn decisions into clear ownership, actions, and timings.",Yes,Decide
+G.R.O.W,"The team needs clarity on direction, objectives or next steps.",60 mins,"Keep the conversation grounded in reality.
+
+Avoid jumping straight to solutions.
+
+Spend sufficient time exploring the current situation before discussing options.
+
+Ensure the session ends with clear commitments and actions.","Business goal, Team context","1. Define the Goal the team wants to achieve.
+
+2. Explore the current Reality of the situation.
+
+3. Generate Options for moving forward.
+
+4. Discuss the pros and cons of each option.
+
+5. Agree on the Way Forward.
+
+6. Capture actions, owners and timelines.",Rows,"Action plan, Shared goal","Help individuals or teams define goals, understand reality, explore options and agree actions.",Yes,Goals
+Sailboat,The team needs alignment around goals and obstacles.,60 mins,"Use the visual metaphor to encourage participation.
+
+Ensure both positive and negative factors are explored.
+
+Focus on practical actions that can be taken after the workshop.","Business goal, Team context","1. Draw a sailboat heading towards an island.
+
+2. Define the destination or goal.
+
+3. Identify what is helping move the team forward.
+
+4. Identify anchors slowing progress.
+
+5. Identify risks or obstacles ahead.
+
+6. Discuss actions to reduce anchors and increase momentum.",Canvas,"Alignment, Risks, Shared goal","Explore goals, risks, blockers and opportunities using a visual metaphor.",Yes,Goals
+Newspaper Headline,The team needs a shared vision of success.,60 mins,"Encourage ambitious thinking.
+
+Avoid discussing constraints too early.
+
+Use the headlines to create a shared picture of success.",Business goal,"1. Ask participants to imagine a future newspaper article celebrating success.
+
+2. Individually create headlines.
+
+3. Share and discuss headlines.
+
+4. Identify common themes.
+
+5. Create a combined vision statement.
+
+6. Capture the measures of success required to achieve it.",Canvas,"Alignment, Shared goal",Define future success by imagining a positive headline about the outcome.,Yes,Goals
+Sticky Steps,The team knows the goal but needs a practical path forward.,30 mins,"Encourage participants to think in small achievable steps.
+
+Challenge large vague actions.
+
+Focus on creating momentum and clarity.",Business goal,"1. Define the goal or outcome.
+
+2. Individually generate the steps required to achieve it.
+
+3. Place each step on a sticky note.
+
+4. Arrange steps into a logical sequence.
+
+5. Identify dependencies and risks.
+
+6. Agree on immediate next actions.",Timeline,Action plan,Break a goal into small achievable steps.,Yes,Goals
+Empathy Map,The team needs deeper understanding of users.,60 mins,"Encourage participants to use evidence rather than assumptions.
+
+Keep the discussion focused on the user rather than business needs.
+
+Challenge unsupported statements.","Existing research, User feedback","1. Define the user or audience being explored.
+
+2. Create sections for Thinks, Feels, Says and Does.
+
+3. Capture observations individually.
+
+4. Share and discuss findings.
+
+5. Identify patterns and insights.
+
+6. Summarise key user needs and frustrations.",Canvas,Insights,"Explore what users think, feel, see and do.",Yes,Understand
+Assumption Collecting,The team suspects decisions are being driven by opinion rather than evidence.,60 mins,"Create a safe environment for participants to challenge existing thinking.
+
+Distinguish assumptions from facts.
+
+Prioritise assumptions that carry the greatest risk.",Team context,"1. Present the challenge being explored.
+
+2. Ask participants to write down assumptions.
+
+3. Share assumptions with the group.
+
+4. Cluster similar assumptions together.
+
+5. Discuss which assumptions are most critical.
+
+6. Identify assumptions that require validation.",Columns,"Insights, Risks",Identify assumptions influencing decisions.,Yes,Understand
+Service Map,The team needs to understand operational complexity.,90 mins,"Keep participants focused on the whole service rather than isolated touchpoints.
+
+Look for bottlenecks, handoffs and operational complexity.
+
+Encourage contributions from multiple disciplines.","Existing research, Stakeholders","1. Define the service being explored.
+
+2. Identify the key stages of the experience.
+
+3. Map customer actions.
+
+4. Map supporting processes and systems.
+
+5. Identify dependencies and pain points.
+
+6. Discuss opportunities for improvement.",Map,"Alignment, Insights","Visualise people, systems and processes involved in delivering a service.",Yes,Understand
+Roles & Responsibilities,Ownership or accountability is unclear.,60 mins,"Keep the discussion objective and focused on clarity.
+
+Avoid turning the session into a performance review.
+
+Focus on improving collaboration and accountability.","Stakeholders, Team context","1. List all key roles involved.
+
+2. Capture current responsibilities.
+
+3. Identify overlaps and gaps.
+
+4. Discuss areas of confusion.
+
+5. Agree ownership for critical activities.
+
+6. Document decisions and actions.",Matrix,"Alignment, Decision",Clarify ownership and responsibilities across teams.,Yes,Understand
+Prototype Persona,Research is limited but the team needs a shared understanding of users.,60 mins,"Make it clear that the persona is a working hypothesis.
+
+Avoid creating overly detailed fictional profiles.
+
+Focus on creating shared understanding rather than perfection.","Existing research, User feedback","1. Define the audience being explored.
+
+2. Capture known characteristics.
+
+3. Discuss goals, needs and behaviours.
+
+4. Identify frustrations and motivations.
+
+5. Create a shared persona profile.
+
+6. Highlight assumptions that need validation.",Canvas,Insights,Create provisional user personas from existing knowledge.,Yes,Understand
+Mind Map,The team needs a broad range of possibilities.,30 mins,"Encourage quantity over quality initially.
+
+Avoid judging ideas during generation.
+
+Look for clusters and connections that may not be obvious.
+
+Use the final discussion to identify promising areas for further exploration.",Problem statement,"1. Write the challenge in the centre of the canvas.
+
+2. Individually generate related ideas, themes or opportunities.
+
+3. Add branches from the central challenge.
+
+4. Continue expanding branches with supporting ideas.
+
+5. Review and discuss emerging themes.
+
+6. Identify areas worth exploring further.",Map,Ideas,Generate ideas through associative thinking.,Yes,Ideas
+Storyboard,The team wants to explore and communicate end-to-end solution ideas.,90 mins,"Keep participants focused on the experience rather than detailed UI solutions.
+
+Encourage discussion around assumptions and risks.
+
+Use the storyboard as a conversation tool rather than an artefact to perfect.","Ideas, Problem statement, User feedback","1. Define the scenario being explored.
+
+2. Break the experience into key stages.
+
+3. Sketch or describe what happens at each stage.
+
+4. Focus on user actions, thoughts and outcomes.
+
+5. Discuss gaps, opportunities and assumptions.
+
+6. Capture insights for further development.",Timeline,Ideas,"Visualise future experiences, concepts or service journeys.",Yes,Ideas
+Round Robin,You want contributions from every participant and need to avoid dominant voices.,30 mins,"Ensure equal participation.
+
+Prevent dominant voices from taking over.
+
+Keep the pace moving.
+
+Focus on idea generation rather than evaluation.","Problem statement, Team context","1. Present the challenge.
+
+2. Give participants time to generate an idea.
+
+3. Each participant shares one idea in turn.
+
+4. Continue until all ideas have been shared.
+
+5. Capture every idea visibly.
+
+6. Discuss themes and opportunities.",Rows,Ideas,Generate ideas collaboratively while ensuring equal participation.,Yes,Ideas
+Reverse Brainstorm,"The team feels stuck, is suffering from groupthink, or keeps generating similar ideas.",60 mins,"This works best when teams are stuck or repeating the same ideas.
+
+Encourage humour and exaggeration.
+
+The value comes from reversing the negative ideas.","Problem statement, Team context","1. Define the challenge.
+
+2. Ask participants how they would make the problem worse.
+
+3. Generate as many negative ideas as possible.
+
+4. Review and cluster responses.
+
+5. Reverse each negative idea into a potential solution.
+
+6. Discuss which solutions are worth exploring.",Canvas,Ideas,Generate solutions by exploring how to make the problem worse first.,Yes,Ideas
+Premortem,The team wants to reduce risk and improve decision quality.,60 mins,"Create psychological safety.
+
+Encourage participants to surface uncomfortable truths.
+
+Avoid turning the session into a solution workshop too early.","Ideas, Opportunities, Stakeholders","1. Imagine the initiative has failed completely.
+
+2. Ask participants why it failed.
+
+3. Capture every possible reason.
+
+4. Group similar risks together.
+
+5. Discuss likelihood and impact.
+
+6. Identify mitigation actions.",Canvas,"Decision, Risks",Identify potential risks before implementation begins.,Yes,Evaluate
+SWOT Analysis,"The team needs structured evaluation of a challenge, opportunity or strategy.",90 mins,"Keep discussions balanced across all four areas.
+
+Avoid spending too much time debating individual items.
+
+Focus on identifying patterns and strategic implications.","Ideas, Problem statement, Stakeholders","1. Create four sections: Strengths, Weaknesses, Opportunities and Threats.
+
+2. Generate ideas individually.
+
+3. Add ideas to the relevant section.
+
+4. Discuss and refine contributions.
+
+5. Identify key themes.
+
+6. Agree on implications and next steps.",Matrix,"Decision, Insights","Assess strengths, weaknesses, opportunities and threats.",Yes,Evaluate
+"Rose, Thorn, Bud","The team wants a balanced evaluation of a project, feature, process or experience.",30 mins,"Encourage balanced thinking.
+
+Prevent the conversation from becoming overly negative.
+
+Use the opportunity section to identify future actions.","Existing research, Ideas, User feedback","1. Create three columns: Rose, Thorn and Bud.
+
+2. Ask participants to identify positive elements.
+
+3. Capture challenges and pain points.
+
+4. Identify emerging opportunities.
+
+5. Discuss patterns and themes.
+
+6. Agree on actions or areas for further exploration.",Columns,"Ideas, Insights","Identify positives, challenges and opportunities within a situation.",Yes,Evaluate
+"Heart, Head, Hand",The team wants balanced decision making and needs to consider multiple viewpoints.,30 mins,"Encourage participants to contribute to all three areas.
+
+Watch for teams focusing too heavily on logic and ignoring emotional or practical factors.
+
+Use the discussion to reveal hidden trade-offs.","Ideas, Opportunities","1. Create three areas: Heart, Head and Hand.
+
+2. Discuss emotional reactions in Heart.
+
+3. Discuss logical considerations in Head.
+
+4. Discuss practical implementation in Hand.
+
+5. Compare findings across all three perspectives.
+
+6. Identify the strongest options.",Columns,"Decision, Insights","Evaluate ideas from emotional, logical and practical perspectives.",Yes,Evaluate
+Start Stop Continue,"The team needs alignment, reflection or agreement on future ways of working.",60 mins,"Keep the discussion constructive.
+
+Avoid personal criticism.
+
+Focus on behaviours, processes and ways of working rather than individuals.
+
+Push for actionable outcomes.","Stakeholders, Team context","1. Create three columns: Start, Stop and Continue.
+
+2. Ask participants to generate ideas individually.
+
+3. Add contributions to the relevant column.
+
+4. Discuss themes and patterns.
+
+5. Consolidate similar ideas.
+
+6. Agree actions and owners.",Columns,"Action plan, Alignment","Create alignment by identifying behaviours, activities or processes the team should start, stop or continue.",Yes,Decide
+Fishbowl,The group has differing viewpoints or sensitive topics need discussion.,60 mins,"Ensure balanced participation.
+
+Avoid allowing a small number of people to dominate.
+
+Focus on listening and understanding rather than winning arguments.","Problem statement, Stakeholders","1. Select a small group to begin the discussion.
+
+2. Remaining participants observe and listen.
+
+3. Participants rotate into the discussion as needed.
+
+4. Capture key insights and themes.
+
+5. Discuss areas of agreement and disagreement.
+
+6. Summarise findings.",Discussion,"Alignment, Insights",Enable structured discussion around difficult topics while ensuring all perspectives are heard.,Hybrid,Discuss
+Democratic Discussion,The team needs broad participation and collective ownership of outcomes.,60 mins,"Protect equal participation.
+
+Watch for dominant personalities.
+
+Encourage quieter participants to contribute.
+
+Focus on shared understanding.","Stakeholders, Team context","1. Present the topic for discussion.
+
+2. Give everyone time to prepare thoughts.
+
+3. Allow participants to contribute in turn.
+
+4. Capture viewpoints visibly.
+
+5. Discuss themes and disagreements.
+
+6. Agree decisions or actions.",Discussion,"Alignment, Decision",Create equal opportunity for participation and decision making.,Yes,Discuss
+Mad Sad Glad,"The team needs reflection, retrospectives or emotional insight.",60 mins,"Create psychological safety.
+
+Encourage honesty.
+
+Focus on understanding experiences rather than defending decisions.
+
+Look for recurring patterns.","Stakeholders, Team context","1. Create three columns: Mad, Sad and Glad.
+
+2. Ask participants to reflect individually.
+
+3. Capture responses in the relevant column.
+
+4. Discuss recurring themes.
+
+5. Identify opportunities for improvement.
+
+6. Agree actions where appropriate.",Columns,"Alignment, Insights","Explore emotional responses to a project, initiative or experience.",Yes,Discuss
+Three Little Pigs,"The team needs to evaluate whether solutions are fragile, developing or robust.",60 mins,"Focus discussion on evidence rather than opinion.
+
+Challenge assumptions.
+
+Use the exercise to identify risk and increase confidence in decision making.","Ideas, Opportunities, Stakeholders","1. Create three categories: Straw House, Stick House and Brick House.
+
+2. Review ideas, plans or processes.
+
+3. Place each item into the appropriate category.
+
+4. Discuss reasons for placement.
+
+5. Identify improvements required to strengthen weaker items.
+
+6. Agree priorities and actions.",Columns,"Decision, Insights","Assess ideas, processes or initiatives based on confidence and maturity.",Yes,Discuss
