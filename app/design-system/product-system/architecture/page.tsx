@@ -1,34 +1,34 @@
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
 
-const pipelineNodes = [
+type PipelineNode = {
+  description: string;
+  href?: string;
+  label: string;
+};
+
+const pipelineNodes: PipelineNode[] = [
   {
     description: "The real organisational problem the user is trying to solve.",
-    href: "/design-system/product-system/user-journey",
     label: "Challenge"
   },
   {
     description: "Collect structured information about the user's challenge.",
-    href: "/design-system/product-system/diagnosis/questions",
     label: "Diagnosis Questions"
   },
   {
     description: "Transform user responses into diagnostic signals.",
-    href: "/design-system/product-system/diagnosis/engine",
     label: "Diagnosis Engine"
   },
   {
     description: "Evaluate diagnostic signals against recommendation logic.",
-    href: "/design-system/product-system/diagnosis/decision-engine",
     label: "Decision Engine"
   },
   {
     description: "Provide structured workshop frameworks.",
-    href: "/design-system/product-system/libraries/framework-library",
     label: "Framework Library"
   },
   {
     description: "Define the overall workshop structure.",
-    href: "/design-system/product-system/libraries/workshop-types",
     label: "Workshop Types"
   },
   {
@@ -38,22 +38,18 @@ const pipelineNodes = [
   },
   {
     description: "Provide AI prompts and facilitator guidance.",
-    href: "/design-system/product-system/libraries/prompt-library",
     label: "Prompt Library"
   },
   {
     description: "Combine activities, prompts, and structure into a workshop.",
-    href: "/design-system/product-system/workshop/builder",
     label: "Workshop Builder"
   },
   {
     description: "Transform a workshop into a facilitator-ready experience.",
-    href: "/design-system/product-system/workshop/facilitator-guide",
     label: "Facilitator Guide"
   },
   {
     description: "Support the live delivery of the workshop.",
-    href: "/design-system/product-system/workshop/playbooky-live",
     label: "PlayBooky Live"
   }
 ];
@@ -98,24 +94,47 @@ export default function ProductArchitecturePage() {
                       ].join(" ")}
                       key={node.label}
                     >
-                      <a
-                        className="group block rounded-[24px] border border-[#E2D7C7] bg-[#FFFCF7]/82 p-5 transition hover:-translate-y-0.5 hover:border-[#D8C08A] hover:bg-[#FFFCF7] hover:shadow-[0_18px_44px_rgba(36,31,24,0.08)] motion-reduce:hover:translate-y-0"
-                        href={node.href}
-                      >
-                        <div className="flex items-start gap-4">
-                          <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-[#7D5330] text-sm font-semibold text-[#FCFBF9]">
-                            {index + 1}
-                          </span>
-                          <div>
-                            <h3 className="text-lg font-semibold text-[#171614]">
-                              {node.label}
-                            </h3>
-                            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                              {node.description}
-                            </p>
+                      {node.href ? (
+                        <a
+                          className="group block rounded-[24px] border border-[#E2D7C7] bg-[#FFFCF7]/82 p-5 transition hover:-translate-y-0.5 hover:border-[#D8C08A] hover:bg-[#FFFCF7] hover:shadow-[0_18px_44px_rgba(36,31,24,0.08)] motion-reduce:hover:translate-y-0"
+                          href={node.href}
+                        >
+                          <div className="flex items-start gap-4">
+                            <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-[#7D5330] text-sm font-semibold text-[#FCFBF9]">
+                              {index + 1}
+                            </span>
+                            <div>
+                              <h3 className="text-lg font-semibold text-[#171614]">
+                                {node.label}
+                              </h3>
+                              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                                {node.description}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </a>
+                        </a>
+                      ) : (
+                        <article
+                          className="block rounded-[24px] border border-[#E2D7C7] bg-[#FFFCF7]/52 p-5 text-[#8F8578]"
+                        >
+                          <div className="flex items-start gap-4">
+                            <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-[#D9CEC0] text-sm font-semibold text-[#766B5D]">
+                              {index + 1}
+                            </span>
+                            <div>
+                              <h3 className="text-lg font-semibold">
+                                {node.label}
+                              </h3>
+                              <p className="mt-2 text-sm leading-6">
+                                {node.description}
+                              </p>
+                              <p className="mt-4 text-xs font-semibold uppercase tracking-[0.14em]">
+                                Coming soon
+                              </p>
+                            </div>
+                          </div>
+                        </article>
+                      )}
 
                       {index < pipelineNodes.length - 1 ? (
                         <div

@@ -1,147 +1,141 @@
-const navigationItems = [
-  "Foundations",
-  "Layout",
-  "Components",
-  "Inputs",
-  "AI Composer",
-  "Patterns",
-  "Motion",
-  "Assets",
-  "Rules"
+import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
+
+const livePages = [
+  {
+    description:
+      "Reusable component documentation structure, visual approval patterns, and shared system navigation.",
+    href: "/design-system/components/ai-composer",
+    label: "AI Composer",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Approved diagnosis card anatomy, icon usage, responsive behaviour, and accessibility notes.",
+    href: "/design-system/core-experience/diagnosis-card",
+    label: "Diagnosis Card",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Diagnosis card collections, responsive grid behaviour, and product preview states.",
+    href: "/design-system/core-experience/diagnosis-grid",
+    label: "Diagnosis Grid",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "The analysing state between diagnosis and recommendations, including its loading sequence.",
+    href: "/design-system/core-experience/recommendation-loading",
+    label: "Recommendation Loading",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Activity card structure, visual states, and usage guidance for workshop recommendations.",
+    href: "/design-system/core-experience/activity-card",
+    label: "Activity Card",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Product operating model, architecture references, and library ownership for PlayBooky.",
+    href: "/design-system/product-system",
+    label: "Product System Overview",
+    section: "Product System"
+  }
 ];
 
-const sections = [
-  {
-    title: "Foundations",
-    description:
-      "Color, type, spacing, radius, elevation, accessibility, and tone will live here."
-  },
-  {
-    title: "Layout",
-    description:
-      "Responsive grids, page shells, navigation structures, and content rhythm will be defined here."
-  },
-  {
-    title: "Components",
-    description:
-      "Approved component statuses, anatomy, variants, and usage guidance will be cataloged here."
-  },
-  {
-    title: "Inputs",
-    description:
-      "Text Input, Textarea, and Search Input previews are ready for design review.",
-    href: "/design-system/components/inputs"
-  },
-  {
-    title: "AI Composer",
-    description:
-      "A prompt composer prototype is ready for visual approval before tokenization.",
-    href: "/design-system/components/ai-composer"
-  },
-  {
-    title: "Patterns",
-    description:
-      "Reusable interaction and workflow patterns will be documented before product screens are built."
-  },
-  {
-    title: "Motion",
-    description:
-      "Timing, easing, transitions, loading behavior, and reduced-motion rules will be collected here."
-  },
-  {
-    title: "Assets",
-    description:
-      "Logos, icons, illustrations, and motion assets will be governed here once approved."
-  },
-  {
-    title: "Rules",
-    description:
-      "AI build rules, source-of-truth constraints, and product usage requirements will be maintained here."
-  }
+const pendingAreas = [
+  "Foundations",
+  "Colours",
+  "Typography",
+  "Layout",
+  "Components",
+  "Patterns",
+  "Motion",
+  "Rules",
+  "Icons",
+  "Illustrations",
+  "Activity Illustrations"
 ];
 
 export default function DesignSystemPage() {
   return (
-    <main className="min-h-screen px-4 py-4 text-[color:var(--foreground)] sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-7xl grid-cols-1 overflow-hidden rounded-[28px] border border-[color:var(--line)] bg-[color:var(--panel)] shadow-[0_30px_90px_rgba(36,31,24,0.12)] lg:grid-cols-[280px_1fr]">
-        <aside className="border-b border-[color:var(--line)] bg-[color:var(--panel-soft)]/70 p-5 lg:border-b-0 lg:border-r lg:p-7">
-          <div className="flex items-center justify-between gap-4 lg:block">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--accent)]">
-                PlayBooky V3
+    <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
+      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+        <DesignPortalSidebar activeHref="/design-system" />
+
+        <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
+          <div className="mx-auto max-w-6xl">
+            <header className="max-w-3xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--gold)]">
+                Source of truth
               </p>
-              <h1 className="mt-2 text-xl font-semibold tracking-normal">
-                Design Portal
-              </h1>
-            </div>
-            <div className="rounded-full border border-[color:var(--line)] px-3 py-1 text-xs font-medium text-[color:var(--muted)] lg:mt-6 lg:inline-block">
-              Foundation
-            </div>
-          </div>
+              <h2 className="mt-4 text-4xl font-semibold tracking-normal sm:text-5xl">
+                PlayBooky Design Portal
+              </h2>
+              <p className="mt-5 text-base leading-8 text-[color:var(--muted)] sm:text-lg">
+                One shared portal shell for the design system, product system,
+                and core experience documentation. Built pages are linked in the
+                sidebar; planned pages remain visible without sending people to
+                unfinished routes.
+              </p>
+            </header>
 
-          <nav
-            className="mt-6 flex gap-2 overflow-x-auto pb-1 lg:mt-10 lg:flex-col lg:overflow-visible lg:pb-0"
-            aria-label="Design system sections"
-          >
-            {navigationItems.map((item) => (
-              <a
-                key={item}
-                href={
-                  item === "Inputs" || item === "AI Composer"
-                    ? item === "Inputs"
-                      ? "/design-system/components/inputs"
-                      : "/design-system/components/ai-composer"
-                    : `#${item.toLowerCase()}`
-                }
-                className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--panel)] hover:text-[color:var(--foreground)] lg:rounded-xl"
-              >
-                {item}
-              </a>
-            ))}
-          </nav>
-        </aside>
+            <div className="mt-12 grid gap-12 xl:grid-cols-[minmax(0,1fr)_360px]">
+              <section aria-labelledby="available-pages-heading">
+                <h3
+                  className="text-2xl font-semibold tracking-normal"
+                  id="available-pages-heading"
+                >
+                  Available pages
+                </h3>
+                <div className="mt-7 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
+                  {livePages.map((page) => (
+                    <a
+                      className="group grid gap-3 py-6 transition hover:bg-white/45 sm:grid-cols-[180px_minmax(0,1fr)] sm:px-4"
+                      href={page.href}
+                      key={page.href}
+                    >
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--gold)]">
+                          {page.section}
+                        </p>
+                        <h4 className="mt-2 text-lg font-semibold text-[color:var(--foreground)] group-hover:text-[#7D5330]">
+                          {page.label}
+                        </h4>
+                      </div>
+                      <p className="max-w-2xl text-sm leading-7 text-[color:var(--muted)]">
+                        {page.description}
+                      </p>
+                    </a>
+                  ))}
+                </div>
+              </section>
 
-        <section className="p-6 sm:p-8 lg:p-12">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--gold)]">
-              Source of truth
-            </p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-normal sm:text-5xl">
-              PlayBooky Design Portal
-            </h2>
-            <p className="mt-5 text-base leading-8 text-[color:var(--muted)] sm:text-lg">
-              A calm, structured home for the foundations, rules, and approved
-              system decisions that will shape every future PlayBooky product
-              surface.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {sections.map((section) => (
-              <article
-                key={section.title}
-                id={section.title.toLowerCase()}
-                className="min-h-48 rounded-2xl border border-[color:var(--line)] bg-white/55 p-6 shadow-[0_18px_45px_rgba(36,31,24,0.06)]"
-              >
-                <div className="mb-8 h-1.5 w-12 rounded-full bg-[color:var(--accent)]" />
-                <h3 className="text-xl font-semibold tracking-normal">
-                  {section.title}
+              <aside aria-labelledby="pending-areas-heading">
+                <h3
+                  className="text-2xl font-semibold tracking-normal"
+                  id="pending-areas-heading"
+                >
+                  Not yet implemented
                 </h3>
                 <p className="mt-4 text-sm leading-7 text-[color:var(--muted)]">
-                  {section.description}
+                  These areas are present in the navigation structure but remain
+                  disabled until their portal pages are ready.
                 </p>
-                {"href" in section && (
-                  <a
-                    href={section.href}
-                    className="mt-6 inline-flex rounded-full border border-[color:var(--line)] px-4 py-2 text-sm font-semibold text-[color:var(--accent-strong)] transition hover:border-[color:var(--accent)] hover:bg-[color:var(--panel)]"
-                  >
-                    {"title" in section && section.title === "Inputs"
-                      ? "Review inputs"
-                      : "Review component"}
-                  </a>
-                )}
-              </article>
-            ))}
+                <ul className="mt-6 flex flex-wrap gap-2">
+                  {pendingAreas.map((area) => (
+                    <li
+                      className="rounded-full border border-[color:var(--line)] bg-white/45 px-3 py-1.5 text-xs font-semibold text-[#8F8578]"
+                      key={area}
+                    >
+                      {area}
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+            </div>
           </div>
         </section>
       </div>

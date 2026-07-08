@@ -14,11 +14,16 @@ const pipeline = [
   "PlayBooky Live"
 ];
 
-const productSystemLinks = [
+type ProductSystemLink = {
+  description: string;
+  href?: string;
+  label: string;
+};
+
+const productSystemLinks: ProductSystemLink[] = [
   {
     description:
       "Defines why PlayBooky exists, the problems it solves, and the long-term direction of the platform.",
-    href: "/design-system/product-system/product-vision",
     label: "Product Vision"
   },
   {
@@ -30,31 +35,27 @@ const productSystemLinks = [
   {
     description:
       "Documents the end-to-end customer journey from challenge to completed workshop.",
-    href: "/design-system/product-system/user-journey",
     label: "User Journey"
   },
   {
     description:
       "Documents how user responses are collected, interpreted, and transformed into diagnostic signals.",
-    href: "/design-system/product-system/diagnosis/questions",
     label: "Diagnosis"
   },
   {
     description:
       "Documents how PlayBooky evaluates diagnostic signals and determines workshop recommendations.",
-    href: "/design-system/product-system/diagnosis/decision-engine",
     label: "Decision Engine"
   },
   {
     description:
       "Documents the reusable knowledge libraries that power workshop generation.",
-    href: "/design-system/product-system/libraries/framework-library",
+    href: "/design-system/product-system/libraries/activity-library",
     label: "Libraries"
   },
   {
     description:
       "Documents how workshops are assembled, delivered, and facilitated.",
-    href: "/design-system/product-system/workshop/builder",
     label: "Workshop"
   }
 ];
@@ -123,21 +124,36 @@ export default function ProductSystemPage() {
               </p>
               <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {productSystemLinks.map((item) => (
-                  <a
-                    className="group rounded-[24px] border border-[color:var(--line)] bg-white/52 p-5 transition hover:-translate-y-0.5 hover:bg-[#FFFCF7] hover:shadow-[0_18px_44px_rgba(36,31,24,0.08)] motion-reduce:hover:translate-y-0"
-                    href={item.href}
-                    key={item.label}
-                  >
-                    <h3 className="text-lg font-semibold text-[#171614]">
-                      {item.label}
-                    </h3>
-                    <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-                      {item.description}
-                    </p>
-                    <p className="mt-5 text-sm font-semibold text-[#7D5330]">
-                      Open page
-                    </p>
-                  </a>
+                  item.href ? (
+                    <a
+                      className="group rounded-[24px] border border-[color:var(--line)] bg-white/52 p-5 transition hover:-translate-y-0.5 hover:bg-[#FFFCF7] hover:shadow-[0_18px_44px_rgba(36,31,24,0.08)] motion-reduce:hover:translate-y-0"
+                      href={item.href}
+                      key={item.label}
+                    >
+                      <h3 className="text-lg font-semibold text-[#171614]">
+                        {item.label}
+                      </h3>
+                      <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+                        {item.description}
+                      </p>
+                      <p className="mt-5 text-sm font-semibold text-[#7D5330]">
+                        Open page
+                      </p>
+                    </a>
+                  ) : (
+                    <article
+                      className="rounded-[24px] border border-[color:var(--line)] bg-white/38 p-5 text-[#8F8578]"
+                      key={item.label}
+                    >
+                      <h3 className="text-lg font-semibold">{item.label}</h3>
+                      <p className="mt-3 text-sm leading-6">
+                        {item.description}
+                      </p>
+                      <p className="mt-5 text-xs font-semibold uppercase tracking-[0.14em]">
+                        Coming soon
+                      </p>
+                    </article>
+                  )
                 ))}
               </div>
             </section>
