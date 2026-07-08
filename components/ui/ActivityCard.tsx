@@ -1,259 +1,115 @@
 import Image from "next/image";
 
-import {
-  createActivitySlug,
-  type Activity
-} from "@/lib/data/activities";
+import type { Activity } from "@/lib/data/activities";
 
-export type ActivityCardState =
-  | "default"
-  | "hover"
-  | "selected"
-  | "dragging"
-  | "locked";
+export type ActivityCardState = "default" | "hover" | "dragging";
 
-export type ActivityCardVariant =
-  | "library"
-  | "builder"
-  | "recommendation"
-  | "live";
+export type ActivityCardVariant = "library" | "builder";
 
 type ActivityCardProps = {
   activity: Activity;
-  hasIllustration?: boolean;
+  illustrationSrc?: string | null;
   state?: ActivityCardState;
   variant?: ActivityCardVariant;
 };
 
-function getValue(activity: Activity, field: string, fallback = "Missing") {
+function getValue(activity: Activity, field: string, fallback = "") {
   return activity[field]?.trim() || fallback;
 }
 
-function MissingIllustration({ slug }: { slug: string }) {
+function getWorkshopType(activity: Activity) {
   return (
-    <div className="flex h-full min-h-[150px] flex-col items-center justify-center rounded-[22px] border border-dashed border-[#D8C08A] bg-[#FFF8EB] px-5 text-center">
-      <p className="text-sm font-semibold text-[#7D5330]">
-        Illustration missing
-      </p>
-      <p className="mt-2 max-w-[240px] text-xs leading-5 text-[#6E6253]">
-        Expected `/public/assets/activities/{slug}/illustration.png`.
-      </p>
-    </div>
+    getValue(activity, "Workshop Type") ||
+    getValue(activity, "Related Workshop") ||
+    getValue(activity, "Layout Type")
   );
 }
 
-function ControlButton({
-  children,
-  emphasis = "secondary"
-}: {
-  children: string;
-  emphasis?: "primary" | "secondary";
-}) {
+function DragHandle() {
   return (
     <span
-      className={[
-        "inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm font-semibold transition duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
-        emphasis === "primary"
-          ? "bg-[#7D5330] text-[#FCFBF9] shadow-[0_10px_24px_rgba(125,83,48,0.16)]"
-          : "border border-[#E2D5C2] bg-white/70 text-[#2C2924]"
-      ].join(" ")}
+      aria-hidden="true"
+      className="absolute left-1/2 top-[9px] z-10 grid h-[28px] w-[40px] -translate-x-1/2 grid-cols-3 gap-x-[3px] rounded-[7px] bg-[#FCFBFA]/92 px-[8px] py-[7px] shadow-[0_4px_12px_rgba(50,66,54,0.12)]"
     >
-      {children}
+      {Array.from({ length: 6 }).map((_, index) => (
+        <span
+          className="h-[5px] w-[5px] rounded-full bg-[#B77B32]"
+          key={index}
+        />
+      ))}
     </span>
   );
 }
 
-function ActivityCardControls({
-  state,
-  variant
-}: {
-  state: ActivityCardState;
-  variant: ActivityCardVariant;
-}) {
-  const isLocked = state === "locked";
-
-  if (variant === "builder") {
-    return (
-      <div className="grid gap-3">
-        <div className="flex items-center justify-between gap-3 rounded-[18px] border border-[#E2D5C2] bg-white/60 px-3 py-2">
-          <span
-            aria-hidden="true"
-            className="grid h-9 w-9 place-items-center rounded-full border border-[#E2D5C2] text-base font-semibold text-[#7D5330]"
-          >
-            ::
-          </span>
-          <span className="text-sm font-medium text-[#45413C]">
-            Builder controls pending provided CSS
-          </span>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <ControlButton>Move up</ControlButton>
-          <ControlButton>Move down</ControlButton>
-          <ControlButton emphasis="primary">
-            {state === "selected" ? "Selected" : "Select"}
-          </ControlButton>
-        </div>
-      </div>
-    );
-  }
-
-  if (variant === "recommendation") {
-    return (
-      <div className="grid gap-3">
-        <div className="rounded-[18px] border border-[#E5D2B6] bg-[#FFF8EB] px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#B28B4B]">
-            Confidence
-          </p>
-          <p className="mt-1 text-sm font-semibold text-[#2C2924]">
-            Placeholder confidence only
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <ControlButton>Why this activity?</ControlButton>
-          <ControlButton emphasis="primary">Accept</ControlButton>
-          <ControlButton>Replace</ControlButton>
-        </div>
-      </div>
-    );
-  }
-
-  if (variant === "live") {
-    return (
-      <div className="grid gap-3">
-        <div className="grid gap-2 sm:grid-cols-3">
-          {["Timer", "Progress", "Instructions"].map((label) => (
-            <div
-              className="rounded-[18px] border border-dashed border-[#D8C08A] bg-[#FFF8EB]/70 px-3 py-3 text-sm font-semibold text-[#7D5330]"
-              key={label}
-            >
-              {label}
-            </div>
-          ))}
-        </div>
-        <p className="text-xs leading-5 text-[#6E6253]">
-          Live delivery controls are placeholders only.
-        </p>
-      </div>
-    );
-  }
-
+function MissingIllustration() {
   return (
-    <div className="flex flex-wrap gap-2">
-      <ControlButton>Preview</ControlButton>
-      <ControlButton emphasis="primary">
-        {isLocked ? "Unavailable" : "Add Activity"}
-      </ControlButton>
+    <div className="flex h-full w-full items-center justify-center bg-[#F7F1E6]">
+      <div className="h-[112px] w-[112px] rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(50,66,54,0.14),rgba(183,123,50,0.08)_54%,transparent_56%)]" />
     </div>
   );
 }
 
 export function ActivityCard({
   activity,
-  hasIllustration = false,
+  illustrationSrc,
   state = "default",
   variant = "library"
 }: ActivityCardProps) {
   const activityName = getValue(activity, "Activity Name", "Untitled activity");
-  const slug = createActivitySlug(activityName);
-  const isInteractive = state === "hover" || state === "selected";
+  const description = getValue(activity, "Purpose");
+  const duration = getValue(activity, "Duration");
+  const workshopType = getWorkshopType(activity);
+  const isBuilder = variant === "builder";
+  const isHover = state === "hover";
   const isDragging = state === "dragging";
-  const isLocked = state === "locked";
-  const isSelected = state === "selected";
 
   return (
     <article
       aria-label={`Activity card: ${activityName}`}
-      data-variant={variant}
       className={[
-        "relative flex w-full max-w-[420px] flex-col overflow-hidden rounded-[28px] border bg-[#FCFBF9] text-left transition duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
-        isSelected
-          ? "border-[#7D5330] shadow-[0_22px_54px_rgba(125,83,48,0.16)]"
-          : isInteractive
-            ? "border-[#D8C08A] shadow-[0_18px_44px_rgba(36,31,24,0.1)]"
-            : "border-[#E6E2DC] shadow-none",
-        isDragging ? "rotate-[-1deg] scale-[1.02] opacity-90 shadow-[0_28px_70px_rgba(36,31,24,0.18)]" : "",
-        isLocked ? "cursor-not-allowed opacity-60 grayscale-[0.15]" : ""
+        "relative h-[370px] w-[256px] overflow-hidden rounded-[16px] bg-[#FCFBFA] p-[6px] text-left shadow-[0_12px_28px_rgba(37,31,24,0.18)] transition duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+        isBuilder ? "ring-[3px] ring-[#B77B32]" : "",
+        isHover ? "translate-y-[-2px] shadow-[0_16px_34px_rgba(37,31,24,0.22)]" : "",
+        isDragging
+          ? "rotate-[-1deg] scale-[1.02] shadow-[0_20px_42px_rgba(37,31,24,0.26)]"
+          : ""
       ].join(" ")}
+      data-state={state}
+      data-variant={variant}
     >
-      {isSelected ? (
-        <div className="absolute right-4 top-4 z-10 rounded-full bg-[#7D5330] px-3 py-1 text-xs font-semibold text-[#FCFBF9]">
-          Added
-        </div>
-      ) : null}
-
-      <div className="bg-[#F4EFE6] p-4">
-        {hasIllustration ? (
+      <div className="relative h-[230px] w-[244px] overflow-hidden rounded-t-[11px] bg-[#F7F1E6]">
+        {isBuilder ? <DragHandle /> : null}
+        {illustrationSrc ? (
           <Image
             alt=""
-            className="h-[150px] w-full rounded-[22px] object-cover"
-            height={300}
-            src={`/assets/activities/${slug}/illustration.png`}
-            width={700}
+            className="h-full w-full object-cover"
+            height={460}
+            src={illustrationSrc}
+            width={488}
           />
         ) : (
-          <MissingIllustration slug={slug} />
+          <MissingIllustration />
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-5 p-5">
-        <div>
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full bg-[#EFE3D2] px-3 py-1 text-xs font-semibold text-[#7D5330]">
-              {getValue(activity, "Stage")}
-            </span>
-            <span className="rounded-full border border-[#E4D8C8] px-3 py-1 text-xs font-semibold text-[#45413C]">
-              {getValue(activity, "Duration")}
-            </span>
-            <span className="rounded-full border border-[#E4D8C8] px-3 py-1 text-xs font-semibold text-[#45413C]">
-              {getValue(activity, "Remote Friendly", "Remote unknown")}
-            </span>
-          </div>
-
-          <h3 className="mt-4 text-2xl font-semibold leading-tight text-[#062E27]">
-            {activityName}
-          </h3>
-          <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#45413C]">
-            {getValue(activity, "Purpose", "No purpose provided.")}
-          </p>
-        </div>
-
-        <dl className="grid gap-3 text-sm">
-          <div>
-            <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[#B28B4B]">
-              Best used when
-            </dt>
-            <dd className="mt-1 line-clamp-2 leading-6 text-[#45413C]">
-              {getValue(activity, "Best Used When")}
-            </dd>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div>
-              <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[#B28B4B]">
-                Inputs
-              </dt>
-              <dd className="mt-1 line-clamp-2 text-[#45413C]">
-                {getValue(activity, "Inputs Required")}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[#B28B4B]">
-                Outputs
-              </dt>
-              <dd className="mt-1 line-clamp-2 text-[#45413C]">
-                {getValue(activity, "Outputs Produced")}
-              </dd>
-            </div>
-          </div>
-        </dl>
-
-        {isLocked ? (
-          <p className="rounded-2xl border border-[#E5D2B6] bg-[#FFF8EB] px-3 py-2 text-xs font-semibold text-[#7D5330]">
-            Locked until this activity is available for the selected workshop.
-          </p>
-        ) : null}
-
-        <div className="min-h-[96px] border-t border-[#EEE4D7] pt-5 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none">
-          <ActivityCardControls state={state} variant={variant} />
+      <div className="flex h-[125px] w-[244px] flex-col px-[29px] pb-[20px] pt-[20px]">
+        <h3
+          className="line-clamp-2 text-[22px] font-semibold leading-[24px] text-[#324236]"
+          style={{
+            fontFamily: "Newsreader, Georgia, 'Times New Roman', serif"
+          }}
+        >
+          {activityName}
+        </h3>
+        <p className="mt-[6px] line-clamp-2 text-[10px] font-normal leading-[16px] text-[#1F3E29]">
+          {description}
+        </p>
+        <div className="mt-auto flex items-center gap-[14px] text-[10px] font-light leading-[16px] text-transparent [background:linear-gradient(90deg,#B77B32_0%,#D39A4D_100%)] bg-clip-text">
+          <span>{duration}</span>
+          {duration && workshopType ? (
+            <span className="h-[20px] w-px bg-[#D39A4D]" />
+          ) : null}
+          <span className="truncate">{workshopType}</span>
         </div>
       </div>
     </article>
