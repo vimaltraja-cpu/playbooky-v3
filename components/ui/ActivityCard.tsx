@@ -58,7 +58,7 @@ export function ActivityCard({
     <article
       aria-label={`Activity card: ${activity.title}`}
       className={[
-        "relative box-border flex h-[370px] w-[256px] flex-col items-start gap-[2px] overflow-hidden rounded-[16px] border border-[#E6E2DC] bg-[#FCFBFA] p-[6px] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+        "relative box-border flex h-[370px] w-[256px] flex-col items-start gap-[2px] rounded-[16px] border border-[#E6E2DC] bg-[#FCFBFA] p-[6px] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
         isHover
           ? "translate-y-[-2px] shadow-[0_8px_18px_-5px_rgba(0,0,0,0.16),0_4px_8px_-4px_rgba(0,0,0,0.10)]"
           : "",
@@ -69,7 +69,7 @@ export function ActivityCard({
       data-state={state}
       data-variant={variant}
     >
-      <div className="relative h-[230px] w-[244px] shrink-0 overflow-hidden rounded-[10px]">
+      <div className="relative h-[230px] w-[244px] shrink-0 overflow-visible rounded-[10px]">
         {isBuilder ? <DragHandle /> : null}
         <Image
           alt=""
