@@ -1,31 +1,24 @@
 import Image from "next/image";
 
-import type { Activity } from "@/lib/data/activities";
+export type ActivityCardVariant = "builder" | "library";
 
 export type ActivityCardState = "default" | "hover" | "dragging";
 
-export type ActivityCardVariant = "library" | "builder";
+export type ActivityCardData = {
+  description: string;
+  duration: string;
+  illustrationSrc: string;
+  title: string;
+  workshopType: string;
+};
 
 type ActivityCardProps = {
-  activity: Activity;
-  illustrationSrc: string;
+  activity: ActivityCardData;
   state?: ActivityCardState;
   variant?: ActivityCardVariant;
 };
 
-function getValue(activity: Activity, field: string, fallback = "") {
-  return activity[field]?.trim() || fallback;
-}
-
-function getWorkshopType(activity: Activity) {
-  return (
-    getValue(activity, "Workshop Type") ||
-    getValue(activity, "Stage") ||
-    getValue(activity, "Layout Type")
-  );
-}
-
-function getTitleLines(title: string) {
+function splitTitleIntoTwoLines(title: string) {
   const words = title.trim().split(/\s+/).filter(Boolean);
 
   if (words.length <= 1) {
@@ -54,44 +47,42 @@ function DragHandle() {
 
 export function ActivityCard({
   activity,
-  illustrationSrc,
   state = "default",
   variant = "library"
 }: ActivityCardProps) {
-  const activityName = getValue(activity, "Activity Name", "Untitled activity");
-  const description = getValue(activity, "Purpose");
-  const duration = getValue(activity, "Duration");
-  const workshopType = getWorkshopType(activity);
+  const [titleLineOne, titleLineTwo] = splitTitleIntoTwoLines(activity.title);
   const isBuilder = variant === "builder";
   const isHover = state === "hover";
   const isDragging = state === "dragging";
-  const [titleLineOne, titleLineTwo] = getTitleLines(activityName);
 
   return (
     <article
-      aria-label={`Activity card: ${activityName}`}
+      aria-label={`Activity card: ${activity.title}`}
       className={[
-        "relative flex h-[370px] w-[256px] flex-col gap-[2px] overflow-hidden rounded-[16px] bg-[#FCFBFA] p-[6px] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
-        isHover ? "translate-y-[-2px] shadow-[0_6px_12px_-2px_rgba(0,0,0,0.12),0_3px_6px_-2px_rgba(0,0,0,0.08)]" : "",
+        "relative flex h-[370px] w-[256px] flex-col gap-[2px] overflow-hidden rounded-[16px] bg-[#FCFBFA] p-[6px] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+        isHover
+          ? "translate-y-[-2px] shadow-[0_8px_18px_-5px_rgba(0,0,0,0.16),0_4px_8px_-4px_rgba(0,0,0,0.10)]"
+          : "",
         isDragging
-          ? "rotate-[-1deg] scale-[1.02] shadow-[0_8px_16px_-2px_rgba(0,0,0,0.14),0_4px_8px_-2px_rgba(0,0,0,0.10)]"
+          ? "rotate-[-1deg] scale-[1.02] shadow-[0_12px_24px_-8px_rgba(0,0,0,0.18),0_6px_12px_-6px_rgba(0,0,0,0.12)]"
           : ""
       ].join(" ")}
       data-state={state}
       data-variant={variant}
     >
-      <div className="relative h-[230px] w-[244px] shrink-0 overflow-hidden rounded-t-[10px] bg-[#F7F1E6]">
+      <div className="relative h-[230px] w-[244px] shrink-0 overflow-hidden rounded-[10px]">
         {isBuilder ? <DragHandle /> : null}
         <Image
           alt=""
           className="h-full w-full object-cover"
           height={460}
-          src={illustrationSrc}
+          priority
+          src={activity.illustrationSrc}
           width={488}
         />
       </div>
 
-      <div className="flex h-[125px] w-[244px] flex-col gap-[4px] pb-[8px] pl-[12px] pr-[12px] pt-[20px]">
+      <div className="flex h-[125px] w-[244px] flex-col gap-[4px] pb-[8px] pl-[12px] pr-[12px] pt-[13px]">
         <h3
           className="grid h-[48px] grid-rows-2 overflow-hidden text-[22px] font-semibold leading-[24px] text-[#324236]"
           style={{
@@ -101,16 +92,16 @@ export function ActivityCard({
           <span className="block truncate">{titleLineOne}</span>
           <span className="block truncate">{titleLineTwo}</span>
         </h3>
-        <p className="line-clamp-2 max-h-[32px] text-[10px] font-normal leading-[16px] text-[#1F3E29]">
-          {description}
+
+        <p className="line-clamp-2 max-h-[32px] overflow-hidden text-[10px] font-normal leading-[16px] text-[#1F3E29]">
+          {activity.description}
         </p>
-        <div className="mt-auto flex items-center gap-[14px] text-[10px] font-light leading-[16px] text-transparent [background:linear-gradient(90deg,#B77B32_0%,#D39A4D_100%)] bg-clip-text">
-          <span>{duration}</span>
-          {duration && workshopType ? (
-            <span className="h-[20px] w-px bg-[#D39A4D]" />
-          ) : null}
-          <span className="truncate">{workshopType}</span>
-        </div>
+
+        <p className="mt-auto flex min-w-0 items-center gap-[12px] overflow-hidden text-[10px] font-light leading-[16px] text-transparent [background:linear-gradient(45deg,#7D5330_0%,#D99C56_100%)] bg-clip-text">
+          <span className="shrink-0">{activity.duration}</span>
+          <span className="h-[16px] w-px shrink-0 bg-[#D99C56]" />
+          <span className="truncate">{activity.workshopType}</span>
+        </p>
       </div>
     </article>
   );
