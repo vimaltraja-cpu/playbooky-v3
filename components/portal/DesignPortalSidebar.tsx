@@ -116,7 +116,10 @@ const sidebarFolders: SidebarFolder[] = [
         href: "/design-system/core-experience/activity-card",
         label: "Activity Card"
       },
-      { badge: "Coming soon", label: "Activity Grid" }
+      {
+        href: "/design-system/core-experience/activity-grid",
+        label: "Activity Grid"
+      }
     ],
     id: "core-experience",
     label: "Core Experience"
