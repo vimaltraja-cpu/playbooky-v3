@@ -68,6 +68,10 @@ Defines how the complete PlayBooky product works.
 
 This is the canonical reference for understanding the relationship between every major product system.
 
+Related:
+
+- [Workshop OS terminology and data contract](workshop-os-terminology-and-data-contract.md)
+
 ---
 
 ### User Journey

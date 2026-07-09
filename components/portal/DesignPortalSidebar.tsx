@@ -65,12 +65,30 @@ const sidebarFolders: SidebarFolder[] = [
       {
         children: [
           {
+            href: "/design-system/product-system/libraries/building-block-library",
+            label: "Building Block Library"
+          },
+          {
+            href: "/design-system/product-system/libraries/building-block-steps",
+            label: "Building Block Steps"
+          },
+          {
             href: "/design-system/product-system/libraries/activity-library",
             label: "Activity Library"
           }
         ],
         id: "product-libraries",
         label: "Libraries"
+      },
+      {
+        children: [
+          {
+            href: "/design-system/product-system/workshop/generated-flow",
+            label: "Generated Workshop Flow"
+          }
+        ],
+        id: "product-workshop",
+        label: "Workshop"
       }
     ],
     id: "product-system",
