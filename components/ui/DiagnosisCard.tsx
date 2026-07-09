@@ -9,7 +9,10 @@ export type DiagnosisCardState =
   "default" | "hover" | "selected" | "maxSelected";
 
 type DiagnosisCardProps = {
+  description?: string;
   iconKey?: DiagnosisIconKey;
+  label?: string;
+  onClick?: () => void;
   state?: DiagnosisCardState;
 };
 
@@ -31,14 +34,7 @@ function DiagnosisLeftIcon({
   const width = height * diagnosisIconAspectRatio;
   const Icon = diagnosisIcons[iconKey];
 
-  return (
-    <Icon
-      alt=""
-      aria-hidden="true"
-      height={height}
-      width={width}
-    />
-  );
+  return <Icon alt="" aria-hidden="true" height={height} width={width} />;
 }
 
 function StateIcon({ state }: { state: DiagnosisCardState }) {
@@ -115,7 +111,10 @@ function SelectedAnimationLayer() {
 }
 
 export function DiagnosisCard({
+  description = "Bring people into alignment around a shared goal or direction.",
   iconKey = "align-a-team",
+  label = "Align a team",
+  onClick,
   state = "default"
 }: DiagnosisCardProps) {
   const isSelected = state === "selected";
@@ -126,10 +125,11 @@ export function DiagnosisCard({
   return (
     <button
       aria-disabled={isMaxSelected}
-      aria-label="Diagnosis card: Align a team"
+      aria-label={`Diagnosis card: ${label}`}
       aria-pressed={isSelected}
       className="diagnosis-card-prototype"
       data-state={state}
+      onClick={onClick}
       style={{
         alignItems: "flex-start",
         background: isMaxSelected
@@ -201,7 +201,7 @@ export function DiagnosisCard({
               margin: 0
             }}
           >
-            Align a team
+            {label}
           </h3>
           <p
             style={{
@@ -215,7 +215,7 @@ export function DiagnosisCard({
               margin: 0
             }}
           >
-            Bring people into alignment around a shared goal or direction.
+            {description}
           </p>
         </div>
       </div>

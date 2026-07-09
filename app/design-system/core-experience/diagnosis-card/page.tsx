@@ -19,6 +19,11 @@ import {
   DiagnosisCard,
   type DiagnosisCardState
 } from "@/components/ui/DiagnosisCard";
+import {
+  diagnosisQuestions,
+  diagnosisQuestionTabs,
+  type DiagnosisQuestionId
+} from "@/lib/design-system/diagnosis-options";
 
 type ViewportId = "desktop";
 type ShowroomState = DiagnosisCardState;
@@ -371,9 +376,9 @@ function DiagnosisCardStatePreview({ state }: { state: ShowroomState }) {
         state={selectedPreviewState}
       />
       <p className="max-w-xl text-center text-sm leading-6 text-[color:var(--muted)]">
-        Selected animation uses the accepted Version 3 two-path motion. The
-        path remains unchanged, while timing accelerates into the top-right
-        corner and triggers the radio entrance as the stroke arrives.
+        Selected animation uses the accepted Version 3 two-path motion. The path
+        remains unchanged, while timing accelerates into the top-right corner
+        and triggers the radio entrance as the stroke arrives.
       </p>
       <button
         className="rounded-full border border-[#D8C08A] bg-[#FCFBF9]/80 px-4 py-2 text-sm font-semibold text-[#7D5330] shadow-[0_10px_24px_rgba(125,83,48,0.08)] transition hover:bg-[#FCFBF9]"
@@ -383,6 +388,95 @@ function DiagnosisCardStatePreview({ state }: { state: ShowroomState }) {
         Replay animation
       </button>
     </div>
+  );
+}
+
+function DiagnosisAnswerOptionsSection() {
+  const [activeQuestionId, setActiveQuestionId] =
+    useState<DiagnosisQuestionId>("goals");
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<DiagnosisQuestionId, string>
+  >({
+    challenges: diagnosisQuestions[1].options[0].id,
+    context: diagnosisQuestions[2].options[0].id,
+    goals: diagnosisQuestions[0].options[0].id,
+    outcome: diagnosisQuestions[4].options[0].id,
+    participants: diagnosisQuestions[3].options[0].id
+  });
+  const activeQuestion =
+    diagnosisQuestions.find((question) => question.id === activeQuestionId) ??
+    diagnosisQuestions[0];
+
+  return (
+    <section id="answer-options" className="scroll-mt-40 py-10">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h3 className="text-2xl font-semibold">Answer Options</h3>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
+            Review every diagnosis answer as the real card component, using the
+            approved icon, label, description, and selected state styling.
+          </p>
+        </div>
+        <div
+          aria-label="Diagnosis question tabs"
+          className="flex max-w-full gap-2 overflow-x-auto rounded-full border border-[color:var(--line)] bg-white/65 p-1"
+          role="tablist"
+        >
+          {diagnosisQuestionTabs.map((tab) => (
+            <button
+              aria-controls="diagnosis-answer-options-panel"
+              aria-selected={activeQuestionId === tab.id}
+              className={[
+                "whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200",
+                activeQuestionId === tab.id
+                  ? "bg-[#7D5330] !text-[#FCFBF9] shadow-[0_10px_24px_rgba(125,83,48,0.18)]"
+                  : "!text-[#171614] hover:bg-[#EFE3D2]/60"
+              ].join(" ")}
+              id={`diagnosis-answer-options-${tab.id}`}
+              key={tab.id}
+              onClick={() => setActiveQuestionId(tab.id)}
+              role="tab"
+              type="button"
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div
+        aria-labelledby={`diagnosis-answer-options-${activeQuestion.id}`}
+        className="mt-6 rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-5 sm:p-6"
+        id="diagnosis-answer-options-panel"
+        role="tabpanel"
+      >
+        <div className="grid gap-5 xl:grid-cols-2">
+          {activeQuestion.options.map((option) => {
+            const isSelected = selectedOptions[activeQuestion.id] === option.id;
+
+            return (
+              <div
+                className="flex min-w-0 justify-center overflow-x-auto py-1"
+                key={option.id}
+              >
+                <DiagnosisCard
+                  description={option.description}
+                  iconKey={option.iconKey}
+                  label={option.label}
+                  onClick={() =>
+                    setSelectedOptions((current) => ({
+                      ...current,
+                      [activeQuestion.id]: option.id
+                    }))
+                  }
+                  state={isSelected ? "selected" : "default"}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -405,6 +499,8 @@ export default function DiagnosisCardPage() {
             renderPreview={() => <ViewportPreview />}
             viewports={viewportItems}
           />
+
+          <DiagnosisAnswerOptionsSection />
 
           <ComponentStateShowroom
             autoplayEnabled={false}
