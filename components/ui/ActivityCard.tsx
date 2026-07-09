@@ -7,7 +7,7 @@ export type ActivityCardState = "default" | "hover" | "dragging";
 export type ActivityCardData = {
   description: string;
   duration: string;
-  illustrationSrc: string;
+  illustration: string;
   title: string;
   workshopType: string;
 };
@@ -77,7 +77,7 @@ export function ActivityCard({
           className="h-full w-full object-cover"
           height={460}
           priority
-          src={activity.illustrationSrc}
+          src={activity.illustration}
           width={488}
         />
       </div>

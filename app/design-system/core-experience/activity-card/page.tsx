@@ -1,18 +1,37 @@
-import type { ActivityCardData } from "@/components/ui/ActivityCard";
+import { existsSync } from "node:fs";
+import path from "node:path";
+
+import { activityCardDemoData } from "@/data/demo/activity-card-demo-data";
 
 import { ActivityCardPageClient } from "./ActivityCardPageClient";
 
-const approvedPreviewActivity: ActivityCardData = {
-  description:
-    "Map the customer's journey from beginning to end to uncover opportunities.",
-  duration: "15 minutes",
-  illustrationSrc: "/assets/activities/Problem%20Framing.png",
-  title: "Problem Framing",
-  workshopType: "Journey Mapping Workshop"
-};
+function assertDemoIllustrationExists(illustration: string) {
+  const normalizedPath = decodeURIComponent(
+    illustration.replace(/^\/assets\/activities\//, "")
+  );
+  const filePath = path.join(
+    process.cwd(),
+    "public",
+    "assets",
+    "activities",
+    normalizedPath
+  );
+
+  if (!existsSync(filePath)) {
+    throw new Error(
+      `Missing Activity Card demo illustration: public/assets/activities/${normalizedPath}`
+    );
+  }
+}
 
 export default function ActivityCardPage() {
+  activityCardDemoData.forEach((activity) => {
+    assertDemoIllustrationExists(activity.illustration);
+  });
+
   return (
-    <ActivityCardPageClient representativeActivity={approvedPreviewActivity} />
+    <ActivityCardPageClient
+      representativeActivity={activityCardDemoData[0]}
+    />
   );
 }
