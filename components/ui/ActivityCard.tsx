@@ -54,12 +54,19 @@ export function ActivityCard({
   const isBuilder = variant === "builder";
   const isHover = state === "hover";
   const isDragging = state === "dragging";
+  const metadataTextStyle = {
+    backgroundClip: "text",
+    backgroundImage:
+      "linear-gradient(26.57deg, #9E7738 8.33%, #C69341 91.67%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent"
+  };
 
   return (
     <article
       aria-label={`Activity card: ${activity.title}`}
       className={[
-        "relative flex h-[370px] w-[256px] flex-col gap-[2px] overflow-hidden rounded-[16px] bg-[#FCFBFA] p-[6px] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+        "relative box-border flex h-[370px] w-[256px] flex-col items-start gap-[2px] overflow-hidden rounded-[16px] bg-[#FCFBFA] p-[6px] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
         isHover
           ? "translate-y-[-2px] shadow-[0_8px_18px_-5px_rgba(0,0,0,0.16),0_4px_8px_-4px_rgba(0,0,0,0.10)]"
           : "",
@@ -97,10 +104,20 @@ export function ActivityCard({
           {activity.description}
         </p>
 
-        <p className="mt-auto flex min-w-0 items-center gap-[12px] overflow-hidden text-[10px] font-light leading-[16px] text-transparent [background:linear-gradient(45deg,#7D5330_0%,#D99C56_100%)] bg-clip-text">
-          <span className="shrink-0">{activity.duration}</span>
-          <span className="h-[16px] w-px shrink-0 bg-[#D99C56]" />
-          <span className="truncate">{activity.workshopType}</span>
+        <p className="relative mt-auto flex h-[25px] w-[244px] flex-row items-center gap-[4px] overflow-hidden py-0 pl-[12px] pr-0 text-[10px] font-light leading-[16px]">
+          <span className="block h-[16px] w-[49px] shrink-0" style={metadataTextStyle}>
+            {activity.duration}
+          </span>
+          <span
+            aria-hidden="true"
+            className="h-0 w-[17px] shrink-0 rotate-90 border-t border-[#C69341]"
+          />
+          <span
+            className="block h-[16px] w-[127px] shrink-0 truncate"
+            style={metadataTextStyle}
+          >
+            {activity.workshopType}
+          </span>
         </p>
       </div>
     </article>
