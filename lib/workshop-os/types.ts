@@ -14,6 +14,9 @@ export type DiagnosisConfidence = "high" | "medium" | "low";
 
 export type DeliveryMode = "remote" | "in-person" | "hybrid";
 
+/**
+ * User-provided challenge context consumed before Workshop OS designs anything.
+ */
 export type DiagnosisInput = {
   blockers: string[];
   challenge: string;
@@ -32,6 +35,11 @@ export type DiagnosisStageScore = {
   stage: WorkshopStageId;
 };
 
+/**
+ * Structured interpretation of the user challenge.
+ * Diagnosis does not select UI or render a workshop; it prepares the signal
+ * that workshop design logic can use.
+ */
 export type Diagnosis = {
   confidence: DiagnosisConfidence;
   input: DiagnosisInput;
@@ -47,6 +55,12 @@ export type BuildingBlockType =
   | "synthesis"
   | "technique";
 
+/**
+ * Engine/execution language.
+ * A Building Block is selected by Workshop OS and expanded into ordered
+ * Building Block Steps. It is distinct from Activity, which is user-facing
+ * library language.
+ */
 export type BuildingBlock = {
   energyLevel: string;
   id: string;
@@ -61,6 +75,10 @@ export type BuildingBlock = {
   type: BuildingBlockType;
 };
 
+/**
+ * Ordered runnable instruction inside a Building Block.
+ * Steps are what make a generated workshop executable.
+ */
 export type BuildingBlockStep = {
   durationMinutes: number;
   facilitatorNotes: string;
@@ -73,6 +91,9 @@ export type BuildingBlockStep = {
   techniqueUsed?: string;
 };
 
+/**
+ * Rule that maps diagnosed situations to executable Building Blocks.
+ */
 export type WorkshopDesignLogicRule = {
   expectedOutputs: string[];
   id: string;
@@ -83,6 +104,9 @@ export type WorkshopDesignLogicRule = {
   situation: string;
 };
 
+/**
+ * Executable step inside a generated workshop flow.
+ */
 export type WorkshopFlowStep = {
   durationMinutes: number;
   facilitatorNotes: string;
@@ -92,6 +116,9 @@ export type WorkshopFlowStep = {
   sourceStepId: string;
 };
 
+/**
+ * A selected Building Block expanded into runnable flow steps.
+ */
 export type WorkshopFlowBlock = {
   blockId: string;
   durationMinutes: number;
@@ -102,6 +129,11 @@ export type WorkshopFlowBlock = {
   steps: WorkshopFlowStep[];
 };
 
+/**
+ * Workshop OS output contract.
+ * This represents an executable workshop flow, not activity-card metadata.
+ * Activity Cards may present parts of this data later, but they do not own it.
+ */
 export type GeneratedWorkshopFlow = {
   agenda: WorkshopFlowBlock[];
   createdFrom: {
