@@ -81,9 +81,9 @@ export function ActivityCard({
         />
       </div>
 
-      <div className="flex h-[125px] w-[244px] flex-col gap-[4px] pb-[8px] pl-[12px] pr-[12px] pt-[13px]">
+      <div className="flex h-[125px] w-[244px] flex-col gap-[4px] pb-[8px] pt-[13px]">
         <h3
-          className="grid h-[48px] grid-rows-2 overflow-hidden text-[22px] font-semibold leading-[24px] text-[#324236]"
+          className="grid h-[48px] w-[152px] grid-rows-2 overflow-hidden pl-[12px] text-[22px] font-semibold leading-[24px] text-[#324236]"
           style={{
             fontFamily: "Newsreader, Georgia, 'Times New Roman', serif"
           }}
@@ -92,7 +92,7 @@ export function ActivityCard({
           <span className="block truncate">{titleLineTwo}</span>
         </h3>
 
-        <p className="line-clamp-2 max-h-[32px] overflow-hidden text-[10px] font-normal leading-[16px] text-[#1F3E29]">
+        <p className="line-clamp-2 h-[32px] w-[233px] overflow-hidden pl-[12px] text-[10px] font-normal leading-[16px] text-[#1F3E29]">
           {activity.description}
         </p>
 

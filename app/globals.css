@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f3ee;
-  --foreground: #181714;
-  --muted: #706b62;
-  --panel: #fffcf7;
-  --panel-soft: #efe9df;
-  --line: #ded6ca;
-  --accent: #365c55;
-  --accent-strong: #213f3a;
-  --gold: #b28b4b;
+  --background: #f7f7f5;
+  --foreground: #18181b;
+  --muted: #64646d;
+  --panel: #ffffff;
+  --panel-soft: #f1f2f0;
+  --line: #dedfda;
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --gold: #6f727a;
   --rose: #9c5b61;
 }
 
@@ -25,10 +25,7 @@ html {
 body {
   margin: 0;
   color: var(--foreground);
-  background:
-    linear-gradient(135deg, rgba(54, 92, 85, 0.08), transparent 36%),
-    linear-gradient(225deg, rgba(178, 139, 75, 0.1), transparent 32%),
-    var(--background);
+  background: var(--background);
   font-family:
     Geist,
     Inter,
@@ -56,7 +53,7 @@ a {
 }
 
 .portal-sidebar-scrollbar:hover {
-  scrollbar-color: rgba(125, 83, 48, 0.28) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 .portal-sidebar-scrollbar::-webkit-scrollbar {
@@ -73,7 +70,7 @@ a {
 }
 
 .portal-sidebar-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: rgba(125, 83, 48, 0.28);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .activity-card__meta {
