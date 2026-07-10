@@ -15,10 +15,16 @@ import {
   type ViewportShowroomItem
 } from "@/components/portal/ComponentPage";
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
+import { ScaledDesktopMockup } from "@/components/portal/ScaledDesktopMockup";
 import {
   DiagnosisCard,
   type DiagnosisCardState
 } from "@/components/ui/DiagnosisCard";
+import {
+  diagnosisQuestions,
+  diagnosisQuestionTabs,
+  type DiagnosisQuestionId
+} from "@/lib/design-system/diagnosis-options";
 
 type ViewportId = "desktop";
 type ShowroomState = DiagnosisCardState;
@@ -69,7 +75,7 @@ const specs = [
     "0px 4px 8px -2px rgba(0,0,0,0.1), 0px 2px 4px -2px rgba(0,0,0,0.06)"
   ],
   ["Title", "Newsreader 600, 24px / 140%, -0.01em, #062E27"],
-  ["Description", "Geist 400, 20px / 175%, -0.01em, #45413C"]
+  ["Description", "Geist 400, 17px / 160%, #45413C"]
 ];
 
 const viewportItems: Array<ViewportShowroomItem<ViewportId>> = [
@@ -207,7 +213,7 @@ const tokenRows: ComponentTokenRow[] = [
     status: "hardcoded"
   },
   {
-    implementationValue: "Geist 400, 20px / 175%",
+    implementationValue: "Geist 400, 17px / 160%",
     label: "Description typography",
     status: "hardcoded"
   },
@@ -371,9 +377,9 @@ function DiagnosisCardStatePreview({ state }: { state: ShowroomState }) {
         state={selectedPreviewState}
       />
       <p className="max-w-xl text-center text-sm leading-6 text-[color:var(--muted)]">
-        Selected animation uses the accepted Version 3 two-path motion. The
-        path remains unchanged, while timing accelerates into the top-right
-        corner and triggers the radio entrance as the stroke arrives.
+        Selected animation uses the accepted Version 3 two-path motion. The path
+        remains unchanged, while timing accelerates into the top-right corner
+        and triggers the radio entrance as the stroke arrives.
       </p>
       <button
         className="rounded-full border border-[#D8C08A] bg-[#FCFBF9]/80 px-4 py-2 text-sm font-semibold text-[#7D5330] shadow-[0_10px_24px_rgba(125,83,48,0.08)] transition hover:bg-[#FCFBF9]"
@@ -383,6 +389,155 @@ function DiagnosisCardStatePreview({ state }: { state: ShowroomState }) {
         Replay animation
       </button>
     </div>
+  );
+}
+
+const diagnosisQuestionPrompts: Record<DiagnosisQuestionId, string> = {
+  challenges: "What is getting in the way?",
+  context: "What context should shape the workshop?",
+  goals: "What are you trying to achieve?",
+  outcome: "What should be different by the end?",
+  participants: "Who needs to be involved?"
+};
+
+function DiagnosisAnswerDesktopMockup({
+  activeQuestion,
+  selectedOptionId,
+  onSelect
+}: {
+  activeQuestion: (typeof diagnosisQuestions)[number];
+  onSelect: (optionId: string) => void;
+  selectedOptionId: string;
+}) {
+  return (
+    <ScaledDesktopMockup
+      aria-label={`${activeQuestion.label} diagnosis answer options in a 1440 by 900 desktop mockup`}
+    >
+      <div className="flex h-full w-full flex-col bg-[#F7F2EA] px-8 py-10">
+        <header className="flex items-start justify-between gap-10">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#7D5330]">
+              Diagnosis
+            </p>
+            <h4 className="mt-4 max-w-3xl text-[44px] font-semibold leading-[1.08] tracking-normal text-[#171614]">
+              {diagnosisQuestionPrompts[activeQuestion.id]}
+            </h4>
+            <p className="mt-4 max-w-2xl text-[18px] leading-8 text-[#5B554E]">
+              Choose the answer that best reflects the current workshop need.
+            </p>
+          </div>
+          <div className="rounded-full border border-[#E8DFD3] bg-[#FCFBF9]/80 px-5 py-3 text-sm font-semibold text-[#7D5330]">
+            {activeQuestion.label}
+          </div>
+        </header>
+
+        <div className="mt-12 grid grid-cols-3 gap-5">
+          {activeQuestion.options.map((option) => (
+            <DiagnosisCard
+              description={option.description}
+              iconKey={option.iconKey}
+              key={option.id}
+              label={option.label}
+              onClick={() => onSelect(option.id)}
+              state={selectedOptionId === option.id ? "selected" : "default"}
+            />
+          ))}
+        </div>
+      </div>
+    </ScaledDesktopMockup>
+  );
+}
+
+function DiagnosisAnswerOptionsSection() {
+  const [activeQuestionId, setActiveQuestionId] =
+    useState<DiagnosisQuestionId>("goals");
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<DiagnosisQuestionId, string>
+  >({
+    challenges: diagnosisQuestions[1].options[0].id,
+    context: diagnosisQuestions[2].options[0].id,
+    goals: diagnosisQuestions[0].options[0].id,
+    outcome: diagnosisQuestions[4].options[0].id,
+    participants: diagnosisQuestions[3].options[0].id
+  });
+  const activeQuestion =
+    diagnosisQuestions.find((question) => question.id === activeQuestionId) ??
+    diagnosisQuestions[0];
+
+  return (
+    <section id="answer-options" className="scroll-mt-40 py-10">
+      <div>
+        <h3 className="text-2xl font-semibold">Answer Options</h3>
+        <div
+          aria-label="Diagnosis question tabs"
+          className="mt-5 grid grid-cols-5 gap-2 rounded-full border border-[color:var(--line)] bg-white/65 p-1"
+          role="tablist"
+        >
+          {diagnosisQuestionTabs.map((tab) => (
+            <button
+              aria-controls="diagnosis-answer-options-panel"
+              aria-selected={activeQuestionId === tab.id}
+              className={[
+                "min-w-0 whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 sm:px-4",
+                activeQuestionId === tab.id
+                  ? "bg-[#7D5330] !text-[#FCFBF9] shadow-[0_10px_24px_rgba(125,83,48,0.18)]"
+                  : "!text-[#171614] hover:bg-[#EFE3D2]/60"
+              ].join(" ")}
+              id={`diagnosis-answer-options-${tab.id}`}
+              key={tab.id}
+              onClick={() => setActiveQuestionId(tab.id)}
+              role="tab"
+              type="button"
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
+          Each category is shown as a complete 1440 by 900 desktop diagnosis
+          screen, scaled to fit the documentation page.
+        </p>
+      </div>
+
+      <div
+        aria-labelledby={`diagnosis-answer-options-${activeQuestion.id}`}
+        className="mt-6"
+        id="diagnosis-answer-options-panel"
+        role="tabpanel"
+      >
+        <DiagnosisAnswerDesktopMockup
+          activeQuestion={activeQuestion}
+          onSelect={(optionId) =>
+            setSelectedOptions((current) => ({
+              ...current,
+              [activeQuestion.id]: optionId
+            }))
+          }
+          selectedOptionId={selectedOptions[activeQuestion.id]}
+        />
+
+        <div className="mt-5 rounded-[24px] border border-[color:var(--line)] bg-white/55 p-5">
+          <h4 className="text-sm font-semibold">Desktop measurement notes</h4>
+          <dl className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["Frame", "1440px x 900px"],
+              ["Layout", "3 columns x 2 rows"],
+              ["Gap", "20px"],
+              ["Card size", "445.33px x 252px"]
+            ].map(([term, description]) => (
+              <div key={term}>
+                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
+                  {term}
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+                  {description}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -405,6 +560,8 @@ export default function DiagnosisCardPage() {
             renderPreview={() => <ViewportPreview />}
             viewports={viewportItems}
           />
+
+          <DiagnosisAnswerOptionsSection />
 
           <ComponentStateShowroom
             autoplayEnabled={false}
