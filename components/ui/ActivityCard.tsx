@@ -59,7 +59,7 @@ export function ActivityCard({
     <article
       aria-label={`Activity card: ${activity.title}`}
       className={[
-        "relative flex h-[370px] w-[256px] flex-col gap-[2px] overflow-hidden rounded-[16px] bg-[#FCFBFA] p-[6px] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+        "relative flex h-[370px] w-[256px] flex-col gap-[2px] rounded-[16px] border-[2px] border-[#B77B32] bg-[#FCFBFA] p-[6px] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
         isHover
           ? "translate-y-[-2px] shadow-[0_8px_18px_-5px_rgba(0,0,0,0.16),0_4px_8px_-4px_rgba(0,0,0,0.10)]"
           : "",
@@ -70,7 +70,7 @@ export function ActivityCard({
       data-state={state}
       data-variant={variant}
     >
-      <div className="relative h-[230px] w-[244px] shrink-0 overflow-hidden rounded-[10px]">
+      <div className="relative -ml-[6px] -mt-[6px] h-[231px] w-[252px] shrink-0 overflow-hidden rounded-[12px]">
         {isBuilder ? <DragHandle /> : null}
         <Image
           alt=""
@@ -80,11 +80,15 @@ export function ActivityCard({
           src={activity.illustration}
           width={488}
         />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[16px] bg-gradient-to-b from-transparent to-[#FCFBFA]/45"
+        />
       </div>
 
-      <div className="flex h-[125px] w-[244px] flex-col gap-[4px] pb-[8px] pl-[12px] pr-[12px] pt-[13px]">
+      <div className="flex h-[125px] w-[244px] flex-col gap-[4px] pb-[8px] pt-[13px]">
         <h3
-          className="grid h-[48px] grid-rows-2 overflow-hidden text-[22px] font-semibold leading-[24px] text-[#324236]"
+          className="grid h-[48px] grid-rows-2 overflow-hidden pl-[12px] pr-[12px] text-[22px] font-semibold leading-[24px] text-[#324236]"
           style={{
             fontFamily: "Newsreader, Georgia, 'Times New Roman', serif"
           }}
@@ -93,15 +97,17 @@ export function ActivityCard({
           <span className="block truncate">{titleLineTwo}</span>
         </h3>
 
-        <p className="line-clamp-2 max-h-[32px] overflow-hidden text-[10px] font-normal leading-[16px] text-[#1F3E29]">
+        <p className="line-clamp-2 max-h-[32px] overflow-hidden pl-[12px] pr-[12px] text-[10px] font-normal leading-[16px] text-[#1F3E29]">
           {activity.description}
         </p>
 
-        <p className="mt-auto flex min-w-0 items-center gap-[12px] overflow-hidden text-[10px] font-light leading-[16px] text-transparent [background:linear-gradient(45deg,#7D5330_0%,#D99C56_100%)] bg-clip-text">
-          <span className="shrink-0">{activity.duration}</span>
-          <span className="h-[16px] w-px shrink-0 bg-[#D99C56]" />
-          <span className="truncate">{activity.workshopType}</span>
-        </p>
+        <div className="activity-card__meta">
+          <span className="activity-card__metaText">{activity.duration}</span>
+          <span className="activity-card__divider" aria-hidden="true" />
+          <span className="activity-card__metaText">
+            {activity.workshopType}
+          </span>
+        </div>
       </div>
     </article>
   );

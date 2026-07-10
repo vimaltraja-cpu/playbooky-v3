@@ -76,6 +76,42 @@ a {
   background: rgba(125, 83, 48, 0.28);
 }
 
+.activity-card__meta {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+  min-width: 0;
+  overflow: hidden;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.activity-card__metaText {
+  background: linear-gradient(45deg, #7d5330 0%, #d99c56 100%);
+  background-clip: text;
+  color: transparent;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 16px;
+}
+
+.activity-card__metaText:last-child {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-card__divider {
+  background: #d99c56;
+  flex: 0 0 auto;
+  height: 16px;
+  width: 1px;
+}
+
 .composer-responsive-preview [aria-label="AI Composer"],
 .composer-responsive-preview [aria-label="AI Composer"] p {
   transition-duration: 300ms;
