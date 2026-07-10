@@ -63,7 +63,7 @@ const productSystemLinks: ProductSystemLink[] = [
 export default function ProductSystemPage() {
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/product-system" />
 
         <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
@@ -123,7 +123,7 @@ export default function ProductSystemPage() {
                 Product System Pages
               </p>
               <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {productSystemLinks.map((item) => (
+                {productSystemLinks.map((item) =>
                   item.href ? (
                     <a
                       className="group rounded-[24px] border border-[color:var(--line)] bg-white/52 p-5 transition hover:-translate-y-0.5 hover:bg-[#FFFCF7] hover:shadow-[0_18px_44px_rgba(36,31,24,0.08)] motion-reduce:hover:translate-y-0"
@@ -154,7 +154,7 @@ export default function ProductSystemPage() {
                       </p>
                     </article>
                   )
-                ))}
+                )}
               </div>
             </section>
           </div>

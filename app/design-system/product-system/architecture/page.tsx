@@ -57,7 +57,7 @@ const pipelineNodes: PipelineNode[] = [
 export default function ProductArchitecturePage() {
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/product-system/architecture" />
 
         <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
@@ -114,9 +114,7 @@ export default function ProductArchitecturePage() {
                           </div>
                         </a>
                       ) : (
-                        <article
-                          className="block rounded-[24px] border border-[#E2D7C7] bg-[#FFFCF7]/52 p-5 text-[#8F8578]"
-                        >
+                        <article className="block rounded-[24px] border border-[#E2D7C7] bg-[#FFFCF7]/52 p-5 text-[#8F8578]">
                           <div className="flex items-start gap-4">
                             <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-[#D9CEC0] text-sm font-semibold text-[#766B5D]">
                               {index + 1}

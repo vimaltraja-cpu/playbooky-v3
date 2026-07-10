@@ -16,7 +16,7 @@ export default function BuildingBlockStepsPage() {
 
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/product-system/libraries/building-block-steps" />
 
         <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">

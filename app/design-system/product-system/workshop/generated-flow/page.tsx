@@ -7,7 +7,7 @@ const flow = exampleGeneratedWorkshopFlow;
 export default function GeneratedWorkshopFlowPage() {
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/product-system/workshop/generated-flow" />
 
         <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
@@ -118,9 +118,7 @@ export default function GeneratedWorkshopFlowPage() {
                           {step.order}
                         </p>
                         <div>
-                          <h4 className="text-lg font-semibold">
-                            {step.name}
-                          </h4>
+                          <h4 className="text-lg font-semibold">{step.name}</h4>
                           <p className="mt-2 text-sm leading-6 text-[#2C2924]">
                             {step.instructions}
                           </p>
