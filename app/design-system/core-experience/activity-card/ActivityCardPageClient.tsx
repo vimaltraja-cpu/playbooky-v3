@@ -294,8 +294,7 @@ function ViewportPreview({
   activity: CanonicalActivityRecord;
   viewport: ViewportId;
 }) {
-  const scale =
-    viewport === "mobile" ? 0.72 : viewport === "tablet" ? 0.86 : 1;
+  const scale = viewport === "tablet" ? 0.86 : 1;
 
   return (
     <div
@@ -323,7 +322,10 @@ function ViewportPreview({
             transform: `scale(${scale})`
           }}
         >
-          <ActivityCard activity={toActivityCardData(activity)} />
+          <ActivityCard
+            activity={toActivityCardData(activity)}
+            size={viewport === "mobile" ? "mobile" : "desktop"}
+          />
         </div>
       </div>
     </div>
@@ -390,7 +392,7 @@ export function ActivityCardPageClient({
 
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/core-experience/activity-card" />
 
         <ComponentPageShell

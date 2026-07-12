@@ -4,6 +4,8 @@ export type ActivityCardVariant = "builder" | "library";
 
 export type ActivityCardState = "default" | "hover" | "dragging";
 
+export type ActivityCardSize = "desktop" | "mobile";
+
 export type ActivityCardData = {
   description: string;
   duration: string;
@@ -16,6 +18,7 @@ type ActivityCardProps = {
   activity: ActivityCardData;
   state?: ActivityCardState;
   variant?: ActivityCardVariant;
+  size?: ActivityCardSize;
 };
 
 function splitTitleIntoTwoLines(title: string) {
@@ -47,11 +50,13 @@ function DragHandle() {
 
 export function ActivityCard({
   activity,
+  size = "desktop",
   state = "default",
   variant = "library"
 }: ActivityCardProps) {
   const [titleLineOne, titleLineTwo] = splitTitleIntoTwoLines(activity.title);
   const isBuilder = variant === "builder";
+  const isMobile = size === "mobile";
   const isHover = state === "hover";
   const isDragging = state === "dragging";
 
@@ -59,7 +64,10 @@ export function ActivityCard({
     <article
       aria-label={`Activity card: ${activity.title}`}
       className={[
-        "relative flex h-[370px] w-[256px] flex-col gap-[2px] rounded-[16px] border-[2px] border-[#B77B32] bg-[#FCFBFA] p-[6px] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+        "relative flex flex-col rounded-[16px] border-[2px] border-[#B77B32] bg-[#FCFBFA] text-left shadow-[0_4px_8px_-2px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.06)] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+        isMobile
+          ? "box-border h-[190px] w-[333px] gap-[8px] px-[6px] py-[2px]"
+          : "h-[370px] w-[256px] gap-[2px] p-[6px]",
         isHover
           ? "translate-y-[-2px] shadow-[0_8px_18px_-5px_rgba(0,0,0,0.16),0_4px_8px_-4px_rgba(0,0,0,0.10)]"
           : "",
@@ -70,11 +78,18 @@ export function ActivityCard({
       data-state={state}
       data-variant={variant}
     >
-      <div className="relative -ml-[6px] -mt-[6px] h-[231px] w-[252px] shrink-0 overflow-hidden rounded-[12px]">
+      <div
+        className={[
+          "relative shrink-0 overflow-hidden",
+          isMobile
+            ? "h-[77px] w-[321px] rounded-[10px]"
+            : "-ml-[6px] -mt-[6px] h-[231px] w-[252px] rounded-[12px]"
+        ].join(" ")}
+      >
         {isBuilder ? <DragHandle /> : null}
         <Image
           alt=""
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover object-center"
           height={460}
           priority
           src={activity.illustration}
@@ -86,7 +101,14 @@ export function ActivityCard({
         />
       </div>
 
-      <div className="flex h-[125px] w-[244px] flex-col gap-[4px] pb-[8px] pt-[13px]">
+      <div
+        className={[
+          "flex flex-col gap-[4px]",
+          isMobile
+            ? "h-[101px] w-[321px]"
+            : "h-[125px] w-[244px] pb-[8px] pt-[13px]"
+        ].join(" ")}
+      >
         <h3
           className="grid h-[48px] grid-rows-2 overflow-hidden pl-[12px] pr-[12px] text-[22px] font-semibold leading-[24px] text-[#324236]"
           style={{

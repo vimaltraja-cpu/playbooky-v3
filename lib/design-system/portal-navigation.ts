@@ -162,6 +162,22 @@ export const portalNavigation: PortalNavSection[] = [
         href: "/design-system/core-experience/activity-grid",
         icon: "M",
         label: "Activity Grid"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Static desktop review for the Builder Activity Detail Modal.",
+        href: "/design-system/core-experience/activity-detail-modal",
+        icon: "O",
+        label: "Activity Detail Modal"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Motion-only prototype for reviewing the Activity Card to Activity Modal opening and closing transition.",
+        href: "/design-system/core-experience/activity-modal-motion",
+        icon: "O",
+        label: "Activity Modal Motion"
       }
     ],
     icon: "E",

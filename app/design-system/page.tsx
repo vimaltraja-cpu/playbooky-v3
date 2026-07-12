@@ -1,96 +1,162 @@
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
-import { getImplementedPortalPages } from "@/lib/design-system/portal-navigation";
 
-const featuredPages = getImplementedPortalPages().filter(
-  (page) => page.href !== "/design-system"
-);
+const livePages = [
+  {
+    description:
+      "Reusable component documentation structure, visual approval patterns, and shared system navigation.",
+    href: "/design-system/components/ai-composer",
+    label: "AI Composer",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Approved diagnosis card anatomy, icon usage, responsive behaviour, and accessibility notes.",
+    href: "/design-system/core-experience/diagnosis-card",
+    label: "Diagnosis Card",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Diagnosis card collections, responsive grid behaviour, and product preview states.",
+    href: "/design-system/core-experience/diagnosis-grid",
+    label: "Diagnosis Grid",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "The analysing state between diagnosis and recommendations, including its loading sequence.",
+    href: "/design-system/core-experience/recommendation-loading",
+    label: "Recommendation Loading",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Activity card structure, visual states, and usage guidance for workshop recommendations.",
+    href: "/design-system/core-experience/activity-card",
+    label: "Activity Card",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Activity grid layout, density, and responsive behaviour for recommendation surfaces.",
+    href: "/design-system/core-experience/activity-grid",
+    label: "Activity Grid",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Static review page for the approved Builder Activity Detail Modal.",
+    href: "/design-system/core-experience/activity-detail-modal",
+    label: "Activity Detail Modal",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Motion-only prototype for reviewing how an Activity Card unfolds into an Activity Grid-sized modal surface.",
+    href: "/design-system/core-experience/activity-modal-motion",
+    label: "Activity Modal Motion",
+    section: "Core Experience"
+  },
+  {
+    description:
+      "Product operating model, architecture references, and library ownership for PlayBooky.",
+    href: "/design-system/product-system",
+    label: "Product System Overview",
+    section: "Product System"
+  }
+];
 
-function PortalPreview({ label }: { label: string }) {
-  return (
-    <div className="relative h-56 overflow-hidden border-b border-white/[0.08] bg-[#15171c]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_18%,rgba(125,211,252,0.18),transparent_32%),radial-gradient(circle_at_78%_8%,rgba(255,255,255,0.08),transparent_24%)]" />
-      <div className="absolute inset-x-6 top-6 flex items-center gap-2">
-        <span className="h-2 w-2 rounded-full bg-red-400/60" />
-        <span className="h-2 w-2 rounded-full bg-yellow-300/60" />
-        <span className="h-2 w-2 rounded-full bg-green-400/60" />
-      </div>
-      <div className="absolute inset-x-6 bottom-6 grid gap-3">
-        <div className="h-3 w-24 rounded-full bg-white/20" />
-        <div className="grid grid-cols-3 gap-3">
-          <div className="h-24 rounded-md bg-white/[0.12]" />
-          <div className="h-24 rounded-md bg-white/[0.08]" />
-          <div className="h-24 rounded-md bg-white/[0.1]" />
-        </div>
-      </div>
-      <div className="absolute right-6 top-6 rounded-md border border-white/[0.1] bg-black/20 px-3 py-1.5 text-xs font-medium text-zinc-300 backdrop-blur">
-        {label}
-      </div>
-    </div>
-  );
-}
+const pendingAreas = [
+  "Foundations",
+  "Colours",
+  "Typography",
+  "Layout",
+  "Components",
+  "Patterns",
+  "Motion",
+  "Rules",
+  "Icons",
+  "Illustrations",
+  "Activity Illustrations"
+];
 
 export default function DesignSystemPage() {
   return (
-    <main className="min-h-screen bg-[#0b0c0f] text-zinc-100">
+    <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
       <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system" />
 
-        <section className="min-w-0 px-5 py-10 sm:px-8 lg:px-12 xl:px-16">
-          <div className="mx-auto max-w-7xl">
-            <header className="max-w-4xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-300/75">
-                PlayBooky Design Portal
+        <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
+          <div className="mx-auto max-w-6xl">
+            <header className="max-w-3xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--gold)]">
+                Source of truth
               </p>
-              <h2 className="mt-5 text-5xl font-semibold tracking-normal text-white sm:text-6xl">
-                A curated workspace for product and design-system review.
+              <h2 className="mt-4 text-4xl font-semibold tracking-normal sm:text-5xl">
+                PlayBooky Design Portal
               </h2>
-              <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-400">
-                Browse the implemented PlayBooky surfaces, component references,
-                and product-system pages in a dedicated dark documentation
-                environment.
+              <p className="mt-5 text-base leading-8 text-[color:var(--muted)] sm:text-lg">
+                One shared portal shell for the design system, product system,
+                and core experience documentation. Built pages are linked in the
+                sidebar; planned pages remain visible without sending people to
+                unfinished routes.
               </p>
             </header>
 
-            <section aria-labelledby="portal-gallery-heading" className="mt-14">
-              <div className="flex items-end justify-between gap-6">
-                <div>
-                  <h3
-                    className="text-2xl font-semibold text-white"
-                    id="portal-gallery-heading"
-                  >
-                    Available experiences
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-zinc-500">
-                    Only implemented routes are shown here.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-7 grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-                {featuredPages.map((page) => (
-                  <a
-                    className="group overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.035] transition duration-200 hover:-translate-y-0.5 hover:border-white/[0.16] hover:bg-white/[0.055] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300"
-                    href={page.href}
-                    key={page.href}
-                  >
-                    <PortalPreview label={page.icon} />
-                    <div className="p-5">
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-300/70">
-                        {page.category}
-                      </p>
-                      <h4 className="mt-3 text-xl font-semibold text-white">
-                        {page.label}
-                      </h4>
-                      {page.description ? (
-                        <p className="mt-3 text-sm leading-6 text-zinc-400">
-                          {page.description}
+            <div className="mt-12 grid gap-12 xl:grid-cols-[minmax(0,1fr)_360px]">
+              <section aria-labelledby="available-pages-heading">
+                <h3
+                  className="text-2xl font-semibold tracking-normal"
+                  id="available-pages-heading"
+                >
+                  Available pages
+                </h3>
+                <div className="mt-7 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
+                  {livePages.map((page) => (
+                    <a
+                      className="group grid gap-3 py-6 transition hover:bg-white/45 sm:grid-cols-[180px_minmax(0,1fr)] sm:px-4"
+                      href={page.href}
+                      key={page.href}
+                    >
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--gold)]">
+                          {page.section}
                         </p>
-                      ) : null}
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </section>
+                        <h4 className="mt-2 text-lg font-semibold text-[color:var(--foreground)] group-hover:text-[#7D5330]">
+                          {page.label}
+                        </h4>
+                      </div>
+                      <p className="max-w-2xl text-sm leading-7 text-[color:var(--muted)]">
+                        {page.description}
+                      </p>
+                    </a>
+                  ))}
+                </div>
+              </section>
+
+              <aside aria-labelledby="pending-areas-heading">
+                <h3
+                  className="text-2xl font-semibold tracking-normal"
+                  id="pending-areas-heading"
+                >
+                  Not yet implemented
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-[color:var(--muted)]">
+                  These areas are present in the navigation structure but remain
+                  disabled until their portal pages are ready.
+                </p>
+                <ul className="mt-6 flex flex-wrap gap-2">
+                  {pendingAreas.map((area) => (
+                    <li
+                      className="rounded-full border border-[color:var(--line)] bg-white/45 px-3 py-1.5 text-xs font-semibold text-[#8F8578]"
+                      key={area}
+                    >
+                      {area}
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+            </div>
           </div>
         </section>
       </div>

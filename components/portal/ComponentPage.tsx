@@ -155,14 +155,14 @@ export function ComponentSectionNav({
   return (
     <nav
       aria-label="Component page sections"
-      className="sticky top-0 z-20 -mx-5 mt-8 border-y border-white/[0.07] bg-[#0b0c0f]/88 px-5 py-2 backdrop-blur sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12"
+      className="sticky top-0 z-20 -mx-5 mt-8 flex justify-center border-y border-[color:var(--line)] bg-[color:var(--background)]/88 px-5 py-3 backdrop-blur sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12"
     >
-      <div className="relative flex max-w-full gap-1 overflow-x-auto">
+      <div className="relative mx-auto inline-flex max-w-full gap-2 overflow-x-auto rounded-full border border-[color:var(--line)] bg-white/60 p-1 shadow-[0_12px_34px_rgba(36,31,24,0.06)]">
         <span
           aria-hidden="true"
-          className="absolute bottom-0 top-0 rounded-md bg-white/[0.08] shadow-[inset_0_-1px_0_rgba(125,211,252,0.45)] transition-[transform,width] duration-[320ms] ease-[cubic-bezier(0.2,0,0,1)] will-change-[transform,width] motion-reduce:transition-none"
+          className="absolute bottom-1 top-1 rounded-full bg-[#7D5330] shadow-[0_12px_28px_rgba(125,83,48,0.24)] transition-[transform,width] duration-[320ms] ease-[cubic-bezier(0.2,0,0,1)] will-change-[transform,width] motion-reduce:transition-none"
           style={{
-            transform: `translateX(${indicator.left}px)`,
+            transform: `translateX(${indicator.left - 4}px)`,
             width: indicator.width
           }}
         />
@@ -174,10 +174,10 @@ export function ComponentSectionNav({
             <a
               aria-current={isActive ? "location" : undefined}
               className={[
-                "relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors duration-[320ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+                "relative z-10 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-[320ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
                 isActive
-                  ? "!text-zinc-50"
-                  : "!text-zinc-500 hover:bg-white/[0.055] hover:text-zinc-200"
+                  ? "!text-[#FCFBF9]"
+                  : "!text-[#171614] hover:bg-[#EFE3D2]/60"
               ].join(" ")}
               href={href}
               key={item.id}
@@ -218,16 +218,16 @@ export function ComponentPageShell({
   sections?: ComponentSectionNavItem[];
 }) {
   return (
-    <section className="min-w-0 bg-[#0b0c0f] px-5 py-8 text-zinc-100 sm:px-8 lg:px-12 lg:py-10">
+    <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
       <div className="mx-auto max-w-6xl">
         <header className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-300/75">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--gold)]">
             {metadata.category}
           </p>
           <h2 className="mt-4 text-4xl font-semibold tracking-normal sm:text-5xl">
             {metadata.title}
           </h2>
-          <p className="mt-5 text-base leading-8 text-zinc-400 sm:text-lg">
+          <p className="mt-5 text-base leading-8 text-[color:var(--muted)] sm:text-lg">
             {description}
           </p>
           <dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
@@ -238,10 +238,12 @@ export function ComponentPageShell({
               ["Last updated", metadata.lastUpdated]
             ].map(([term, detail]) => (
               <div key={term}>
-                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
+                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
                   {term}
                 </dt>
-                <dd className="mt-1 font-medium text-zinc-200">{detail}</dd>
+                <dd className="mt-1 font-medium text-[color:var(--foreground)]">
+                  {detail}
+                </dd>
               </div>
             ))}
           </dl>

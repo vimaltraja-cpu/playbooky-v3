@@ -3,12 +3,12 @@ import {
   type CanonicalActivityCardRecord
 } from "@/lib/data/canonical-activity-cards";
 
-import { ActivityCardPageClient } from "./ActivityCardPageClient";
+import { ActivityDetailModalPageClient } from "./ActivityDetailModalPageClient";
 
 export type CanonicalActivityRecord = CanonicalActivityCardRecord;
 
-export default function ActivityCardPage() {
+export default function ActivityDetailModalPortalPage() {
   const activities = getCanonicalActivityCards();
 
-  return <ActivityCardPageClient activities={activities} />;
+  return <ActivityDetailModalPageClient activities={activities} />;
 }

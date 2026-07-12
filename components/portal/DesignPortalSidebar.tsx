@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   portalNavigation,
@@ -12,6 +14,16 @@ import {
 const SIDEBAR_EXPANDED_WIDTH = "304px";
 const SIDEBAR_COLLAPSED_WIDTH = "76px";
 const SIDEBAR_STORAGE_KEY = "playbooky.portal.sidebar.collapsed";
+const NAVIGATION_ICON_PATH = "/assets/navigation-icons";
+
+const sectionIconSrcById: Record<string, string> = {
+  "core-experience": `${NAVIGATION_ICON_PATH}/core-experience.svg`,
+  "design-system": `${NAVIGATION_ICON_PATH}/deisgn-system.svg`,
+  "product-system": `${NAVIGATION_ICON_PATH}/product-system.svg`
+};
+
+const logoIconSrc = `${NAVIGATION_ICON_PATH}/logo-Icon.svg`;
+const logoWordmarkSrc = `${NAVIGATION_ICON_PATH}/logo-word.svg`;
 
 function itemIsActive(item: PortalNavItem, activeHref: string) {
   return item.href === activeHref;
@@ -40,21 +52,134 @@ function getActiveExpansion(activeHref: string): Record<string, boolean> {
   ) as Record<string, boolean>;
 }
 
-function IconBadge({ children }: { children: string }) {
+function SidebarTooltip({
+  children,
+  label
+}: {
+  children: ReactNode;
+  label: string;
+}) {
   return (
-    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-white/[0.06] text-[11px] font-semibold text-zinc-200 ring-1 ring-white/[0.06]">
+    <span className="group relative grid place-items-center">
       {children}
+      <span
+        className="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-md border border-white/[0.08] bg-[#1d1f23] px-2.5 py-1.5 text-xs font-medium text-zinc-100 opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.32)] transition-opacity delay-300 duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+        role="tooltip"
+      >
+        {label}
+      </span>
     </span>
+  );
+}
+
+function SectionIcon({ section }: { section: PortalNavSection }) {
+  const src = sectionIconSrcById[section.id];
+
+  if (!src) {
+    return null;
+  }
+
+  return (
+    <Image
+      alt=""
+      aria-hidden="true"
+      className="h-6 w-6 shrink-0"
+      height={70}
+      src={src}
+      width={72}
+    />
+  );
+}
+
+function SidebarToggleIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-4 w-4"
+      fill="none"
+      viewBox="0 0 20 20"
+    >
+      <path
+        d={
+          open
+            ? "M7.25 4.75 12.5 10l-5.25 5.25"
+            : "M12.75 4.75 7.5 10l5.25 5.25"
+        }
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.6"
+      />
+      <path
+        d={open ? "M4.75 4.5v11" : "M15.25 4.5v11"}
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.6"
+      />
+    </svg>
+  );
+}
+
+function LogoMark({ collapsed }: { collapsed: boolean }) {
+  return (
+    <Image
+      alt=""
+      aria-hidden="true"
+      className={collapsed ? "h-9 w-9" : "h-10 w-10"}
+      height={70}
+      src={collapsed ? logoIconSrc : logoWordmarkSrc}
+      width={72}
+    />
+  );
+}
+
+function LogoLink() {
+  return (
+    <a
+      aria-label="PlayBooky Design Portal"
+      className="grid h-10 w-10 place-items-center rounded-md transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300/70"
+      href="/design-system"
+    >
+      <LogoMark collapsed={false} />
+    </a>
+  );
+}
+
+function OpenSidebarButton({ onOpen }: { onOpen: () => void }) {
+  return (
+    <SidebarTooltip label="Open sidebar">
+      <button
+        aria-label="Open sidebar"
+        className="grid h-11 w-11 place-items-center rounded-lg text-zinc-100 transition-colors hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300/70"
+        onClick={onOpen}
+        type="button"
+      >
+        <LogoMark collapsed />
+      </button>
+    </SidebarTooltip>
+  );
+}
+
+function CloseSidebarButton({ onClose }: { onClose: () => void }) {
+  return (
+    <SidebarTooltip label="Close sidebar">
+      <button
+        aria-label="Close sidebar"
+        className="grid h-8 w-8 place-items-center rounded-md text-zinc-500 transition-colors hover:bg-white/[0.055] hover:text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300/70"
+        onClick={onClose}
+        type="button"
+      >
+        <SidebarToggleIcon open={false} />
+      </button>
+    </SidebarTooltip>
   );
 }
 
 function SidebarLink({
   active,
-  collapsed,
   item
 }: {
   active?: boolean;
-  collapsed: boolean;
   item: PortalNavItem;
 }) {
   return (
@@ -64,14 +189,11 @@ function SidebarLink({
         "group relative flex min-h-8 items-center gap-2.5 rounded-md px-2 py-1.5 text-[13px] font-medium leading-5 transition-colors",
         active
           ? "bg-white/[0.08] text-white before:absolute before:left-0 before:top-1.5 before:h-5 before:w-px before:bg-sky-300"
-          : "text-zinc-400 hover:bg-white/[0.055] hover:text-zinc-100",
-        collapsed ? "justify-center px-1" : ""
+          : "text-zinc-400 hover:bg-white/[0.055] hover:text-zinc-100"
       ].join(" ")}
       href={item.href}
-      title={collapsed ? item.label : undefined}
     >
-      {collapsed ? <IconBadge>{item.icon}</IconBadge> : null}
-      <span className={collapsed ? "sr-only" : "truncate"}>{item.label}</span>
+      <span className="truncate">{item.label}</span>
     </a>
   );
 }
@@ -111,24 +233,28 @@ function SidebarSection({
 
   if (collapsed) {
     return (
-      <a
-        aria-label={section.label}
-        className={[
-          "group relative mx-auto grid h-10 w-10 place-items-center rounded-lg text-sm font-semibold transition-colors",
-          active
-            ? "bg-white/[0.1] text-white"
-            : "text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-100"
-        ].join(" ")}
-        href={
-          section.children?.find((item) => item.href)?.href ?? "/design-system"
-        }
-        title={section.label}
-      >
-        {section.icon}
-        {active ? (
-          <span className="absolute left-0 top-2 h-6 w-px bg-sky-300" />
-        ) : null}
-      </a>
+      <SidebarTooltip label={section.label}>
+        <a
+          aria-label={section.label}
+          aria-current={active ? "page" : undefined}
+          className={[
+            "relative mx-auto grid h-11 w-11 place-items-center rounded-lg transition-colors",
+            active
+              ? "bg-white/[0.08]"
+              : "hover:bg-white/[0.055] focus-visible:bg-white/[0.055]",
+            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300/70"
+          ].join(" ")}
+          href={
+            section.children?.find((item) => item.href)?.href ??
+            "/design-system"
+          }
+        >
+          <SectionIcon section={section} />
+          {active ? (
+            <span className="absolute left-0 top-2.5 h-6 w-px bg-sky-300" />
+          ) : null}
+        </a>
+      </SidebarTooltip>
     );
   }
 
@@ -137,7 +263,7 @@ function SidebarSection({
       <button
         aria-expanded={expanded}
         className={[
-          "flex w-full items-center justify-between gap-3 rounded-md px-2 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors",
+          "flex w-full items-center justify-between gap-3 rounded-md px-2 py-2 text-left text-[12px] font-medium transition-colors",
           active
             ? "text-zinc-100"
             : "text-zinc-500 hover:bg-white/[0.045] hover:text-zinc-300"
@@ -145,7 +271,10 @@ function SidebarSection({
         onClick={onToggle}
         type="button"
       >
-        <span>{section.label}</span>
+        <span className="flex min-w-0 items-center gap-2.5">
+          <SectionIcon section={section} />
+          <span className="truncate">{section.label}</span>
+        </span>
         <CollapseChevron open={expanded} />
       </button>
 
@@ -160,7 +289,6 @@ function SidebarSection({
             {section.children?.map((item) => (
               <SidebarLink
                 active={itemIsActive(item, activeHref)}
-                collapsed={collapsed}
                 item={item}
                 key={item.href}
               />
@@ -199,7 +327,6 @@ function SidebarSection({
                         {group.children.map((item) => (
                           <SidebarLink
                             active={itemIsActive(item, activeHref)}
-                            collapsed={collapsed}
                             item={item}
                             key={item.href}
                           />
@@ -252,17 +379,10 @@ export function DesignPortalSidebar({ activeHref }: { activeHref?: string }) {
     }));
   }, [currentHref]);
 
-  const activeSection = useMemo(
-    () =>
-      portalNavigation.find((section) =>
-        sectionHasActiveChild(section, currentHref)
-      ),
-    [currentHref]
-  );
-
   return (
     <>
       <style>{`:root{--portal-sidebar-width:${SIDEBAR_EXPANDED_WIDTH};}`}</style>
+      <div aria-hidden="true" className="hidden lg:block" />
       <aside
         className={[
           "portal-sidebar-scrollbar z-30 border-b border-white/[0.08] bg-[#111214] text-zinc-100 lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:overflow-y-auto lg:border-b-0 lg:border-r",
@@ -270,58 +390,16 @@ export function DesignPortalSidebar({ activeHref }: { activeHref?: string }) {
         ].join(" ")}
       >
         <div className="flex min-h-full flex-col px-3 py-4">
-          <div
-            className={[
-              "flex items-center gap-3",
-              collapsed ? "justify-center" : "justify-between"
-            ].join(" ")}
-          >
-            <a
-              className={[
-                "min-w-0 rounded-md text-left transition-colors hover:text-white",
-                collapsed
-                  ? "grid h-10 w-10 place-items-center bg-white/[0.06]"
-                  : ""
-              ].join(" ")}
-              href="/design-system"
-              title="PlayBooky Design Portal"
-            >
-              {collapsed ? (
-                <span className="text-sm font-semibold">PB</span>
-              ) : (
-                <>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
-                    PlayBooky
-                  </p>
-                  <h1 className="mt-1 truncate text-[15px] font-semibold text-zinc-100">
-                    Design Portal
-                  </h1>
-                </>
-              )}
-            </a>
-            <button
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-zinc-100"
-              onClick={() => setCollapsed((current) => !current)}
-              type="button"
-            >
-              <span
-                aria-hidden="true"
-                className={[
-                  "transition-transform duration-200",
-                  collapsed ? "rotate-180" : ""
-                ].join(" ")}
-              >
-                &lt;
-              </span>
-            </button>
+          <div className={collapsed ? "flex justify-center" : "flex items-center justify-between gap-3"}>
+            {collapsed ? (
+              <OpenSidebarButton onOpen={() => setCollapsed(false)} />
+            ) : (
+              <>
+                <LogoLink />
+                <CloseSidebarButton onClose={() => setCollapsed(true)} />
+              </>
+            )}
           </div>
-
-          {collapsed && activeSection ? (
-            <p className="mt-4 text-center text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-500">
-              {activeSection.icon}
-            </p>
-          ) : null}
 
           <nav
             aria-label="Design Portal navigation"
