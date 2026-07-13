@@ -1,6 +1,7 @@
 "use client";
 
-import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 import {
   ComponentAccessibilitySection,
@@ -13,10 +14,6 @@ import {
 } from "@/components/portal/ComponentPage";
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
 import { ActivityDetailModal } from "@/components/ui/ActivityDetailModal";
-import {
-  ActivityModalMotionPrototype,
-  type ActivityModalMotionCard
-} from "@/components/ui/ActivityModalMotionPrototype";
 import {
   getActivityDetailModalData,
   okrsActivityDetailModalIconNames,
@@ -36,8 +33,8 @@ const componentMetadata = {
 
 const sectionItems: ComponentSectionNavItem[] = [
   { id: "overview", label: "Overview" },
-  { id: "preview", label: "Main Preview" },
-  { id: "library", label: "Library" },
+  { id: "library", label: "Activity Library" },
+  { id: "motion-prototype", label: "Motion Prototype" },
   { id: "specs", label: "Specs" },
   { id: "tokens", label: "Tokens" },
   { id: "accessibility", label: "Accessibility" }
@@ -156,40 +153,6 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   ]
 };
 
-const representativeSlugs = [
-  "problem-statement",
-  "five-whys",
-  "journey-map",
-  "stakeholder-map",
-  "how-might-we",
-  "okrs"
-] as const;
-
-function toMotionCard(activity: CanonicalActivityRecord) {
-  return {
-    activity: {
-      description: activity.description,
-      duration: activity.duration,
-      illustration: activity.illustration,
-      title: activity.title,
-      workshopType: activity.workshopType
-    },
-    id: `activity-detail-modal-motion-${activity.slug}`,
-    label: activity.title
-  } satisfies ActivityModalMotionCard;
-}
-
-function getMotionCards(activities: CanonicalActivityRecord[]) {
-  const activitiesBySlug = new Map(
-    activities.map((activity) => [activity.slug, activity])
-  );
-
-  return representativeSlugs
-    .map((slug) => activitiesBySlug.get(slug))
-    .filter((activity): activity is CanonicalActivityRecord => Boolean(activity))
-    .map(toMotionCard);
-}
-
 function useFitScale(width: number) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [scale, setScale] = useState(1);
@@ -249,46 +212,6 @@ function FitToWidth({
         </div>
       </div>
     </div>
-  );
-}
-
-function MainPreview({
-  activities,
-  motionCards
-}: {
-  activities: CanonicalActivityRecord[];
-  motionCards: ActivityModalMotionCard[];
-}) {
-  const activitiesByTitle = useMemo(
-    () => new Map(activities.map((activity) => [activity.title, activity])),
-    [activities]
-  );
-
-  return (
-    <section className="scroll-mt-40 py-10" id="preview">
-      <h3 className="text-2xl font-semibold">Main Preview</h3>
-      <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
-        Click an Activity Card to use the extracted Activity Modal Motion
-        shared-element transition. The opened state renders the real
-        ActivityDetailModal component.
-      </p>
-      <div className="mt-7">
-        <FitToWidth height={812} width={1424}>
-          <ActivityModalMotionPrototype
-            cards={motionCards}
-            framed={false}
-            renderModalContent={(card, { close }) => {
-              const sourceActivity = activitiesByTitle.get(card.activity.title);
-              const modalData = getActivityDetailModalData(
-                sourceActivity ?? activities[0]
-              );
-
-              return <ActivityDetailModal activity={modalData} onClose={close} />;
-            }}
-          />
-        </FitToWidth>
-      </div>
-    </section>
   );
 }
 
@@ -539,13 +462,31 @@ function LibraryReview({
   );
 }
 
+function MotionPrototypeSection() {
+  return (
+    <section className="scroll-mt-40 py-10" id="motion-prototype">
+      <h3 className="text-2xl font-semibold">Motion Prototype</h3>
+      <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
+        The standalone V2 prototype remains the review surface for the
+        Activity Card to Activity Detail Modal shell transition.
+      </p>
+      <Link
+        className="mt-6 inline-flex rounded-full bg-[#7D5330] px-5 py-2.5 text-sm font-semibold text-[#FCFBF9] transition hover:bg-[#6f4828] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#aa7d3a]/50"
+        href="/activity-modal-motion-v2"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Open Fullscreen Prototype -&gt;
+      </Link>
+    </section>
+  );
+}
+
 export function ActivityDetailModalPageClient({
   activities
 }: {
   activities: CanonicalActivityRecord[];
 }) {
-  const motionCards = useMemo(() => getMotionCards(activities), [activities]);
-
   return (
     <main className="min-h-screen overflow-x-hidden bg-[color:var(--background)] text-[color:var(--foreground)]">
       <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
@@ -557,8 +498,8 @@ export function ActivityDetailModalPageClient({
           sections={sectionItems}
         >
           <ComponentOverviewSection {...overviewCopy} />
-          <MainPreview activities={activities} motionCards={motionCards} />
           <LibraryReview activities={activities} />
+          <MotionPrototypeSection />
           <SpecsSection />
           <ComponentTokensSection
             description="Implementation values currently used by the shared ActivityDetailModal and extracted review motion."
