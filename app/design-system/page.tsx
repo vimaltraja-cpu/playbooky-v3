@@ -52,13 +52,6 @@ const livePages = [
   },
   {
     description:
-      "Motion-only prototype for reviewing how an Activity Card unfolds into an Activity Grid-sized modal surface.",
-    href: "/design-system/core-experience/activity-modal-motion",
-    label: "Activity Modal Motion",
-    section: "Core Experience"
-  },
-  {
-    description:
       "Product operating model, architecture references, and library ownership for PlayBooky.",
     href: "/design-system/product-system",
     label: "Product System Overview",

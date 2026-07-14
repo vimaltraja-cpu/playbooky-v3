@@ -215,7 +215,7 @@ function SpecsSection() {
 
 function ViewportPreview({ viewport }: { viewport: ViewportId }) {
   return (
-    <div className="overflow-hidden rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA]">
+    <div className="overflow-hidden rounded-[20px]">
       <RecommendationLoadingExperience
         className={
           viewport === "mobile"
@@ -251,8 +251,6 @@ export default function RecommendationLoadingPortalPage() {
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <SpecsSection />
-
           <ComponentViewportShowroom
             description="Review the full-page experience at desktop and a proposed mobile treatment."
             renderPreview={(viewport) => (
@@ -266,6 +264,8 @@ export default function RecommendationLoadingPortalPage() {
             renderPreview={(state) => <StatePreview state={state} />}
             states={showroomStates}
           />
+
+          <SpecsSection />
 
           <ComponentTokensSection
             description="Prototype visual values remain hardcoded for review. Motion, colour, and illustration roles need token approval before product use."

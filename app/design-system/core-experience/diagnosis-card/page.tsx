@@ -334,7 +334,7 @@ function SpecsSection() {
 
 function ViewportPreview() {
   return (
-    <div className="flex min-h-[360px] items-center justify-center overflow-visible rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-6">
+    <div className="flex min-h-[360px] items-center justify-center overflow-visible">
       <div className="max-w-full overflow-x-auto py-8">
         <DiagnosisCard state="default" />
       </div>
@@ -553,8 +553,6 @@ export default function DiagnosisCardPage() {
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <SpecsSection />
-
           <ComponentViewportShowroom
             description="The first review target is the desktop card. Tablet and mobile behaviour will be documented after the desktop card is approved."
             renderPreview={() => <ViewportPreview />}
@@ -571,6 +569,8 @@ export default function DiagnosisCardPage() {
             )}
             states={showroomStates}
           />
+
+          <SpecsSection />
 
           <ComponentTokensSection
             description="Prototype values remain hardcoded for review. These must become approved tokens before product use."

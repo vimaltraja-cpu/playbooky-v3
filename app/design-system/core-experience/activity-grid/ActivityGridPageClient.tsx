@@ -12,6 +12,7 @@ import {
   type ComponentTokenRow
 } from "@/components/portal/ComponentPage";
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
+import { ViewportReviewLayout } from "@/components/portal/ViewportReviewLayout";
 import {
   ActivityCard,
   type ActivityCardData
@@ -249,9 +250,9 @@ const componentMetadata = {
 
 const sectionItems: ComponentSectionNavItem[] = [
   { id: "overview", label: "Overview" },
-  { id: "specs", label: "Specs" },
   { id: "viewports", label: "Viewport" },
   { id: "states", label: "States" },
+  { id: "specs", label: "Specs" },
   { id: "tokens", label: "Tokens" },
   { id: "accessibility", label: "Accessibility" }
 ];
@@ -1237,49 +1238,31 @@ function ViewportSection({
 }: {
   initialCards: ActivityTemplateCard[];
 }) {
-  const [activeViewport, setActiveViewport] =
-    useState<ViewportMode>("desktop");
   const [variantKey, setVariantKey] = useState<VariantKey>("final");
-  const viewport = VIEWPORTS[activeViewport];
+  const viewportItems = (["desktop", "tablet", "mobile"] as const).map(
+    (mode) => {
+      const viewport = VIEWPORTS[mode];
+
+      return {
+        id: mode,
+        label: viewport.label,
+        notes: [
+          [
+            "Frame",
+            `${viewport.intrinsicWidth}px x ${viewport.intrinsicHeight}px`
+          ],
+          ["Grid", `${viewport.columns} columns`],
+          ["Card", `${viewport.cardWidth}px x ${viewport.cardHeight}px`],
+          ["Scroll", viewport.scrollBehaviour]
+        ] satisfies Array<[string, string]>
+      };
+    }
+  );
 
   return (
-    <section id="viewports" className="scroll-mt-40 py-10">
-      <div className="flex flex-wrap items-start justify-between gap-5">
-        <div>
-          <h3 className="text-2xl font-semibold">Viewport</h3>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
-            One active play area shows how the grid stacks, scrolls, drags,
-            reorders, and snaps in the selected viewport. Measurement notes sit
-            below the viewport so the play area keeps maximum room.
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <div
-            aria-label="Viewport"
-            className="grid grid-cols-3 rounded-[10px] border border-[#ddd4c5] bg-[#f4efe7] p-1"
-            role="radiogroup"
-          >
-            {(["desktop", "tablet", "mobile"] as const).map((mode) => (
-              <button
-                aria-checked={activeViewport === mode}
-                className={[
-                  "h-9 rounded-[7px] px-4 text-[12px] font-semibold transition",
-                  activeViewport === mode
-                    ? "bg-white text-[#28231d] shadow-[0_2px_8px_rgba(38,31,24,0.12)]"
-                    : "text-[#7e7567] hover:text-[#28231d]"
-                ].join(" ")}
-                key={mode}
-                onClick={() => setActiveViewport(mode)}
-                role="radio"
-                type="button"
-              >
-                {VIEWPORTS[mode].label}
-              </button>
-            ))}
-          </div>
-
-          <div
+    <ViewportReviewLayout
+      actions={
+        <div
             aria-label="Motion preset"
             className="grid grid-cols-4 rounded-[10px] border border-[#ddd4c5] bg-[#f4efe7] p-1"
             role="radiogroup"
@@ -1305,17 +1288,20 @@ function ViewportSection({
                 </button>
               )
             )}
-          </div>
         </div>
-      </div>
-
-      <ActivityGridPlayArea
-        key={`${activeViewport}-${variantKey}`}
-        initialCards={initialCards}
-        variantKey={variantKey}
-        viewport={viewport}
-      />
-    </section>
+      }
+      canvasClassName="p-0 sm:p-0"
+      description="One active play area shows how the grid stacks, scrolls, drags, reorders, and snaps in the selected viewport."
+      renderPreview={(activeViewport) => (
+        <ActivityGridPlayArea
+          key={`${activeViewport}-${variantKey}`}
+          initialCards={initialCards}
+          variantKey={variantKey}
+          viewport={VIEWPORTS[activeViewport]}
+        />
+      )}
+      viewports={viewportItems}
+    />
   );
 }
 
@@ -1338,11 +1324,11 @@ export function ActivityGridPageClient({
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <SpecsSection />
-
           <ViewportSection initialCards={initialCards} />
 
           <StatesSection />
+
+          <SpecsSection />
 
           <ComponentTokensSection
             description="These motion and viewport values are implementation-level prototype values. They should become approved motion and layout tokens before production use."

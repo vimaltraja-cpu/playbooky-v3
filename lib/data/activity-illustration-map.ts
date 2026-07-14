@@ -32,7 +32,7 @@ export const temporaryActivityIllustrationMap: Record<string, string> = {
   "Heart, Head, Hand": "Delivery Readiness Review.png",
   "Start Stop Continue": "Dependency Mapping.png",
   "Fishbowl": "Dependency Validation.png",
-  "Democratic Discussion": "Action Assignment.png",
+  "Democratic Discussion": "Round Robin.png",
   "Mad Sad Glad": "Problem Framing.png",
   "Three Little Pigs": "Pain Point Identification.png"
 };

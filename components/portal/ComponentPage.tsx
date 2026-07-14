@@ -2,9 +2,10 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
+import { ViewportReviewLayout } from "@/components/portal/ViewportReviewLayout";
 
 export type ComponentSectionId =
-  "overview" | "specs" | "viewports" | "states" | "tokens" | "accessibility";
+  "overview" | "viewports" | "states" | "specs" | "tokens" | "accessibility";
 
 export type ComponentSectionNavItem = {
   id: ComponentSectionId | string;
@@ -22,9 +23,9 @@ export type ComponentPageMetadata = {
 
 const defaultSectionItems: ComponentSectionNavItem[] = [
   { id: "overview", label: "Overview" },
-  { id: "specs", label: "Specs" },
-  { id: "viewports", label: "Viewports" },
+  { id: "viewports", label: "Viewport" },
   { id: "states", label: "States" },
+  { id: "specs", label: "Specs" },
   { id: "tokens", label: "Tokens" },
   { id: "accessibility", label: "Accessibility" }
 ];
@@ -327,7 +328,7 @@ export type ViewportShowroomItem<Viewport extends string> = {
 export function ComponentViewportShowroom<Viewport extends string>({
   description,
   renderPreview,
-  title = "Viewports",
+  title = "Viewport",
   viewports
 }: {
   description: string;
@@ -335,112 +336,13 @@ export function ComponentViewportShowroom<Viewport extends string>({
   title?: string;
   viewports: Array<ViewportShowroomItem<Viewport>>;
 }) {
-  const [activeViewport, setActiveViewport] = useState(viewports[0].id);
-  const [indicator, setIndicator] = useState({ left: 4, width: 0 });
-  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-  const activeItem =
-    viewports.find((viewport) => viewport.id === activeViewport) ??
-    viewports[0];
-
-  useEffect(() => {
-    const updateIndicator = () => {
-      const activeElement = triggerRefs.current[activeViewport];
-
-      if (!activeElement) {
-        return;
-      }
-
-      setIndicator({
-        left: activeElement.offsetLeft,
-        width: activeElement.offsetWidth
-      });
-    };
-
-    updateIndicator();
-    window.addEventListener("resize", updateIndicator);
-
-    return () => {
-      window.removeEventListener("resize", updateIndicator);
-    };
-  }, [activeViewport]);
-
   return (
-    <section id="viewports" className="scroll-mt-40 py-10">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h3 className="text-2xl font-semibold">{title}</h3>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[color:var(--muted)]">
-            {description}
-          </p>
-        </div>
-        <div
-          aria-label="Viewport preview"
-          className="relative flex w-fit rounded-full border border-[color:var(--line)] bg-white/65 p-1"
-          role="tablist"
-        >
-          <span
-            aria-hidden="true"
-            className="absolute bottom-1 top-1 rounded-full bg-[#7D5330] shadow-[0_10px_24px_rgba(125,83,48,0.18)] transition-[transform,width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none"
-            style={{
-              transform: `translateX(${indicator.left - 4}px)`,
-              width: indicator.width
-            }}
-          />
-          {viewports.map((viewport) => (
-            <button
-              aria-controls={`viewport-panel-${viewport.id}`}
-              aria-selected={activeViewport === viewport.id}
-              className={[
-                "relative z-10 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
-                activeViewport === viewport.id
-                  ? "!text-[#FCFBF9]"
-                  : "!text-[#171614] hover:bg-[#EFE3D2]/60"
-              ].join(" ")}
-              id={`viewport-tab-${viewport.id}`}
-              key={viewport.id}
-              onClick={() => setActiveViewport(viewport.id)}
-              ref={(element) => {
-                triggerRefs.current[viewport.id] = element;
-              }}
-              role="tab"
-              type="button"
-            >
-              {viewport.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-6 grid gap-5 min-[1500px]:grid-cols-[minmax(820px,1fr)_320px]">
-        <div
-          aria-labelledby={`viewport-tab-${activeItem.id}`}
-          className="min-w-0 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none"
-          id={`viewport-panel-${activeItem.id}`}
-          key={activeItem.id}
-          role="tabpanel"
-        >
-          {renderPreview(activeItem.id)}
-        </div>
-        <div className="rounded-[24px] border border-[color:var(--line)] bg-white/55 p-5">
-          <h4 className="text-sm font-semibold">
-            {activeItem.label} measurement notes
-          </h4>
-          <dl className="mt-5 space-y-4">
-            {activeItem.notes.map(([term, description]) => (
-              <div key={term}>
-                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
-                  {term}
-                </dt>
-                <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
-                  {description}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
-    </section>
+    <ViewportReviewLayout
+      description={description}
+      renderPreview={renderPreview}
+      title={title}
+      viewports={viewports}
+    />
   );
 }
 

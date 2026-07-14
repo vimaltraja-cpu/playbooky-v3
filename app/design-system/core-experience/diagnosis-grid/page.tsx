@@ -9,9 +9,61 @@ import {
   type ComponentTokenRow
 } from "@/components/portal/ComponentPage";
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
-import { ScaledDesktopMockup } from "@/components/portal/ScaledDesktopMockup";
+import { ViewportReviewLayout } from "@/components/portal/ViewportReviewLayout";
 import { DiagnosisCard } from "@/components/ui/DiagnosisCard";
 import { diagnosisGridPreviewOptions } from "@/lib/design-system/diagnosis-options";
+
+type ViewportId = "desktop" | "tablet" | "mobile";
+
+type PrototypeFrame = {
+  cardHeight: number;
+  columns: number;
+  frameHeight: number;
+  frameWidth: number;
+  gap: number;
+  gridHeight?: number;
+  gridInsetX: number;
+  gridTop: number;
+  label: string;
+  rows: number;
+};
+
+const frames: Record<ViewportId, PrototypeFrame> = {
+  desktop: {
+    cardHeight: 252,
+    columns: 3,
+    frameHeight: 900,
+    frameWidth: 1400,
+    gap: 20,
+    gridInsetX: 12,
+    gridTop: 188,
+    label: "Desktop",
+    rows: 2
+  },
+  tablet: {
+    cardHeight: 188,
+    columns: 2,
+    frameHeight: 900,
+    frameWidth: 900,
+    gap: 16,
+    gridInsetX: 48,
+    gridTop: 132,
+    label: "Tablet",
+    rows: 3
+  },
+  mobile: {
+    cardHeight: 78,
+    columns: 1,
+    frameHeight: 852,
+    frameWidth: 393,
+    gap: 12,
+    gridHeight: 567,
+    gridInsetX: 12,
+    gridTop: 142,
+    label: "Mobile",
+    rows: 6
+  }
+};
 
 const componentMetadata = {
   category: "Core Experience",
@@ -24,15 +76,15 @@ const componentMetadata = {
 
 const overviewCopy = {
   statusNote:
-    "This page documents the desktop diagnosis grid preview only. It is not a final diagnosis screen and is not approved for product use.",
+    "This page documents responsive grid behaviour only. It is not a final diagnosis screen and is not approved for product use.",
   summary:
-    "Diagnosis Grid demonstrates the intended desktop layout for six diagnosis option cards.",
+    "Diagnosis Grid demonstrates how six diagnosis option surfaces respond between desktop, tablet, and mobile layouts.",
   whatItIs:
-    "A scaled 1440 by 900 desktop viewport containing real diagnosis cards.",
+    "A responsive layout behaviour prototype for six equal diagnosis option surfaces.",
   whenNotToUse:
     "Do not use this page to approve content, typography, icons, selection visuals, or a final diagnosis screen.",
   whenToUse:
-    "Use it to review the desktop card grid, outer edges, spacing, and visual density.",
+    "Use it to review the reference layout morph from 3 columns by 2 rows, to 2 columns by 3 rows, to 1 column by 6 rows.",
   whereItAppears: "Inside the Design Portal documentation framework only.",
   whyItExists:
     "To make the grid behaviour reviewable inside the standard component documentation page without inventing final UI design."
@@ -41,17 +93,28 @@ const overviewCopy = {
 const specs = [
   ["Purpose", "Responsive diagnosis card grid behaviour"],
   ["Content", "Six real diagnosis option cards"],
-  ["Desktop frame", "1440px x 900px"],
+  ["Desktop frame", "1400px x 900px"],
   ["Desktop grid", "3 columns x 2 rows"],
   ["Desktop gap", "20px"],
-  ["Desktop side inset", "32px"],
-  ["Overflow", "Complete viewport visible, no cropped edges"],
-  ["Scaling", "Viewport scales down proportionally inside the page width"]
+  ["Tablet grid", "2 columns x 3 rows"],
+  ["Tablet gap", "16px"],
+  ["Mobile frame", "393px x 852px"],
+  ["Mobile grid zone", "567px height"],
+  ["Mobile grid", "1 column x 6 rows"],
+  ["Mobile row height", "78px"],
+  ["Mobile gap", "12px"],
+  ["Mobile side inset", "12px"],
+  [
+    "Mobile alignment",
+    "Six rows vertically centred inside the 567px grid zone"
+  ],
+  ["Overflow", "No internal scroll, no horizontal overflow, no clipping"],
+  ["Motion", "Smooth card position and size transition between viewports"]
 ];
 
 const tokenRows: ComponentTokenRow[] = [
   {
-    implementationValue: "1440px x 900px",
+    implementationValue: "1400px x 900px",
     label: "Desktop reference frame",
     status: "todo"
   },
@@ -61,13 +124,28 @@ const tokenRows: ComponentTokenRow[] = [
     status: "todo"
   },
   {
-    implementationValue: "32px",
-    label: "Desktop side inset",
+    implementationValue: "2 x 3 / 16px gap",
+    label: "Tablet grid",
     status: "todo"
   },
   {
-    implementationValue: "Scaled preview shell",
-    label: "Documentation viewport scaling",
+    implementationValue: "393px x 852px",
+    label: "Mobile reference frame",
+    status: "todo"
+  },
+  {
+    implementationValue: "567px",
+    label: "Mobile grid zone",
+    status: "todo"
+  },
+  {
+    implementationValue: "78px rows / 12px gap / 12px inset",
+    label: "Mobile rows",
+    status: "todo"
+  },
+  {
+    implementationValue: "360ms / cubic-bezier(0.22, 1, 0.36, 1)",
+    label: "Layout transition",
     status: "todo"
   }
 ];
@@ -97,8 +175,8 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   reducedMotion: [
     {
       description:
-        "The mockup uses static proportional scaling and does not require layout animation.",
-      title: "Static preview"
+        "Grid position and size transitions are disabled when reduced motion is requested.",
+      title: "Motion fallback"
     }
   ],
   screenReaderNotes: [
@@ -117,40 +195,94 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   ]
 };
 
-function DiagnosisGridDesktopMockup() {
-  return (
-    <ScaledDesktopMockup aria-label="Diagnosis grid in a 1440 by 900 desktop mockup">
-      <div className="flex h-full w-full flex-col bg-[#F7F2EA] px-8 py-10">
-        <header className="flex items-start justify-between gap-10">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#7D5330]">
-              Diagnosis
-            </p>
-            <h4 className="mt-4 max-w-3xl text-[44px] font-semibold leading-[1.08] tracking-normal text-[#171614]">
-              What are you trying to achieve?
-            </h4>
-            <p className="mt-4 max-w-2xl text-[18px] leading-8 text-[#5B554E]">
-              Six diagnosis options arranged in the intended desktop grid.
-            </p>
-          </div>
-          <div className="rounded-full border border-[#E8DFD3] bg-[#FCFBF9]/80 px-5 py-3 text-sm font-semibold text-[#7D5330]">
-            Desktop reference
-          </div>
-        </header>
+function getScale(frame: PrototypeFrame) {
+  if (frame.frameWidth === 1400) {
+    return 0.82;
+  }
 
-        <div className="mt-12 grid grid-cols-3 gap-5">
-          {diagnosisGridPreviewOptions.map((card, index) => (
-            <DiagnosisCard
-              description={card.description}
-              iconKey={card.iconKey}
-              key={card.id}
-              label={card.label}
-              state={index === 0 ? "selected" : "default"}
-            />
-          ))}
-        </div>
-      </div>
-    </ScaledDesktopMockup>
+  if (frame.frameWidth === 900) {
+    return 0.78;
+  }
+
+  return 0.82;
+}
+
+function getGridMetrics(frame: PrototypeFrame) {
+  const availableWidth = frame.frameWidth - frame.gridInsetX * 2;
+  const cardWidth =
+    (availableWidth - frame.gap * (frame.columns - 1)) / frame.columns;
+  const cardStackHeight =
+    frame.cardHeight * frame.rows + frame.gap * (frame.rows - 1);
+  const gridHeight = frame.gridHeight ?? cardStackHeight;
+  const verticalOffset = Math.max(0, (gridHeight - cardStackHeight) / 2);
+
+  return {
+    cardWidth,
+    verticalOffset
+  };
+}
+
+function getCardPosition(index: number, frame: PrototypeFrame) {
+  const metrics = getGridMetrics(frame);
+  const column = index % frame.columns;
+  const row = Math.floor(index / frame.columns);
+
+  return {
+    height: frame.cardHeight,
+    left: frame.gridInsetX + column * (metrics.cardWidth + frame.gap),
+    top:
+      frame.gridTop +
+      metrics.verticalOffset +
+      row * (frame.cardHeight + frame.gap),
+    width: metrics.cardWidth
+  };
+}
+
+function DiagnosisGridPrototype({ viewport }: { viewport: ViewportId }) {
+  const frame = frames[viewport];
+  const scale = getScale(frame);
+
+  return (
+    <div
+      aria-label={`${frame.label} responsive diagnosis grid prototype`}
+      className="relative shrink-0 overflow-hidden rounded-[28px] border border-[#E8DFD3] bg-[#F7F2EA] shadow-[0_24px_70px_rgba(36,31,24,0.12)] transition-[width,height,transform] duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+      style={{
+        height: frame.frameHeight,
+        transform: `scale(${scale})`,
+        transformOrigin: "center",
+        width: frame.frameWidth
+      }}
+    >
+      {diagnosisGridPreviewOptions.map((card, index) => {
+        const position = getCardPosition(index, frame);
+        const cardScale = Math.min(
+          position.width / 445.33,
+          position.height / 252
+        );
+
+        return (
+          <div
+            className="absolute overflow-hidden rounded-lg transition-[left,top,width,height] duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+            key={card.id}
+            style={position}
+          >
+            <div
+              style={{
+                transform: `scale(${cardScale})`,
+                transformOrigin: "top left"
+              }}
+            >
+              <DiagnosisCard
+                description={card.description}
+                iconKey={card.iconKey}
+                label={card.label}
+                state={index === 0 ? "selected" : "default"}
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -176,42 +308,52 @@ function SpecsSection() {
 }
 
 function ViewportsSection() {
-  return (
-    <section id="viewports" className="scroll-mt-40 py-10">
-      <div>
-        <h3 className="text-2xl font-semibold">Desktop Viewport</h3>
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-[color:var(--muted)]">
-          The full 1440 by 900 desktop frame is scaled to fit the documentation
-          page while preserving the grid edges.
-        </p>
-      </div>
+  const viewportItems = (Object.keys(frames) as ViewportId[]).map((id) => {
+    const frame = frames[id];
 
-      <div className="mt-6">
-        <div id="diagnosis-grid-viewport-panel" role="tabpanel">
-          <DiagnosisGridDesktopMockup />
-        </div>
-        <div className="mt-5 rounded-[24px] border border-[color:var(--line)] bg-white/55 p-5">
-          <h4 className="text-sm font-semibold">Desktop measurement notes</h4>
-          <dl className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              ["Frame", "1440px x 900px"],
-              ["Grid", "3 columns x 2 rows"],
-              ["Gap", "20px"],
-              ["Card size", "445.33px x 252px"]
-            ].map(([term, description]) => (
-              <div key={term}>
-                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
-                  {term}
-                </dt>
-                <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
-                  {description}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
-    </section>
+    return {
+      id,
+      label: frame.label,
+      notes: [
+        ["Frame", `${frame.frameWidth}px x ${frame.frameHeight}px`],
+        ["Grid", `${frame.columns} columns x ${frame.rows} rows`],
+        ["Gap", `${frame.gap}px`],
+        [
+          "Card height",
+          `${frame.cardHeight}px${id === "mobile" ? " rows" : ""}`
+        ],
+        [
+          "Mobile rule",
+          id === "mobile"
+            ? "Rows are vertically centred inside the 567px grid zone."
+            : "Not applicable."
+        ]
+      ] satisfies Array<[string, string]>
+    };
+  });
+
+  return (
+    <ViewportReviewLayout
+      canvasClassName="flex min-h-[760px] items-center justify-start overflow-x-auto overflow-y-hidden p-3 sm:justify-center sm:p-3"
+      description="Switch viewports to review the restored responsive grid morph inside the standard Design Portal presentation canvas."
+      renderPreview={(viewport) => {
+        const frame = frames[viewport];
+        const scale = getScale(frame);
+
+        return (
+          <div
+            className="flex items-center justify-center transition-[width,height] duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+            style={{
+              height: frame.frameHeight * scale,
+              width: frame.frameWidth * scale
+            }}
+          >
+            <DiagnosisGridPrototype viewport={viewport} />
+          </div>
+        );
+      }}
+      viewports={viewportItems}
+    />
   );
 }
 
@@ -242,11 +384,11 @@ export default function DiagnosisGridPage() {
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <SpecsSection />
-
           <ViewportsSection />
 
           <StatesSection />
+
+          <SpecsSection />
 
           <ComponentTokensSection
             description="These values document prototype grid behaviour only. They should become approved layout tokens before product implementation."

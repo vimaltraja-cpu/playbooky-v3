@@ -38,9 +38,9 @@ const componentMetadata = {
 
 const sectionItems: ComponentSectionNavItem[] = [
   { id: "overview", label: "Overview" },
-  { id: "specs", label: "Specs" },
-  { id: "viewports", label: "Viewports" },
+  { id: "viewports", label: "Viewport" },
   { id: "states", label: "States" },
+  { id: "specs", label: "Specs" },
   { id: "tokens", label: "Tokens" },
   { id: "accessibility", label: "Accessibility" },
   { id: "library", label: "Library" }
@@ -297,16 +297,7 @@ function ViewportPreview({
   const scale = viewport === "tablet" ? 0.86 : 1;
 
   return (
-    <div
-      className={[
-        "flex justify-center rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-5",
-        viewport === "mobile"
-          ? "min-h-[430px]"
-          : viewport === "tablet"
-            ? "min-h-[430px]"
-            : "min-h-[470px]"
-      ].join(" ")}
-    >
+    <div className="flex justify-center">
       <div
         className={[
           "flex items-center justify-center rounded-[24px] border border-[color:var(--line)] bg-white/50",
@@ -402,8 +393,6 @@ export function ActivityCardPageClient({
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <SpecsSection />
-
           <ComponentViewportShowroom
             description="The approved card does not change by viewport yet. These frames show the same card inside desktop, tablet, and mobile preview containers."
             renderPreview={(viewport) => (
@@ -428,6 +417,8 @@ export function ActivityCardPageClient({
             )}
             states={showroomStates}
           />
+
+          <SpecsSection />
 
           <ComponentTokensSection
             description="These values are present in the approved visual component and remain pending tokenisation."

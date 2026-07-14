@@ -1,6 +1,8 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
+import { temporaryActivityIllustrationMap } from "@/lib/data/activity-illustration-map";
+
 type CsvRow = Record<string, string>;
 
 export type CanonicalActivityCardRecord = {
@@ -150,10 +152,19 @@ export function getCanonicalActivityCards() {
 
   return parseCsv(readFileSync(csvPath, "utf8")).map((row: CsvRow) => {
     const title = row["Activity Name"]?.trim() ?? "";
+    const mappedIllustration = temporaryActivityIllustrationMap[title];
     const illustrationFile =
       getMatchCandidates(title)
         .map((candidate) => illustrationIndex.get(candidate))
-        .find(Boolean) ?? null;
+        .find(Boolean) ??
+      getMatchCandidates(
+        mappedIllustration
+          ? path.basename(mappedIllustration, path.extname(mappedIllustration))
+          : ""
+      )
+        .map((candidate) => illustrationIndex.get(candidate))
+        .find(Boolean) ??
+      null;
 
     if (
       !illustrationFile &&

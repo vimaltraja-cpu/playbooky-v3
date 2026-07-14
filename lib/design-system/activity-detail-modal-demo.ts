@@ -19,6 +19,7 @@ export const okrsActivityDetailModalSource =
 
 const placeholderIconSrc = "/assets/icons/clear-alignment.svg";
 
+// TODO: Replace these temporary modal step icons with the final Building Block icon system.
 const builderFlowIconSrcs = [
   "/assets/icons/clear-alignment.svg",
   "/assets/icons/focus-priorities.svg",

@@ -276,16 +276,7 @@ function ViewportPreview({ viewport }: { viewport: ViewportId }) {
   const isTablet = viewport === "tablet";
 
   return (
-    <div
-      className={[
-        "composer-responsive-preview flex justify-center overflow-visible rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-4 transition-[min-height,padding] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none sm:p-6",
-        isMobile
-          ? "min-h-[430px]"
-          : isTablet
-            ? "min-h-[400px]"
-            : "min-h-[430px]"
-      ].join(" ")}
-    >
+    <div className="composer-responsive-preview flex justify-center overflow-visible transition-[min-height,padding] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none">
       <div
         className={[
           "relative flex border border-[color:var(--line)] bg-[color:var(--panel)] transition-[width,height,border-radius,padding] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
@@ -546,8 +537,6 @@ export default function AIComposerPage() {
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <SpecsSection />
-
           <ComponentViewportShowroom
             description="Use the viewport control to review how the same component is positioned inside desktop, tablet, and mobile preview frames."
             renderPreview={(viewport) => (
@@ -566,6 +555,8 @@ export default function AIComposerPage() {
             )}
             states={showroomStates}
           />
+
+          <SpecsSection />
 
           <ComponentTokensSection
             description="Token TODOs remain in place until the component is visually approved. No final token names are being invented yet."
