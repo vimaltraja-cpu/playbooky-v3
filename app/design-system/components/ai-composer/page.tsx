@@ -527,7 +527,7 @@ function AIComposerStatePreview({
 
 export default function AIComposerPage() {
   return (
-    <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
+    <main className="min-h-screen bg-black text-[#ededed]">
       <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/components/ai-composer" />
 

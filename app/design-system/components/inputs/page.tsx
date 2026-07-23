@@ -1,4 +1,9 @@
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
+import {
+  ComponentPageShell,
+  type ComponentPageMetadata,
+  type ComponentSectionNavItem
+} from "@/components/portal/ComponentPage";
 
 const inputStates = [
   {
@@ -122,7 +127,7 @@ function FieldFrame({
   children: React.ReactNode;
 }) {
   return (
-    <article className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-5 shadow-[0_18px_45px_rgba(36,31,24,0.05)]">
+    <article className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-5 shadow-[0_18px_45px_rgba(36,31,24,0.05)]">
       <h4 className="text-sm font-semibold text-[color:var(--foreground)]">
         {title}
       </h4>
@@ -340,31 +345,40 @@ const tokenRows = [
   ]
 ];
 
+const componentMetadata: ComponentPageMetadata = {
+  category: "Components / Forms",
+  confidence: "Prototype",
+  lastUpdated: "2026-07-23",
+  owner: "Design System",
+  status: "In review",
+  title: "Inputs"
+};
+
+const sectionItems: ComponentSectionNavItem[] = [
+  { id: "overview", label: "Overview" },
+  { id: "specs", label: "Specs" },
+  { id: "viewports", label: "Viewports" },
+  { id: "states", label: "States" },
+  { id: "tokens", label: "Tokens" },
+  { id: "accessibility", label: "Accessibility" }
+];
+
 export default function InputsPage() {
   return (
-    <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
+    <main className="min-h-screen bg-black text-[#ededed]">
       <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/components/inputs" />
 
-        <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
-          <div className="mx-auto max-w-6xl">
-            <div className="max-w-3xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--gold)]">
-                Components / Forms
-              </p>
-              <h2 className="mt-4 text-4xl font-semibold tracking-normal sm:text-5xl">
-                Inputs
-              </h2>
-              <p className="mt-5 text-base leading-8 text-[color:var(--muted)] sm:text-lg">
-                A calm, accessible input family for collecting short text,
-                longer notes, and search queries inside future PlayBooky flows.
-              </p>
-            </div>
-
-            <div className="mt-10 grid gap-4 lg:grid-cols-3">
+        <ComponentPageShell
+          description="A calm, accessible input family for collecting short text, longer notes, and search queries inside future PlayBooky flows."
+          metadata={componentMetadata}
+          sections={sectionItems}
+        >
+          <div id="overview" className="scroll-mt-28 py-8">
+            <div className="grid gap-4 lg:grid-cols-3">
               <section
                 id="purpose"
-                className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-6"
+                className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-6"
               >
                 <h3 className="text-lg font-semibold">Purpose</h3>
                 <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
@@ -372,7 +386,7 @@ export default function InputsPage() {
                   without breaking the calm rhythm of the page.
                 </p>
               </section>
-              <section className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-6">
+              <section className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-6">
                 <h3 className="text-lg font-semibold">When to use</h3>
                 <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
                   Use Text Input for short answers, Textarea for longer context,
@@ -380,7 +394,7 @@ export default function InputsPage() {
                   collection.
                 </p>
               </section>
-              <section className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-6">
+              <section className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-6">
                 <h3 className="text-lg font-semibold">Quality bar</h3>
                 <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
                   Labels, helper text, clear focus, and state-specific feedback
@@ -388,14 +402,15 @@ export default function InputsPage() {
                 </p>
               </section>
             </div>
+          </div>
 
-            <section id="anatomy" className="mt-12">
+            <section id="specs" className="scroll-mt-28 py-8">
               <h3 className="text-2xl font-semibold">Anatomy</h3>
               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {anatomyItems.map((item) => (
                   <div
                     key={item}
-                    className="rounded-2xl border border-[color:var(--line)] bg-white/55 px-4 py-3 text-sm font-medium"
+                    className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] px-4 py-3 text-sm font-medium"
                   >
                     {item}
                   </div>
@@ -403,7 +418,7 @@ export default function InputsPage() {
               </div>
             </section>
 
-            <section id="variants" className="mt-12">
+            <section id="viewports" className="scroll-mt-28 py-8">
               <h3 className="text-2xl font-semibold">Variants</h3>
               <div className="mt-5 grid gap-5 lg:grid-cols-3">
                 <TextInputPreview state={inputStates[0]} index={100} />
@@ -412,7 +427,7 @@ export default function InputsPage() {
               </div>
             </section>
 
-            <section id="states" className="mt-12">
+            <section id="states" className="scroll-mt-28 py-8">
               <h3 className="text-2xl font-semibold">States</h3>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
                 Every input variant must define default, hover, focus, filled,
@@ -421,13 +436,13 @@ export default function InputsPage() {
               </p>
             </section>
 
-            <section id="responsive" className="mt-12">
+            <section id="responsive" className="scroll-mt-28 py-8">
               <h3 className="text-2xl font-semibold">Responsive behaviour</h3>
               <div className="mt-5 grid gap-4 md:grid-cols-3">
                 {["Desktop", "Tablet", "Mobile"].map((viewport) => (
                   <div
                     key={viewport}
-                    className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-5"
+                    className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-5"
                   >
                     <h4 className="text-sm font-semibold">{viewport}</h4>
                     <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
@@ -439,7 +454,7 @@ export default function InputsPage() {
               </div>
             </section>
 
-            <section id="accessibility" className="mt-12">
+            <section id="accessibility" className="scroll-mt-28 py-8">
               <h3 className="text-2xl font-semibold">Accessibility notes</h3>
               <ul className="mt-4 grid gap-3 text-sm leading-7 text-[color:var(--muted)] lg:grid-cols-2">
                 <li>Labels are visible and connected to each field.</li>
@@ -453,9 +468,9 @@ export default function InputsPage() {
               </ul>
             </section>
 
-            <section id="tokens" className="mt-12">
+            <section id="tokens" className="scroll-mt-28 py-8">
               <h3 className="text-2xl font-semibold">Token usage</h3>
-              <div className="mt-5 overflow-hidden rounded-2xl border border-[color:var(--line)] bg-white/55">
+              <div className="mt-5 overflow-hidden rounded-[10px] border border-white/[0.14] bg-[#0a0a0a]">
                 {tokenRows.map(([category, usage]) => (
                   <div
                     key={category}
@@ -470,7 +485,7 @@ export default function InputsPage() {
               </div>
             </section>
 
-            <section id="previews" className="mt-12">
+          <section id="previews" className="scroll-mt-28 py-8">
               <h3 className="text-2xl font-semibold">Preview examples</h3>
               <div className="mt-6 space-y-10">
                 <div>
@@ -512,9 +527,8 @@ export default function InputsPage() {
                   </div>
                 </div>
               </div>
-            </section>
-          </div>
-        </section>
+          </section>
+        </ComponentPageShell>
       </div>
     </main>
   );

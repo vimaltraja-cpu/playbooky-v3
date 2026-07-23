@@ -14,6 +14,7 @@ export function ViewportReviewLayout<Viewport extends string>({
   canvasClassName = "",
   description,
   initialViewport,
+  preservePanelOnViewportChange = false,
   renderPreview,
   title = "Viewport",
   viewports
@@ -22,6 +23,7 @@ export function ViewportReviewLayout<Viewport extends string>({
   canvasClassName?: string;
   description: string;
   initialViewport?: Viewport;
+  preservePanelOnViewportChange?: boolean;
   renderPreview: (viewport: Viewport) => ReactNode;
   title?: string;
   viewports: Array<ViewportReviewItem<Viewport>>;
@@ -59,23 +61,25 @@ export function ViewportReviewLayout<Viewport extends string>({
   }, [activeViewport]);
 
   return (
-    <section className="scroll-mt-40 py-10" id="viewports">
+    <section className="scroll-mt-28 py-8" id="viewports">
       <div>
-        <h3 className="text-2xl font-semibold">{title}</h3>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
+        <h3 className="text-[15px] font-semibold leading-6 text-[#ededed]">
+          {title}
+        </h3>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-[#a1a1a1]">
           {description}
         </p>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
         <div
           aria-label="Viewport"
-          className="relative flex w-fit rounded-full border border-[color:var(--line)] bg-white/65 p-1"
+          className="relative flex w-fit max-w-full overflow-x-auto rounded-md border border-white/[0.14] bg-[#0a0a0a] p-1"
           role="tablist"
         >
           <span
             aria-hidden="true"
-            className="absolute bottom-1 top-1 rounded-full bg-[#7D5330] shadow-[0_10px_24px_rgba(125,83,48,0.18)] transition-[transform,width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none"
+            className="absolute bottom-1 top-1 rounded bg-white/[0.08] transition-[transform,width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none"
             style={{
               transform: `translateX(${indicator.left - 4}px)`,
               width: indicator.width
@@ -86,10 +90,10 @@ export function ViewportReviewLayout<Viewport extends string>({
               aria-controls={`viewport-panel-${viewport.id}`}
               aria-selected={activeViewport === viewport.id}
               className={[
-                "relative z-10 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+                "relative z-10 rounded px-3 py-1.5 text-[13px] font-medium leading-5 transition-colors duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
                 activeViewport === viewport.id
-                  ? "!text-[#FCFBF9]"
-                  : "!text-[#171614] hover:bg-[#EFE3D2]/60"
+                  ? "text-[#ededed]"
+                  : "text-[#8f8f8f] hover:bg-white/[0.055] hover:text-[#d4d4d4]"
               ].join(" ")}
               id={`viewport-tab-${viewport.id}`}
               key={viewport.id}
@@ -111,27 +115,27 @@ export function ViewportReviewLayout<Viewport extends string>({
       <div
         aria-labelledby={`viewport-tab-${activeItem.id}`}
         className={[
-          "mt-5 min-w-0 overflow-hidden rounded-[24px] border border-[color:var(--line)] bg-[#F4F0EA] p-4 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none sm:p-6",
+          "mt-5 min-w-0 overflow-hidden rounded-[10px] border border-white/[0.14] bg-[#111214] p-4 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none sm:p-5",
           canvasClassName
         ].join(" ")}
         id={`viewport-panel-${activeItem.id}`}
-        key={activeItem.id}
+        key={preservePanelOnViewportChange ? "viewport-panel" : activeItem.id}
         role="tabpanel"
       >
         {renderPreview(activeItem.id)}
       </div>
 
-      <div className="mt-5 border-y border-[color:var(--line)] py-5">
-        <h4 className="text-sm font-semibold">
+      <div className="mt-5 rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-4">
+        <h4 className="text-[13px] font-medium leading-5 text-[#ededed]">
           {activeItem.label} measurement notes
         </h4>
         <dl className="mt-4 grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
           {activeItem.notes.map(([term, description]) => (
             <div key={term}>
-              <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
+              <dt className="text-[12px] font-medium leading-5 text-[#737373]">
                 {term}
               </dt>
-              <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+              <dd className="mt-1 text-sm leading-6 text-[#a1a1a1]">
                 {description}
               </dd>
             </div>
