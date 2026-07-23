@@ -3,11 +3,13 @@ export type PortalNavItem = {
   description?: string;
   href: string;
   icon: string;
+  keywords?: string[];
   label: string;
 };
 
 export type PortalNavGroup = {
   children: PortalNavItem[];
+  icon: string;
   id: string;
   label: string;
 };
@@ -20,6 +22,15 @@ export type PortalNavSection = {
   label: string;
 };
 
+export type PortalPageEntry = {
+  category: string;
+  description: string;
+  href: string;
+  icon: string;
+  keywords?: string[];
+  title: string;
+};
+
 export const portalNavigation: PortalNavSection[] = [
   {
     children: [
@@ -28,7 +39,8 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "Curated entry point for the PlayBooky design-system and product-system documentation.",
         href: "/design-system",
-        icon: "P",
+        icon: "home",
+        keywords: ["overview", "landing", "source of truth", "portal"],
         label: "Portal Home"
       },
       {
@@ -36,11 +48,12 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "Input component examples and implementation states for the portal component library.",
         href: "/design-system/components/inputs",
-        icon: "I",
+        icon: "toggle-left",
+        keywords: ["components", "forms", "controls", "fields"],
         label: "Inputs"
       }
     ],
-    icon: "D",
+    icon: "layout",
     id: "design-system",
     label: "Design System"
   },
@@ -51,7 +64,8 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "Product operating model, ownership references, and system-level documentation.",
         href: "/design-system/product-system",
-        icon: "O",
+        icon: "compass",
+        keywords: ["product system", "ownership", "operating model"],
         label: "Overview"
       },
       {
@@ -59,7 +73,8 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "Architecture references for PlayBooky diagnosis, recommendation, and workshop generation.",
         href: "/design-system/product-system/architecture",
-        icon: "A",
+        icon: "git-branch",
+        keywords: ["architecture", "diagnosis", "recommendations", "workshop generation"],
         label: "Product Architecture"
       }
     ],
@@ -71,7 +86,8 @@ export const portalNavigation: PortalNavSection[] = [
             description:
               "The reusable building-block catalogue that powers generated workshop flows.",
             href: "/design-system/product-system/libraries/building-block-library",
-            icon: "B",
+            icon: "package",
+            keywords: ["library", "catalogue", "workshop blocks", "building blocks"],
             label: "Building Block Library"
           },
           {
@@ -79,7 +95,8 @@ export const portalNavigation: PortalNavSection[] = [
             description:
               "Reusable facilitation step patterns and sequencing references.",
             href: "/design-system/product-system/libraries/building-block-steps",
-            icon: "S",
+            icon: "list",
+            keywords: ["steps", "sequencing", "facilitation", "patterns"],
             label: "Building Block Steps"
           },
           {
@@ -87,10 +104,12 @@ export const portalNavigation: PortalNavSection[] = [
             description:
               "Activity data, filtering behaviour, and workshop recommendation source material.",
             href: "/design-system/product-system/libraries/activity-library",
-            icon: "L",
+            icon: "grid",
+            keywords: ["activities", "filters", "recommendations", "source data"],
             label: "Activity Library"
           }
         ],
+        icon: "folder",
         id: "product-libraries",
         label: "Libraries"
       },
@@ -101,15 +120,17 @@ export const portalNavigation: PortalNavSection[] = [
             description:
               "A generated workshop flow example from diagnosis through facilitation-ready output.",
             href: "/design-system/product-system/workshop/generated-flow",
-            icon: "W",
+            icon: "git-merge",
+            keywords: ["workshop", "generated flow", "facilitation", "sequence"],
             label: "Generated Workshop Flow"
           }
         ],
+        icon: "users",
         id: "product-workshop",
         label: "Workshop"
       }
     ],
-    icon: "P",
+    icon: "3-layers",
     id: "product-system",
     label: "Product System"
   },
@@ -120,7 +141,8 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "The Composer surface for shaping workshop prompts and structured AI input.",
         href: "/design-system/components/ai-composer",
-        icon: "C",
+        icon: "zap",
+        keywords: ["ai", "composer", "prompt", "input"],
         label: "AI Composer"
       },
       {
@@ -128,7 +150,8 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "Diagnosis option card anatomy, content, icon usage, and interaction states.",
         href: "/design-system/core-experience/diagnosis-card",
-        icon: "D",
+        icon: "clipboard",
+        keywords: ["diagnosis", "card", "states", "accessibility"],
         label: "Diagnosis Card"
       },
       {
@@ -136,7 +159,8 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "Desktop diagnosis grid layout using real diagnosis card content.",
         href: "/design-system/core-experience/diagnosis-grid",
-        icon: "G",
+        icon: "columns",
+        keywords: ["diagnosis", "grid", "layout", "responsive"],
         label: "Diagnosis Grid"
       },
       {
@@ -144,7 +168,8 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "The analysing state between diagnosis and recommendations, including its loading sequence.",
         href: "/design-system/core-experience/recommendation-loading",
-        icon: "R",
+        icon: "target",
+        keywords: ["recommendations", "loading", "analysis", "sequence"],
         label: "Recommendation Loading"
       },
       {
@@ -152,7 +177,8 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "Activity card structure, visual states, and usage guidance for workshop recommendations.",
         href: "/design-system/core-experience/activity-card",
-        icon: "A",
+        icon: "activity",
+        keywords: ["activity", "card", "recommendations", "states"],
         label: "Activity Card"
       },
       {
@@ -160,7 +186,8 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "Activity grid layout, density, and responsive behaviour for recommendation surfaces.",
         href: "/design-system/core-experience/activity-grid",
-        icon: "M",
+        icon: "layout",
+        keywords: ["activity", "grid", "density", "responsive"],
         label: "Activity Grid"
       },
       {
@@ -168,11 +195,12 @@ export const portalNavigation: PortalNavSection[] = [
         description:
           "Static desktop review for the Builder Activity Detail Modal.",
         href: "/design-system/core-experience/activity-detail-modal",
-        icon: "O",
+        icon: "maximize-2",
+        keywords: ["activity", "modal", "detail", "builder"],
         label: "Activity Detail Modal"
       }
     ],
-    icon: "E",
+    icon: "monitor",
     id: "core-experience",
     label: "Core Experience"
   }
@@ -183,4 +211,15 @@ export function getImplementedPortalPages() {
     ...(section.children ?? []),
     ...(section.groups?.flatMap((group) => group.children) ?? [])
   ]);
+}
+
+export function getPortalPageEntries(): PortalPageEntry[] {
+  return getImplementedPortalPages().map((page) => ({
+    category: page.category,
+    description: page.description ?? "",
+    href: page.href,
+    icon: page.icon,
+    keywords: page.keywords,
+    title: page.label
+  }));
 }
