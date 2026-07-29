@@ -456,6 +456,7 @@ function CohesiveSurfaceEngine({
             */}
             <div
               style={{
+                borderRadius: Math.max(0, CARD_CONTENT_RADIUS_PX - CARD_STROKE_WIDTH_PX),
                 height: CARD_NATURAL_HEIGHT_PX - 2 * CARD_STROKE_WIDTH_PX,
                 left: CARD_STROKE_WIDTH_PX,
                 overflow: "hidden",
