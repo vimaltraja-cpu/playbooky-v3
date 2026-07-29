@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import Link from "next/link";
 
 import {
   ComponentPageShell,
@@ -8,29 +8,14 @@ import {
 } from "@/components/portal/ComponentPage";
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
 import { apertureRevealMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-3-aperture-reveal/ApertureRevealConcept";
-import { ApertureRevealConcept } from "@/components/prototypes/activity-modal-motion-v3/concept-3-aperture-reveal/ApertureRevealConcept";
 import { cohesiveSurfaceMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-1-cohesive-surface/CohesiveSurfaceConcept";
-import { CohesiveSurfaceConcept } from "@/components/prototypes/activity-modal-motion-v3/concept-1-cohesive-surface/CohesiveSurfaceConcept";
 import { focusFieldMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-2-focus-field/FocusFieldConcept";
-import { FocusFieldConcept } from "@/components/prototypes/activity-modal-motion-v3/concept-2-focus-field/FocusFieldConcept";
-import { ConceptFrame } from "@/components/prototypes/activity-modal-motion-v3/shared/ConceptFrame";
-import type { V3PrototypeCard } from "@/components/prototypes/activity-modal-motion-v3/shared/types";
-import { getActivityDetailModalData } from "@/lib/design-system/activity-detail-modal-demo";
-import type { CanonicalActivityCardRecord } from "@/lib/data/canonical-activity-cards";
-
-const REPRESENTATIVE_ACTIVITY_SLUGS = [
-  "problem-statement",
-  "five-whys",
-  "journey-map",
-  "stakeholder-map",
-  "how-might-we",
-  "okrs"
-] as const;
+import type { ConceptMeta } from "@/components/prototypes/activity-modal-motion-v3/shared/types";
 
 const componentMetadata = {
   category: "Core Experience",
   confidence: "3 Exploration — not yet a review candidate",
-  lastUpdated: "2026-07-28",
+  lastUpdated: "2026-07-29",
   owner: "Design System",
   status: "In exploration",
   title: "Active Modal Motion V3 — Explorations"
@@ -44,34 +29,11 @@ const sectionItems: ComponentSectionNavItem[] = [
   { id: "recommendation", label: "Recommendation" }
 ];
 
-function getPrototypeCards(
-  activities: CanonicalActivityCardRecord[]
-): V3PrototypeCard[] {
-  const activitiesBySlug = new Map(
-    activities.map((activity) => [activity.slug, activity])
-  );
-
-  return REPRESENTATIVE_ACTIVITY_SLUGS.map((slug) => {
-    const activity = activitiesBySlug.get(slug);
-
-    if (!activity) {
-      throw new Error(`Missing V3 exploration activity: ${slug}`);
-    }
-
-    return {
-      activity: {
-        description: activity.description,
-        duration: activity.duration,
-        illustration: activity.illustration,
-        title: activity.title,
-        workshopType: activity.workshopType
-      },
-      id: `activity-modal-motion-v3-${activity.slug}`,
-      label: activity.title,
-      modalData: getActivityDetailModalData(activity)
-    };
-  });
-}
+const conceptRoutes: Record<string, string> = {
+  "aperture-reveal": "/activity-modal-motion-v3-aperture-reveal",
+  "cohesive-surface": "/activity-modal-motion-v3-cohesive-surface",
+  "focus-field": "/activity-modal-motion-v3-focus-field"
+};
 
 function ProblemSection() {
   return (
@@ -88,6 +50,14 @@ function ProblemSection() {
         different motion principle, while reusing the same activity card and
         activity detail modal content/visual language as V2 — this is a
         motion-only comparison, not a redesign.
+      </p>
+
+      <p className="mt-3 max-w-3xl text-sm leading-6 text-[#a1a1a1]">
+        Each concept is staged as its own full-screen prototype route — a
+        real grid of real activity cards at real size, opening into a real
+        full-page modal experience — the same way V2 is staged, rather than
+        as a shrunk-down demo embedded in this write-up. Use the links below
+        to try each one.
       </p>
 
       <h4 className="mt-6 text-[13px] font-semibold leading-5 text-[#ededed]">
@@ -122,8 +92,9 @@ function ProblemSection() {
         <li>
           <code>prefers-reduced-motion</code> gets a genuinely different
           behaviour (cross-fade, no geometry animation), not just a shorter
-          duration. Use each concept&apos;s &quot;Preview reduced motion&quot;
-          toggle below to see it without changing your OS setting.
+          duration. Each full-screen prototype also has a &quot;Preview
+          reduced motion&quot; toggle to see it without changing your OS
+          setting.
         </li>
         <li>
           Interruption policy (consistent across all three): while a
@@ -133,6 +104,65 @@ function ProblemSection() {
           in-flight transition never has to re-target mid-flight.
         </li>
       </ul>
+    </section>
+  );
+}
+
+function ConceptCard({ meta }: { meta: ConceptMeta }) {
+  return (
+    <section
+      aria-labelledby={`${meta.id}-heading`}
+      className="scroll-mt-28 rounded-[20px] border border-[#2a2a2a] bg-[#161616] p-5"
+      id={meta.id}
+    >
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#a1a1a1]">
+        {meta.tagline}
+      </p>
+      <h3
+        className="mt-2 text-xl font-semibold text-[#ededed]"
+        id={`${meta.id}-heading`}
+      >
+        {meta.name}
+      </h3>
+      <p className="mt-3 max-w-3xl text-sm leading-6 text-[#a1a1a1]">
+        {meta.principle}
+      </p>
+
+      <div className="mt-5 grid gap-5 md:grid-cols-2">
+        <div>
+          <h4 className="mb-2 text-sm font-semibold text-[#3fb27f]">
+            Strengths
+          </h4>
+          <ul className="list-disc space-y-1 pl-4 text-xs leading-5 text-[#a1a1a1]">
+            {meta.strengths.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="mb-2 text-sm font-semibold text-[#e07a5f]">Risks</h4>
+          <ul className="list-disc space-y-1 pl-4 text-xs leading-5 text-[#a1a1a1]">
+            {meta.risks.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <h4 className="mb-2 text-sm font-semibold text-[#ededed]">
+          Recommended use
+        </h4>
+        <p className="text-xs leading-5 text-[#a1a1a1]">{meta.recommendedUse}</p>
+      </div>
+
+      <Link
+        className="mt-6 inline-flex min-h-11 items-center rounded-[12px] bg-[#ededed] px-4 text-sm font-semibold text-[#161616] transition hover:bg-white focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#aa7d3a]/50"
+        href={conceptRoutes[meta.id]}
+      >
+        Try the full-screen prototype →
+      </Link>
     </section>
   );
 }
@@ -165,45 +195,24 @@ function RecommendationSection() {
   );
 }
 
-export function ActivityModalMotionV3PageClient({
-  activities
-}: {
-  activities: CanonicalActivityCardRecord[];
-}) {
-  const cards = useMemo(() => getPrototypeCards(activities), [activities]);
-
+export function ActivityModalMotionV3PageClient() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[color:var(--background)] text-[color:var(--foreground)]">
       <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/core-experience/activity-modal-motion-v3" />
 
         <ComponentPageShell
-          description="Three structurally different motion explorations for the activity card → activity detail modal transition, built to solve the mechanical/rigid feel of the V2 isolated shell prototype. All three stay live for comparison; none is presented as a final decision."
+          description="Three structurally different motion explorations for the activity card → activity detail modal transition, built to solve the mechanical/rigid feel of the V2 isolated shell prototype. Each concept lives at its own full-screen prototype route, staged against a real grid of real activity cards — exactly like V2 — rather than as an embedded demo on this page. All three stay live for comparison; none is presented as a final decision."
           metadata={componentMetadata}
           sections={sectionItems}
         >
           <ProblemSection />
 
-          <section className="scroll-mt-28 py-8" id="cohesive-surface">
-            <ConceptFrame
-              controls={null}
-              meta={cohesiveSurfaceMeta}
-            >
-              <CohesiveSurfaceConcept cards={cards} />
-            </ConceptFrame>
-          </section>
-
-          <section className="scroll-mt-28 py-8" id="focus-field">
-            <ConceptFrame controls={null} meta={focusFieldMeta}>
-              <FocusFieldConcept cards={cards} />
-            </ConceptFrame>
-          </section>
-
-          <section className="scroll-mt-28 py-8" id="aperture-reveal">
-            <ConceptFrame controls={null} meta={apertureRevealMeta}>
-              <ApertureRevealConcept cards={cards} />
-            </ConceptFrame>
-          </section>
+          <div className="flex flex-col gap-6 py-4">
+            <ConceptCard meta={cohesiveSurfaceMeta} />
+            <ConceptCard meta={focusFieldMeta} />
+            <ConceptCard meta={apertureRevealMeta} />
+          </div>
 
           <RecommendationSection />
         </ComponentPageShell>

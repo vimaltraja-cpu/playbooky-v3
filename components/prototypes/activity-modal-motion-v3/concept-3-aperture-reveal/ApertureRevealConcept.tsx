@@ -232,7 +232,7 @@ export function ApertureRevealConcept({ cards }: { cards: V3PrototypeCard[] }) {
         />
       </div>
 
-      <div className="relative overflow-hidden p-6">
+      <div className="relative overflow-hidden py-6">
         <div
           style={{
             filter: fieldActive ? "blur(2px)" : "none",
@@ -240,7 +240,10 @@ export function ApertureRevealConcept({ cards }: { cards: V3PrototypeCard[] }) {
             transition: `filter ${d(SOFTEN_DURATION)}ms cubic-bezier(0.33,1,0.68,1), opacity ${d(SOFTEN_DURATION)}ms cubic-bezier(0.33,1,0.68,1)`
           }}
         >
-          <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
+          <div
+            className="mx-auto grid"
+            style={{ gap: 24, gridTemplateColumns: "repeat(5, 256px)" }}
+          >
             {cards.map((card) => {
               const isActive = activeCard?.id === card.id;
 

@@ -277,8 +277,11 @@ export function CohesiveSurfaceConcept({ cards }: { cards: V3PrototypeCard[] }) 
         />
       </div>
 
-      <div className="relative p-6" ref={gridRef}>
-        <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
+      <div className="relative py-6" ref={gridRef}>
+        <div
+          className="mx-auto grid"
+          style={{ gap: 24, gridTemplateColumns: "repeat(5, 256px)" }}
+        >
           {cards.map((card) => {
             const isActive = activeCard?.id === card.id;
 
