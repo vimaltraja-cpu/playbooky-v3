@@ -44,6 +44,41 @@ export function buildFlipTransform(origin: Rect, destination: Rect) {
   return `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`;
 }
 
+/**
+ * Concept 1 (Cohesive Surface) renders `ActivityCard` and
+ * `ActivityDetailModal` (`contentOnly`) inside an animated surface that can
+ * be any measured size. Both of those components have their own real,
+ * fixed-pixel intrinsic size (Tailwind `h-[..]`/`w-[..]` on their root
+ * element) that a CSS child selector can't reliably override. Rather than
+ * fight that specificity, render each component at its true natural size
+ * and scale that fixed-size box up to fill however big the surface
+ * currently is — the same "always transform, never width/height" idea
+ * `buildFlipTransform` already uses one level up, applied one level deeper.
+ */
+export const CARD_NATURAL_WIDTH_PX = 256;
+export const CARD_NATURAL_HEIGHT_PX = 370;
+export const MODAL_CONTENT_NATURAL_WIDTH_PX = 1364;
+export const MODAL_CONTENT_NATURAL_HEIGHT_PX = 758;
+
+/**
+ * Builds a static `scale()` transform that maps a fixed-size box (`natural`)
+ * onto `destination`'s current width/height. This is not part of the FLIP
+ * open/close flight itself — the surface that contains this box is the
+ * thing whose own transform animates from the origin card's rect to
+ * `translate(0) scale(1)`; this inner scale only needs to correctly map the
+ * fixed-size real content onto that surface's (constant) destination size,
+ * so it can be computed once destination is known and left static.
+ */
+export function buildFillTransform(
+  natural: { height: number; width: number },
+  destination: Rect
+) {
+  const scaleX = destination.width / natural.width;
+  const scaleY = destination.height / natural.height;
+
+  return `scale(${scaleX}, ${scaleY})`;
+}
+
 export function scaleDuration(ms: number, speed: "normal" | "slow") {
   return speed === "slow" ? ms * 4 : ms;
 }

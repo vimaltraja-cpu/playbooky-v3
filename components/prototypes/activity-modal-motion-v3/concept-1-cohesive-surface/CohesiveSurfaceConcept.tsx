@@ -30,7 +30,12 @@ import {
 } from "../shared/glassMotion";
 import { PlaybackControls } from "../shared/PlaybackControls";
 import {
+  buildFillTransform,
   buildFlipTransform,
+  CARD_NATURAL_HEIGHT_PX,
+  CARD_NATURAL_WIDTH_PX,
+  MODAL_CONTENT_NATURAL_HEIGHT_PX,
+  MODAL_CONTENT_NATURAL_WIDTH_PX,
   rectFromElement,
   scaleDuration,
   STAGE_MIN_HEIGHT_PX,
@@ -387,30 +392,63 @@ function CohesiveSurfaceEngine({
     const cardLayerBlurPx = cardLayerSoftened ? CARD_TO_GLASS_BLUR_PX : 0;
     const modalContentBlurred = isClosingContent || contentStage < 1;
 
+    // The surface's own box (surfaceRef) is a fixed destRect-sized box —
+    // only its outer `transform` animates (FLIP: origin rect -> identity).
+    // So the content layers below just need a *static* scale mapping each
+    // component's real fixed intrinsic size onto that constant destRect
+    // size; they don't need to counter-animate anything themselves.
+    const dest = destRectRef.current;
+    const cardFillTransform = dest
+      ? buildFillTransform({ height: CARD_NATURAL_HEIGHT_PX, width: CARD_NATURAL_WIDTH_PX }, dest)
+      : "none";
+    const modalFillTransform = dest
+      ? buildFillTransform(
+        { height: MODAL_CONTENT_NATURAL_HEIGHT_PX, width: MODAL_CONTENT_NATURAL_WIDTH_PX },
+        dest
+      )
+      : "none";
+
     return (
       <>
         {/*
           Layer 1 — the origin card's own real content, blurred in place.
-          `[&>article]:h-full [&>article]:w-full` matches ActivityCard's
-          root <article> as a *direct* child only, letting the surface's own
-          transform (translate+scale) carry it visually from card size to
-          stage size instead of animating width/height directly.
+          `ActivityCard`'s root <article> has its own fixed intrinsic size
+          (Tailwind h-[..]/w-[..]), so it's rendered at that real size inside
+          a fixed-size wrapper, then scaled up with a static `transform:
+          scale()` to fill however big the surface currently is. The
+          surface's own outer transform (FLIP) is what actually animates
+          from the card's rect to the stage rect — this inner scale just
+          keeps the real content mapped onto that constant destRect size.
         */}
         <div
-          className="absolute inset-0 overflow-hidden [&>article]:h-full [&>article]:w-full"
+          className="absolute inset-0 overflow-hidden"
           style={{
             filter: blurFilter(cardLayerBlurPx),
             opacity: crossfaded ? 0 : 1,
             transition: `filter ${d(CARD_TO_GLASS_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, opacity ${d(CONTENT_CROSSFADE_DURATION_MS)}ms ease`
           }}
         >
-          <ActivityCard activity={activeCard.activity} variant="builder" />
+          <div
+            style={{
+              height: CARD_NATURAL_HEIGHT_PX,
+              left: 0,
+              position: "absolute",
+              top: 0,
+              transform: cardFillTransform,
+              transformOrigin: "top left",
+              width: CARD_NATURAL_WIDTH_PX
+            }}
+          >
+            <ActivityCard activity={activeCard.activity} variant="builder" />
+          </div>
         </div>
 
         {/* Layer 2 — a blurred rendering of the modal's own content, that
-            crossfades in against layer 1 and then resolves to sharp focus. */}
+            crossfades in against layer 1 and then resolves to sharp focus.
+            `ActivityDetailModal` (`contentOnly`) also has a fixed intrinsic
+            size, so it gets the same fixed-size + static-scale treatment. */}
         <div
-          className="absolute inset-0 overflow-hidden [&>article]:h-full [&>article]:w-full"
+          className="absolute inset-0 overflow-hidden"
           style={{
             filter: modalContentBlurred ? blurFilter(CONTENT_BLUR_START_PX) : blurFilter(0),
             opacity: crossfaded ? 1 : 0,
@@ -420,7 +458,19 @@ function CohesiveSurfaceEngine({
               : `filter ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, opacity ${d(CONTENT_CROSSFADE_DURATION_MS)}ms ease, transform ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}`
           }}
         >
-          <ActivityDetailModal activity={activeCard.modalData} contentOnly isOpen />
+          <div
+            style={{
+              height: MODAL_CONTENT_NATURAL_HEIGHT_PX,
+              left: 0,
+              position: "absolute",
+              top: 0,
+              transform: modalFillTransform,
+              transformOrigin: "top left",
+              width: MODAL_CONTENT_NATURAL_WIDTH_PX
+            }}
+          >
+            <ActivityDetailModal activity={activeCard.modalData} contentOnly isOpen />
+          </div>
         </div>
       </>
     );

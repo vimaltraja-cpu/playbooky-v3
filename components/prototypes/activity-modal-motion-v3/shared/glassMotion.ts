@@ -67,9 +67,12 @@ export const CARD_DEFOCUS_EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
  */
 export const CONTENT_CROSSFADE_DURATION_MS = 180;
 /** Fraction of the expand/contract duration at which the crossfade is
- * centered — the two blurred layers swap visibility here, roughly halfway
- * through the surface's flight, not at the very end. */
-export const GLASS_CONTENT_CROSSFADE_CENTER_FRACTION = 0.5;
+ * centered — the two blurred layers swap visibility here. Deliberately
+ * early (shortly after the expand/contract transform begins) rather than at
+ * the midpoint, so the content handoff starts while the surface is still
+ * mostly in flight instead of waiting until it's halfway settled. The fade
+ * itself (its duration/character) is unchanged — only when it starts. */
+export const GLASS_CONTENT_CROSSFADE_CENTER_FRACTION = 0.15;
 
 /** The border/stroke fade used by Concept 1's "frameless" stroke variant —
  * the border fades out once content reaches sharp focus on open, and fades
