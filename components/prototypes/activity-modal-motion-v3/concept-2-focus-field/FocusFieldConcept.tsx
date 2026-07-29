@@ -6,6 +6,22 @@ import { createPortal } from "react-dom";
 import { ActivityCard } from "@/components/ui/ActivityCard";
 import { ActivityDetailModal } from "@/components/ui/ActivityDetailModal";
 
+import {
+  blurFilter,
+  CARD_DEFOCUS_DURATION_MS,
+  CARD_DEFOCUS_EASING,
+  CLOSE_CONTENT_DEFOCUS_DURATION_MS,
+  CLOSE_EASING,
+  CLOSE_GLASS_CONTRACT_DURATION_MS,
+  CONTENT_BLUR_START_PX,
+  CONTENT_FOCUS_DURATION_MS,
+  CONTENT_FOCUS_EASING,
+  GLASS_CONTENT_FOCUS_START_FRACTION,
+  GLASS_EXPAND_DURATION_MS,
+  GLASS_EXPAND_EASING,
+  GLASS_SURFACE_BLUR_PX,
+  GLASS_SURFACE_TINT
+} from "../shared/glassMotion";
 import { PlaybackControls } from "../shared/PlaybackControls";
 import {
   rectFromElement,
@@ -21,43 +37,43 @@ export const focusFieldMeta: ConceptMeta = {
   name: "Focus Field",
   tagline: "Concept 2 — depth plane, not direct expansion",
   principle:
-    "Instead of the card stretching into the modal, the whole interface changes depth planes. The selected card stays anchored for a beat and then recedes into a softened background field (dim + light blur). A modal surface resolves into focus independently, entering from a reduced scale anchored near the card's visual centre rather than tracing its edges frame-by-frame. The surface's final footprint is still the same measured grid/stage rect every concept uses — so it never exceeds the grid's bounds — but nothing tweens width/height directly to get there: it simply arrives, already whole, and content only appears once it is settled.",
+    "Instead of the card stretching into the modal, the whole interface changes depth planes. The selected card stays anchored for a beat and then recedes into a softened background field (dim + light blur). In that same beat a frosted glass surface — backdrop-filter blur plus a translucent tonal fill, anchored near the card's visual centre rather than tracing its edges — resolves independently and expands to the exact measured grid/stage rect. Once it is most of the way there, the modal content resolves from blurred to sharp focus and the surface's own glass blur clears alongside it, so the arrival reads as 'coming into focus' rather than a plain fade-in. Closing reverses the same beats: content defocuses, the still-frosted surface contracts back toward the card's centre, and finally the card itself — and the background field around it — defocuses back to its normal sharp, undimmed resting state.",
   sequence: [
     "Selection acknowledgement — the card lifts slightly (70ms).",
     "Field softening — the grid dims and defocuses as one plane (220ms); the card begins receding into that plane.",
-    "Surface resolution — a modal surface fades and settles in from a slightly reduced scale near the card's centre (300ms).",
-    "Primary content — heading and orientation copy resolve (150ms), only after the surface is nearly settled.",
+    "Glass resolve — a frosted glass surface (blurred, translucent) expands from a reduced scale near the card's centre to the full stage rect (380ms).",
+    "Content focus — once the surface is ~80% settled, content blurs in from 10px to sharp focus while the surface's glass blur clears (190ms).",
     "Supporting content — builder-flow row follows (120ms).",
     "Actions — footer actions arrive last (100ms).",
-    "Final focused state — surface is the dominant plane; background field stays softened behind it."
+    "Final focused state — surface is fully sharp and the dominant plane; background field stays softened behind it.",
+    "Close — content defocuses (140ms), the still-frosted surface contracts back toward the card's centre (300ms), then the card and the background field both defocus back to normal (180ms)."
   ],
   specs: [
     { property: "Selection acknowledge", duration: "70ms", easing: "ease-out", note: "translateY(-2px) on origin card" },
     { property: "Field dim + blur", duration: "220ms", easing: "cubic-bezier(0.33, 1, 0.68, 1)", note: "one backdrop plane, not per-card" },
     { property: "Card recession", duration: "260ms", easing: "ease-out", note: "scale 1→0.97, opacity 1→0.55, runs with field dim" },
-    { property: "Surface resolve", duration: "300ms", easing: "cubic-bezier(0.16, 1, 0.3, 1)", note: "scale 0.92→1 + opacity 0→1, transform-only" },
-    { property: "Heading/orientation", duration: "160ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "starts ~70% through surface resolve" },
+    { property: "Glass resolve", duration: "380ms", easing: "cubic-bezier(0.16, 1, 0.3, 1)", note: "scale 0.9→1 + backdrop-filter blur + translucent tint, transform/filter-only" },
+    { property: "Content focus", duration: "190ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "filter: blur(10px→0), starts once the glass resolve is ~80% settled; surface glass blur clears in the same window" },
     { property: "Supporting + actions", duration: "120ms / 100ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "staggered 80ms apart" },
-    { property: "Close reversal", duration: "220ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "content exits, surface recedes+fades, field restores, card returns" }
+    { property: "Close: content defocus", duration: "140ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "content blurs out before the surface moves" },
+    { property: "Close: glass contract", duration: "300ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "still-frosted surface contracts back toward the card's centre — JS unmount timer matches this duration exactly, no early cut" },
+    { property: "Close: card + field defocus", duration: "180ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "card and background field both return to normal sharp/undimmed — the final close beat" }
   ],
   strengths: [
-    "Nothing tweens width/height directly — only transform (scale) and opacity — so there is nothing to \"step\" during the resolve.",
+    "Nothing tweens width/height directly — only transform (scale), opacity and filter — so there is nothing to \"step\" during the resolve.",
     "Reads as a genuine depth/focus change rather than a resize, which matches \"becoming the active experience\" well.",
     "Still resolves to the exact same grid/stage rect as the other concepts, so the open state is never viewport-relative or off-grid."
   ],
   risks: [
     "Spatial link to the origin card is a suggestion (scale-anchored near its centre), not a literal one — some users may find the origin slightly less obvious than Concept 1.",
     "Needs a light touch on blur/scale or it drifts toward a generic dialog/cinematic feel.",
-    "Backdrop blur has a real (if modest) compositing cost on lower-end devices."
+    "backdrop-filter has a real (if modest) compositing cost on lower-end devices."
   ],
   recommendedUse: "Good fit when the destination content genuinely doesn't share the card's aspect ratio or when the grid position varies a lot (e.g. after filtering/reordering) and a literal shared-element would be visually noisy."
 };
 
 const ACK_DURATION = 70;
 const FIELD_DURATION = 220;
-const SURFACE_DURATION = 300;
-const CLOSE_CONTENT_DURATION = 90;
-const CLOSE_SURFACE_DURATION = 220;
 
 function useClearableTimers() {
   const timers = useRef<number[]>([]);
@@ -137,16 +153,22 @@ export function FocusFieldConcept({
 
     setContentStage(0);
     setPhase("acknowledge");
-    schedule(() => setPhase("soften"), d(ACK_DURATION));
-    schedule(() => setPhase("transform"), d(ACK_DURATION + 40));
-    schedule(() => setPhase("content-enter"), d(ACK_DURATION + FIELD_DURATION));
-    schedule(() => setContentStage(1), d(ACK_DURATION + SURFACE_DURATION * 0.7));
-    schedule(() => setContentStage(2), d(ACK_DURATION + SURFACE_DURATION * 0.7 + 90));
-    schedule(() => setContentStage(3), d(ACK_DURATION + SURFACE_DURATION * 0.7 + 170));
+
+    const softenAt = d(ACK_DURATION);
+    const transformAt = softenAt + d(40);
+    const contentEnterAt = transformAt + d(GLASS_EXPAND_DURATION_MS * GLASS_CONTENT_FOCUS_START_FRACTION);
+    const openAt = contentEnterAt + d(170) + d(230) - d(90);
+
+    schedule(() => setPhase("soften"), softenAt);
+    schedule(() => setPhase("transform"), transformAt);
+    schedule(() => setPhase("content-enter"), contentEnterAt);
+    schedule(() => setContentStage(1), contentEnterAt);
+    schedule(() => setContentStage(2), contentEnterAt + d(90));
+    schedule(() => setContentStage(3), contentEnterAt + d(170));
     schedule(() => {
       setPhase("open");
       closeButtonRef.current?.focus();
-    }, d(ACK_DURATION + SURFACE_DURATION * 0.7 + 230));
+    }, openAt);
   }
 
   function closeShell() {
@@ -163,12 +185,17 @@ export function FocusFieldConcept({
     setPhase("closing-content");
     setContentStage(0);
 
-    schedule(() => setPhase("closing-surface"), d(CLOSE_CONTENT_DURATION));
+    const closingSurfaceAt = d(CLOSE_CONTENT_DEFOCUS_DURATION_MS);
+    const restoringAt = closingSurfaceAt + d(CLOSE_GLASS_CONTRACT_DURATION_MS);
+    const doneAt = restoringAt + d(CARD_DEFOCUS_DURATION_MS);
+
+    schedule(() => setPhase("closing-surface"), closingSurfaceAt);
+    schedule(() => setPhase("restoring"), restoringAt);
     schedule(() => {
       const el = activeCardElementRef.current;
       reset();
       el?.focus();
-    }, d(CLOSE_CONTENT_DURATION + CLOSE_SURFACE_DURATION));
+    }, doneAt);
   }
 
   useEffect(() => {
@@ -186,13 +213,19 @@ export function FocusFieldConcept({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
-  const fieldActive = phase !== "idle";
+  // The field/card stay receded through every phase except the final
+  // "restoring" beat, where both defocus back to normal together — a
+  // single, deliberate close beat rather than a hard cut at unmount.
+  const fieldActive = phase !== "idle" && phase !== "restoring";
   const surfaceVisible =
     phase === "transform" ||
     phase === "content-enter" ||
     phase === "open" ||
     phase === "closing-content";
-  const surfaceSettled = surfaceVisible && phase !== "transform";
+  const surfaceSettled = phase === "open" || phase === "closing-content";
+  const isGlassy =
+    phase === "transform" || phase === "closing-content" || phase === "closing-surface";
+  const isClosingContent = phase === "closing-content";
 
   return (
     <div>
@@ -217,7 +250,7 @@ export function FocusFieldConcept({
           style={{
             filter: fieldActive ? "blur(2.5px)" : "none",
             transform: fieldActive ? "scale(0.99)" : "scale(1)",
-            transition: `filter ${d(FIELD_DURATION)}ms cubic-bezier(0.33,1,0.68,1), transform ${d(FIELD_DURATION)}ms cubic-bezier(0.33,1,0.68,1)`
+            transition: `filter ${d(fieldActive ? FIELD_DURATION : CARD_DEFOCUS_DURATION_MS)}ms ${fieldActive ? "cubic-bezier(0.33,1,0.68,1)" : CARD_DEFOCUS_EASING}, transform ${d(fieldActive ? FIELD_DURATION : CARD_DEFOCUS_DURATION_MS)}ms ${fieldActive ? "cubic-bezier(0.33,1,0.68,1)" : CARD_DEFOCUS_EASING}`
           }}
         >
           <div
@@ -254,7 +287,7 @@ export function FocusFieldConcept({
                         : isActive && fieldActive
                           ? "scale(0.97)"
                           : "scale(1)",
-                    transition: `opacity ${d(FIELD_DURATION)}ms cubic-bezier(0.33,1,0.68,1), transform ${d(ACK_DURATION)}ms ease-out`
+                    transition: `opacity ${d(fieldActive ? FIELD_DURATION : CARD_DEFOCUS_DURATION_MS)}ms ${fieldActive ? "cubic-bezier(0.33,1,0.68,1)" : CARD_DEFOCUS_EASING}, transform ${d(ACK_DURATION)}ms ease-out`
                   }}
                   type="button"
                 >
@@ -269,14 +302,16 @@ export function FocusFieldConcept({
           </div>
         </div>
 
-        {/* Dedicated dim overlay to sell the depth-plane shift */}
+        {/* Dedicated dim overlay to sell the depth-plane shift — fades out
+            together with the field/card on the "restoring" close beat
+            instead of cutting instantly at unmount. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
           style={{
             backgroundColor: "rgba(36,31,24,0.16)",
             opacity: fieldActive ? 1 : 0,
-            transition: `opacity ${d(FIELD_DURATION)}ms cubic-bezier(0.33,1,0.68,1)`
+            transition: `opacity ${d(fieldActive ? FIELD_DURATION : CARD_DEFOCUS_DURATION_MS)}ms ${fieldActive ? "cubic-bezier(0.33,1,0.68,1)" : CARD_DEFOCUS_EASING}`
           }}
         />
       </div>
@@ -314,25 +349,33 @@ export function FocusFieldConcept({
                   aria-modal={phase === "open" ? true : undefined}
                   className={
                     phase === "open" || phase === "closing-content"
-                      ? "pointer-events-auto relative h-full w-full overflow-hidden rounded-[20px] bg-[#FCFBFA] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
-                      : "pointer-events-none relative h-full w-full overflow-hidden rounded-[20px] bg-[#FCFBFA] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
+                      ? "pointer-events-auto relative h-full w-full overflow-hidden rounded-[20px] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
+                      : "pointer-events-none relative h-full w-full overflow-hidden rounded-[20px] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
                   }
                   role="dialog"
                   style={{
+                    background: isGlassy ? GLASS_SURFACE_TINT : "#FCFBFA",
+                    backdropFilter: isGlassy ? blurFilter(GLASS_SURFACE_BLUR_PX) : blurFilter(0),
+                    WebkitBackdropFilter: isGlassy ? blurFilter(GLASS_SURFACE_BLUR_PX) : blurFilter(0),
                     opacity: surfaceVisible ? 1 : 0,
-                    transform: surfaceSettled ? "scale(1)" : "scale(0.93)",
+                    transform: surfaceSettled ? "scale(1)" : "scale(0.9)",
                     transformOrigin: `${originXPercent}% ${originYPercent}%`,
                     transition: reducedMotion
                       ? "none"
-                      : `opacity ${d(SURFACE_DURATION)}ms cubic-bezier(0.16,1,0.3,1), transform ${d(SURFACE_DURATION)}ms cubic-bezier(0.16,1,0.3,1)`
+                      : phase === "closing-surface" || phase === "restoring"
+                        ? `opacity ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, transform ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, background ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, backdrop-filter ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}`
+                        : `opacity ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, transform ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, background ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, backdrop-filter ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}`
                   }}
                 >
                   <div
                     className="absolute inset-0 [&>article]:h-full [&>article]:w-full"
                     style={{
-                      opacity: contentStage >= 1 ? 1 : 0,
-                      transform: contentStage >= 1 ? "translateY(0)" : "translateY(6px)",
-                      transition: `opacity ${d(160)}ms cubic-bezier(0.22,1,0.36,1), transform ${d(160)}ms cubic-bezier(0.22,1,0.36,1)`
+                      filter: isClosingContent || contentStage < 1 ? blurFilter(CONTENT_BLUR_START_PX) : blurFilter(0),
+                      opacity: isClosingContent ? 0 : contentStage >= 1 ? 1 : 0,
+                      transform: contentStage >= 1 && !isClosingContent ? "translateY(0)" : "translateY(6px)",
+                      transition: isClosingContent
+                        ? `filter ${d(CLOSE_CONTENT_DEFOCUS_DURATION_MS)}ms ${CLOSE_EASING}, opacity ${d(CLOSE_CONTENT_DEFOCUS_DURATION_MS)}ms ${CLOSE_EASING}`
+                        : `filter ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, opacity ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, transform ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}`
                     }}
                   >
                     <ActivityDetailModal activity={activeCard.modalData} contentOnly isOpen />

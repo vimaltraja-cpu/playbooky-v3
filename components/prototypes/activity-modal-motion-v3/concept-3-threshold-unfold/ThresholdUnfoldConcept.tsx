@@ -6,6 +6,22 @@ import { createPortal } from "react-dom";
 import { ActivityCard } from "@/components/ui/ActivityCard";
 import { ActivityDetailModal } from "@/components/ui/ActivityDetailModal";
 
+import {
+  blurFilter,
+  CARD_DEFOCUS_DURATION_MS,
+  CARD_DEFOCUS_EASING,
+  CLOSE_CONTENT_DEFOCUS_DURATION_MS,
+  CLOSE_EASING,
+  CLOSE_GLASS_CONTRACT_DURATION_MS,
+  CONTENT_BLUR_START_PX,
+  CONTENT_FOCUS_DURATION_MS,
+  CONTENT_FOCUS_EASING,
+  GLASS_CONTENT_FOCUS_START_FRACTION,
+  GLASS_EXPAND_DURATION_MS,
+  GLASS_EXPAND_EASING,
+  GLASS_SURFACE_BLUR_PX,
+  GLASS_SURFACE_TINT
+} from "../shared/glassMotion";
 import { PlaybackControls } from "../shared/PlaybackControls";
 import {
   rectFromElement,
@@ -21,24 +37,27 @@ export const thresholdUnfoldMeta: ConceptMeta = {
   name: "Threshold Unfold",
   tagline: "Concept 3 — directional reveal, not a resizing box or a depth swap",
   principle:
-    "Rather than tracing the origin card's box (Concept 1) or resolving from a scaled-down point near it (Concept 2), the modal panel is anchored to the stage's own top edge and unfolds downward to fill the exact measured grid/stage rect, like a blind dropping into place. The panel's box is set to the stage rect from the first frame — it never grows past the grid's bounds — and a single directional clip-path reveals it top-to-bottom instead of tweening width or height. Because the reveal originates from the stage itself rather than the tapped card, it reads as 'this space is opening up' rather than 'this card became the modal', which is a deliberately different spatial idea from the other two concepts while still staying fully grid-bounded.",
+    "Rather than tracing the origin card's box (Concept 1) or resolving from a scaled-down point near it (Concept 2), the modal panel is anchored to the stage's own top edge and unfolds downward to fill the exact measured grid/stage rect, like a blind dropping into place. The panel's box is set to the stage rect from the first frame — it never grows past the grid's bounds — and a single directional clip-path reveals it top-to-bottom instead of tweening width or height. While unfolding, the panel reads as frosted glass — backdrop-filter blur plus a translucent tonal fill — and only once the reveal is most of the way there does the modal content resolve from blurred to sharp focus, with the panel's own glass blur clearing alongside it. Because the reveal originates from the stage itself rather than the tapped card, it reads as 'this space is opening up' rather than 'this card became the modal', a deliberately different spatial idea from the other two concepts while sharing the same glass-expand-to-focus treatment. Closing reverses the beats: content defocuses, the still-frosted panel retracts upward into the stage's top edge, then the softened grid field (including the tapped card) defocuses back to its normal sharp state.",
   sequence: [
     "Selection acknowledgement — the tapped card lifts slightly (80ms).",
-    "Environmental soften — sibling cards dim/blur as one field (150ms).",
-    "Threshold unfold — a directional clip-path reveals the panel from the stage's top edge downward to full stage coverage (380ms).",
-    "Primary content — heading and orientation text resolve once the unfold is mostly complete (160ms).",
+    "Environmental soften — the whole grid dims/blurs as one field (150ms).",
+    "Threshold unfold — a directional clip-path reveals a frosted glass panel from the stage's top edge downward to full stage coverage, staying glassy throughout (380ms).",
+    "Content focus — once the unfold reaches ~80% coverage, content blurs in from 10px to sharp focus while the panel's glass blur clears alongside it (190ms).",
     "Supporting content — the builder-flow row follows (120ms, staggered).",
-    "Actions — footer actions arrive last, once the panel is fully still (100ms).",
-    "Final focused state — panel fills the stage; focus moves to the close control."
+    "Actions — footer actions arrive last, once the panel is fully still and sharp (100ms).",
+    "Final focused state — panel fills the stage, fully in focus; focus moves to the close control.",
+    "Close — content defocuses (140ms), the still-frosted panel retracts upward into the stage's top edge (300ms), then the grid field defocuses back to normal (180ms)."
   ],
   specs: [
     { property: "Selection acknowledge", duration: "80ms", easing: "ease-out", note: "translateY(-2px) on the origin card only" },
     { property: "Sibling soften", duration: "150ms", easing: "cubic-bezier(0.33, 1, 0.68, 1)", note: "opacity 1→0.5, blur 0→2px, one field, not per card" },
-    { property: "Threshold unfold", duration: "380ms", easing: "cubic-bezier(0.16, 1, 0.3, 1)", note: "clip-path inset() only, top edge fixed, bottom edge sweeps from 100% to 0% — panel box is already the full stage rect" },
-    { property: "Heading/orientation", duration: "160ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "starts once the unfold reaches ~75% coverage" },
+    { property: "Threshold unfold", duration: "380ms", easing: "cubic-bezier(0.16, 1, 0.3, 1)", note: "clip-path inset() only, top edge fixed, bottom edge sweeps from 100% to 0%; panel stays a frosted glass surface (backdrop-filter + translucent tint) throughout" },
+    { property: "Content focus", duration: "190ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "filter: blur(10px→0), starts once the unfold reaches ~80% coverage; panel glass blur clears in the same window" },
     { property: "Supporting content", duration: "120ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "90ms after heading" },
     { property: "Actions", duration: "100ms", easing: "ease-out", note: "80ms after supporting content — final settle" },
-    { property: "Close reversal", duration: "300ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "content exits together (90ms) before the panel retracts upward into the stage's top edge (300ms) — a composed close, not the open played backwards frame-for-frame" }
+    { property: "Close: content defocus", duration: "140ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "content blurs out before the panel retracts" },
+    { property: "Close: glass retract", duration: "300ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "still-frosted panel retracts upward into the stage's top edge — JS unmount timer matches this duration exactly" },
+    { property: "Close: field defocus", duration: "180ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "the grid field (incl. the tapped card) returns to normal sharp/undimmed — the final close beat" }
   ],
   strengths: [
     "Structurally distinct from both a shared-element move and a scale/opacity depth resolve — the geometry is a single directional clip anchored to the stage, not the card.",
@@ -55,9 +74,6 @@ export const thresholdUnfoldMeta: ConceptMeta = {
 
 const ACK_DURATION = 80;
 const SOFTEN_DURATION = 150;
-const UNFOLD_DURATION = 380;
-const CLOSE_CONTENT_DURATION = 90;
-const CLOSE_UNFOLD_DURATION = 300;
 const REDUCED_MOTION_CROSSFADE_DURATION = 150;
 
 function useClearableTimers() {
@@ -143,22 +159,24 @@ export function ThresholdUnfoldConcept({
     setUnfolded(false);
     setPhase("acknowledge");
 
-    schedule(() => setPhase("soften"), d(ACK_DURATION));
+    const softenAt = d(ACK_DURATION);
+    const transformAt = softenAt + d(SOFTEN_DURATION);
+    const contentEnterAt = transformAt + d(GLASS_EXPAND_DURATION_MS * GLASS_CONTENT_FOCUS_START_FRACTION);
+    const openAt = contentEnterAt + d(170) + d(230) - d(90);
+
+    schedule(() => setPhase("soften"), softenAt);
     schedule(() => {
       setPhase("transform");
       requestAnimationFrame(() => requestAnimationFrame(() => setUnfolded(true)));
-    }, d(ACK_DURATION + SOFTEN_DURATION));
-    schedule(
-      () => setPhase("content-enter"),
-      d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.75)
-    );
-    schedule(() => setContentStage(1), d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.78));
-    schedule(() => setContentStage(2), d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.78 + 90));
-    schedule(() => setContentStage(3), d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.78 + 170));
+    }, transformAt);
+    schedule(() => setPhase("content-enter"), contentEnterAt);
+    schedule(() => setContentStage(1), contentEnterAt);
+    schedule(() => setContentStage(2), contentEnterAt + d(90));
+    schedule(() => setContentStage(3), contentEnterAt + d(170));
     schedule(() => {
       setPhase("open");
       closeButtonRef.current?.focus();
-    }, d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.78 + 230));
+    }, openAt);
   }
 
   function closeShell() {
@@ -176,16 +194,22 @@ export function ThresholdUnfoldConcept({
     setPhase("closing-content");
     setContentStage(0);
 
+    const closingSurfaceAt = d(CLOSE_CONTENT_DEFOCUS_DURATION_MS);
+    const restoringAt = closingSurfaceAt + d(CLOSE_GLASS_CONTRACT_DURATION_MS);
+    const doneAt = restoringAt + d(CARD_DEFOCUS_DURATION_MS);
+
     schedule(() => {
       setPhase("closing-surface");
       setUnfolded(false);
-    }, d(CLOSE_CONTENT_DURATION));
+    }, closingSurfaceAt);
+
+    schedule(() => setPhase("restoring"), restoringAt);
 
     schedule(() => {
       const el = activeCardElementRef.current;
       reset();
       el?.focus();
-    }, d(CLOSE_CONTENT_DURATION + CLOSE_UNFOLD_DURATION));
+    }, doneAt);
   }
 
   useEffect(() => {
@@ -203,15 +227,22 @@ export function ThresholdUnfoldConcept({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
-  const fieldActive = phase !== "idle";
+  // The field stays softened through every phase except the final
+  // "restoring" beat, where it defocuses back to normal together — a
+  // single, deliberate close beat rather than a hard cut at unmount.
+  const fieldActive = phase !== "idle" && phase !== "restoring";
   const panelVisible =
     phase === "transform" ||
     phase === "content-enter" ||
     phase === "open" ||
     phase === "closing-content" ||
     phase === "closing-surface";
+  const isGlassy =
+    phase === "transform" || phase === "closing-content" || phase === "closing-surface";
+  const isClosingContent = phase === "closing-content";
 
-  const closeDuration = phase === "closing-surface" ? CLOSE_UNFOLD_DURATION : UNFOLD_DURATION;
+  const closeDuration = phase === "closing-surface" ? CLOSE_GLASS_CONTRACT_DURATION_MS : GLASS_EXPAND_DURATION_MS;
+  const closeEasing = phase === "closing-surface" ? CLOSE_EASING : GLASS_EXPAND_EASING;
   const clipPath = unfolded ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)";
 
   return (
@@ -237,7 +268,7 @@ export function ThresholdUnfoldConcept({
           style={{
             filter: fieldActive ? "blur(2px)" : "none",
             opacity: fieldActive ? 0.5 : 1,
-            transition: `filter ${d(SOFTEN_DURATION)}ms cubic-bezier(0.33,1,0.68,1), opacity ${d(SOFTEN_DURATION)}ms cubic-bezier(0.33,1,0.68,1)`
+            transition: `filter ${d(fieldActive ? SOFTEN_DURATION : CARD_DEFOCUS_DURATION_MS)}ms ${fieldActive ? "cubic-bezier(0.33,1,0.68,1)" : CARD_DEFOCUS_EASING}, opacity ${d(fieldActive ? SOFTEN_DURATION : CARD_DEFOCUS_DURATION_MS)}ms ${fieldActive ? "cubic-bezier(0.33,1,0.68,1)" : CARD_DEFOCUS_EASING}`
           }}
         >
           <div
@@ -305,29 +336,36 @@ export function ThresholdUnfoldConcept({
                   aria-modal={phase === "open" ? true : undefined}
                   className={
                     phase === "open" || phase === "closing-content"
-                      ? "pointer-events-auto relative h-full w-full overflow-hidden rounded-[20px] bg-[linear-gradient(160deg,#FCFBFA_0%,#F3EEE7_100%)] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
-                      : "pointer-events-none relative h-full w-full overflow-hidden rounded-[20px] bg-[linear-gradient(160deg,#FCFBFA_0%,#F3EEE7_100%)] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
+                      ? "pointer-events-auto relative h-full w-full overflow-hidden rounded-[20px] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
+                      : "pointer-events-none relative h-full w-full overflow-hidden rounded-[20px] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
                   }
                   role="dialog"
                   style={
                     reducedMotion
                       ? {
+                        background: "#FCFBFA",
                         opacity: panelVisible ? 1 : 0,
                         transition: `opacity ${d(REDUCED_MOTION_CROSSFADE_DURATION)}ms ease-out`
                       }
                       : {
+                        background: isGlassy ? GLASS_SURFACE_TINT : "#FCFBFA",
+                        backdropFilter: isGlassy ? blurFilter(GLASS_SURFACE_BLUR_PX) : blurFilter(0),
+                        WebkitBackdropFilter: isGlassy ? blurFilter(GLASS_SURFACE_BLUR_PX) : blurFilter(0),
                         clipPath,
                         opacity: 1,
-                        transition: `clip-path ${d(closeDuration)}ms cubic-bezier(0.16,1,0.3,1)`
+                        transition: `clip-path ${d(closeDuration)}ms ${closeEasing}, background ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, backdrop-filter ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}`
                       }
                   }
                 >
                   <div
                     className="absolute inset-0 [&>article]:h-full [&>article]:w-full"
                     style={{
-                      opacity: contentStage >= 1 ? 1 : 0,
-                      transform: contentStage >= 1 ? "translateY(0)" : "translateY(6px)",
-                      transition: `opacity ${d(160)}ms cubic-bezier(0.22,1,0.36,1), transform ${d(160)}ms cubic-bezier(0.22,1,0.36,1)`
+                      filter: isClosingContent || contentStage < 1 ? blurFilter(CONTENT_BLUR_START_PX) : blurFilter(0),
+                      opacity: isClosingContent ? 0 : contentStage >= 1 ? 1 : 0,
+                      transform: contentStage >= 1 && !isClosingContent ? "translateY(0)" : "translateY(6px)",
+                      transition: isClosingContent
+                        ? `filter ${d(CLOSE_CONTENT_DEFOCUS_DURATION_MS)}ms ${CLOSE_EASING}, opacity ${d(CLOSE_CONTENT_DEFOCUS_DURATION_MS)}ms ${CLOSE_EASING}`
+                        : `filter ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, opacity ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, transform ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}`
                     }}
                   >
                     <ActivityDetailModal activity={activeCard.modalData} contentOnly isOpen />
