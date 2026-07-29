@@ -439,7 +439,43 @@ function CohesiveSurfaceEngine({
               width: CARD_NATURAL_WIDTH_PX
             }}
           >
-            <ActivityCard activity={activeCard.activity} variant="builder" />
+            {/*
+              `ActivityCard`'s own root <article> bakes in its own
+              `border-[2px] border-[#B77B32] rounded-[16px]` — left alone,
+              that renders a second border/radius ring nested under this
+              layer's own scale, on top of the surface's (surfaceRef) own
+              border+radius, which is the single source of truth for the
+              whole animated surface. This inner wrapper crops exactly
+              `CARD_STROKE_WIDTH_PX` off each edge of the natural-size card
+              (shifting the card by the same amount in the opposite
+              direction so its content stays registered at 0,0), so only
+              the card's interior content shows here — no border of its
+              own. Any square-cornered sliver left where the card's real
+              16px-radius corner used to be is clipped away by the outer
+              surface's own overflow-hidden + border-radius.
+            */}
+            <div
+              style={{
+                height: CARD_NATURAL_HEIGHT_PX - 2 * CARD_STROKE_WIDTH_PX,
+                left: CARD_STROKE_WIDTH_PX,
+                overflow: "hidden",
+                position: "absolute",
+                top: CARD_STROKE_WIDTH_PX,
+                width: CARD_NATURAL_WIDTH_PX - 2 * CARD_STROKE_WIDTH_PX
+              }}
+            >
+              <div
+                style={{
+                  height: CARD_NATURAL_HEIGHT_PX,
+                  left: -CARD_STROKE_WIDTH_PX,
+                  position: "absolute",
+                  top: -CARD_STROKE_WIDTH_PX,
+                  width: CARD_NATURAL_WIDTH_PX
+                }}
+              >
+                <ActivityCard activity={activeCard.activity} variant="builder" />
+              </div>
+            </div>
           </div>
         </div>
 
