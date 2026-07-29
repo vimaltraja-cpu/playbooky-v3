@@ -7,9 +7,9 @@ import {
   type ComponentSectionNavItem
 } from "@/components/portal/ComponentPage";
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
-import { apertureRevealMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-3-aperture-reveal/ApertureRevealConcept";
 import { cohesiveSurfaceMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-1-cohesive-surface/CohesiveSurfaceConcept";
 import { focusFieldMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-2-focus-field/FocusFieldConcept";
+import { thresholdUnfoldMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-3-threshold-unfold/ThresholdUnfoldConcept";
 import type { ConceptMeta } from "@/components/prototypes/activity-modal-motion-v3/shared/types";
 
 const componentMetadata = {
@@ -25,14 +25,17 @@ const sectionItems: ComponentSectionNavItem[] = [
   { id: "problem", label: "Problem" },
   { id: "cohesive-surface", label: "1. Cohesive Surface" },
   { id: "focus-field", label: "2. Focus Field" },
-  { id: "aperture-reveal", label: "3. Aperture Reveal" },
+  { id: "threshold-unfold", label: "3. Threshold Unfold" },
   { id: "recommendation", label: "Recommendation" }
 ];
 
+// All three concepts now live on one consolidated, tabbed prototype route —
+// each "Try the full-screen prototype" link preselects that concept's tab
+// via the `concept` query param rather than pointing at its own route.
 const conceptRoutes: Record<string, string> = {
-  "aperture-reveal": "/activity-modal-motion-v3-aperture-reveal",
-  "cohesive-surface": "/activity-modal-motion-v3-cohesive-surface",
-  "focus-field": "/activity-modal-motion-v3-focus-field"
+  "cohesive-surface": "/activity-modal-motion-v3?concept=cohesive-surface",
+  "focus-field": "/activity-modal-motion-v3?concept=focus-field",
+  "threshold-unfold": "/activity-modal-motion-v3?concept=threshold-unfold"
 };
 
 function ProblemSection() {
@@ -53,11 +56,12 @@ function ProblemSection() {
       </p>
 
       <p className="mt-3 max-w-3xl text-sm leading-6 text-[#a1a1a1]">
-        Each concept is staged as its own full-screen prototype route — a
-        real grid of real activity cards at real size, opening into a real
-        full-page modal experience — the same way V2 is staged, rather than
-        as a shrunk-down demo embedded in this write-up. Use the links below
-        to try each one.
+        All three concepts are staged on one consolidated full-screen
+        prototype route with a tab switcher — a real grid of real activity
+        cards at real size, opening into a real modal that always fills the
+        exact bounds of that same grid — the same way V2 is staged, rather
+        than as a shrunk-down demo embedded in this write-up. Use the links
+        below to try each one; each preselects its tab.
       </p>
 
       <h4 className="mt-6 text-[13px] font-semibold leading-5 text-[#ededed]">
@@ -83,6 +87,13 @@ function ProblemSection() {
           Prefer transform/opacity/clip-path over animating width, height,
           top, or left directly; portal + rect measurement (FLIP-style) where
           geometry is needed, following the same technique as V2.
+        </li>
+        <li>
+          One shared &quot;stage&quot; rule: every concept&apos;s open-state
+          width/height/position is measured from the same real grid element
+          — never viewport units, never a fixed/centered box — so the modal
+          can never render larger than or outside the card grid&apos;s own
+          bounds.
         </li>
         <li>
           Closing is a deliberately composed sequence — secondary content
@@ -183,13 +194,14 @@ function RecommendationSection() {
         to run (transform + opacity only). Concept 2 (Focus Field) is the
         better fit if the destination content&apos;s shape stops matching the
         card&apos;s aspect ratio, or if grid position becomes unstable (e.g.
-        after filtering). Concept 3 (Aperture Reveal) is worth prototyping
-        further as a dedicated &quot;focus mode&quot; entry point — e.g. from
-        the workshop builder when someone commits to working an activity
-        end-to-end — where a fuller canvas takeover and a persistent context
-        rail earn their extra visual weight. None of this forecloses further
-        exploration; it is a starting recommendation for the next review, not
-        an implementation decision.
+        after filtering). Concept 3 (Threshold Unfold) is worth prototyping
+        further when the goal is for the transition to read as &quot;the
+        grid&apos;s own space opening up&quot; rather than &quot;the card
+        became the modal&quot; — a genuinely different spatial idea from the
+        other two, while staying just as strictly bounded to the grid&apos;s
+        own rect. None of this forecloses further exploration; it is a
+        starting recommendation for the next review, not an implementation
+        decision.
       </p>
     </section>
   );
@@ -202,7 +214,7 @@ export function ActivityModalMotionV3PageClient() {
         <DesignPortalSidebar activeHref="/design-system/core-experience/activity-modal-motion-v3" />
 
         <ComponentPageShell
-          description="Three structurally different motion explorations for the activity card → activity detail modal transition, built to solve the mechanical/rigid feel of the V2 isolated shell prototype. Each concept lives at its own full-screen prototype route, staged against a real grid of real activity cards — exactly like V2 — rather than as an embedded demo on this page. All three stay live for comparison; none is presented as a final decision."
+          description="Three structurally different motion explorations for the activity card → activity detail modal transition, built to solve the mechanical/rigid feel of the V2 isolated shell prototype. All three now live on one consolidated, tab-switched full-screen prototype route, staged against the same real grid of real activity cards — exactly like V2 — rather than as an embedded demo on this page or three separate routes. All three stay live for comparison; none is presented as a final decision."
           metadata={componentMetadata}
           sections={sectionItems}
         >
@@ -211,7 +223,7 @@ export function ActivityModalMotionV3PageClient() {
           <div className="flex flex-col gap-6 py-4">
             <ConceptCard meta={cohesiveSurfaceMeta} />
             <ConceptCard meta={focusFieldMeta} />
-            <ConceptCard meta={apertureRevealMeta} />
+            <ConceptCard meta={thresholdUnfoldMeta} />
           </div>
 
           <RecommendationSection />

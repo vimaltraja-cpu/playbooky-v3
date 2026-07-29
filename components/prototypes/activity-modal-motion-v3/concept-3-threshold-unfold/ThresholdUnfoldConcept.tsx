@@ -16,48 +16,49 @@ import {
 import type { ConceptMeta, ConceptPhase, PlaybackSpeed, V3PrototypeCard } from "../shared/types";
 import { useSystemReducedMotionPreference } from "../shared/useReducedMotionPreference";
 
-export const focusFieldMeta: ConceptMeta = {
-  id: "focus-field",
-  name: "Focus Field",
-  tagline: "Concept 2 — depth plane, not direct expansion",
+export const thresholdUnfoldMeta: ConceptMeta = {
+  id: "threshold-unfold",
+  name: "Threshold Unfold",
+  tagline: "Concept 3 — directional reveal, not a resizing box or a depth swap",
   principle:
-    "Instead of the card stretching into the modal, the whole interface changes depth planes. The selected card stays anchored for a beat and then recedes into a softened background field (dim + light blur). A modal surface resolves into focus independently, entering from a reduced scale anchored near the card's visual centre rather than tracing its edges frame-by-frame. The surface's final footprint is still the same measured grid/stage rect every concept uses — so it never exceeds the grid's bounds — but nothing tweens width/height directly to get there: it simply arrives, already whole, and content only appears once it is settled.",
+    "Rather than tracing the origin card's box (Concept 1) or resolving from a scaled-down point near it (Concept 2), the modal panel is anchored to the stage's own top edge and unfolds downward to fill the exact measured grid/stage rect, like a blind dropping into place. The panel's box is set to the stage rect from the first frame — it never grows past the grid's bounds — and a single directional clip-path reveals it top-to-bottom instead of tweening width or height. Because the reveal originates from the stage itself rather than the tapped card, it reads as 'this space is opening up' rather than 'this card became the modal', which is a deliberately different spatial idea from the other two concepts while still staying fully grid-bounded.",
   sequence: [
-    "Selection acknowledgement — the card lifts slightly (70ms).",
-    "Field softening — the grid dims and defocuses as one plane (220ms); the card begins receding into that plane.",
-    "Surface resolution — a modal surface fades and settles in from a slightly reduced scale near the card's centre (300ms).",
-    "Primary content — heading and orientation copy resolve (150ms), only after the surface is nearly settled.",
-    "Supporting content — builder-flow row follows (120ms).",
-    "Actions — footer actions arrive last (100ms).",
-    "Final focused state — surface is the dominant plane; background field stays softened behind it."
+    "Selection acknowledgement — the tapped card lifts slightly (80ms).",
+    "Environmental soften — sibling cards dim/blur as one field (150ms).",
+    "Threshold unfold — a directional clip-path reveals the panel from the stage's top edge downward to full stage coverage (380ms).",
+    "Primary content — heading and orientation text resolve once the unfold is mostly complete (160ms).",
+    "Supporting content — the builder-flow row follows (120ms, staggered).",
+    "Actions — footer actions arrive last, once the panel is fully still (100ms).",
+    "Final focused state — panel fills the stage; focus moves to the close control."
   ],
   specs: [
-    { property: "Selection acknowledge", duration: "70ms", easing: "ease-out", note: "translateY(-2px) on origin card" },
-    { property: "Field dim + blur", duration: "220ms", easing: "cubic-bezier(0.33, 1, 0.68, 1)", note: "one backdrop plane, not per-card" },
-    { property: "Card recession", duration: "260ms", easing: "ease-out", note: "scale 1→0.97, opacity 1→0.55, runs with field dim" },
-    { property: "Surface resolve", duration: "300ms", easing: "cubic-bezier(0.16, 1, 0.3, 1)", note: "scale 0.92→1 + opacity 0→1, transform-only" },
-    { property: "Heading/orientation", duration: "160ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "starts ~70% through surface resolve" },
-    { property: "Supporting + actions", duration: "120ms / 100ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "staggered 80ms apart" },
-    { property: "Close reversal", duration: "220ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "content exits, surface recedes+fades, field restores, card returns" }
+    { property: "Selection acknowledge", duration: "80ms", easing: "ease-out", note: "translateY(-2px) on the origin card only" },
+    { property: "Sibling soften", duration: "150ms", easing: "cubic-bezier(0.33, 1, 0.68, 1)", note: "opacity 1→0.5, blur 0→2px, one field, not per card" },
+    { property: "Threshold unfold", duration: "380ms", easing: "cubic-bezier(0.16, 1, 0.3, 1)", note: "clip-path inset() only, top edge fixed, bottom edge sweeps from 100% to 0% — panel box is already the full stage rect" },
+    { property: "Heading/orientation", duration: "160ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "starts once the unfold reaches ~75% coverage" },
+    { property: "Supporting content", duration: "120ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "90ms after heading" },
+    { property: "Actions", duration: "100ms", easing: "ease-out", note: "80ms after supporting content — final settle" },
+    { property: "Close reversal", duration: "300ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "content exits together (90ms) before the panel retracts upward into the stage's top edge (300ms) — a composed close, not the open played backwards frame-for-frame" }
   ],
   strengths: [
-    "Nothing tweens width/height directly — only transform (scale) and opacity — so there is nothing to \"step\" during the resolve.",
-    "Reads as a genuine depth/focus change rather than a resize, which matches \"becoming the active experience\" well.",
-    "Still resolves to the exact same grid/stage rect as the other concepts, so the open state is never viewport-relative or off-grid."
+    "Structurally distinct from both a shared-element move and a scale/opacity depth resolve — the geometry is a single directional clip anchored to the stage, not the card.",
+    "The panel's box equals the measured stage rect on the very first frame, so it is trivially impossible for it to render outside the grid's bounds.",
+    "Reads as calm and directional rather than either 'this card grew' or 'a dialog faded in', which is a genuinely different register worth having alongside the other two."
   ],
   risks: [
-    "Spatial link to the origin card is a suggestion (scale-anchored near its centre), not a literal one — some users may find the origin slightly less obvious than Concept 1.",
-    "Needs a light touch on blur/scale or it drifts toward a generic dialog/cinematic feel.",
-    "Backdrop blur has a real (if modest) compositing cost on lower-end devices."
+    "clip-path animation is not as universally GPU-composited as transform/opacity; on low-end devices the reveal edge can show minor jank and should be feature-detected with a graceful fade-only fallback (the reduced-motion path already does this).",
+    "Because the reveal doesn't originate from the tapped card, the spatial link to 'which card did I open' is weaker than Concept 1 and relies on the sibling-soften step to carry that context.",
+    "A strongly top-down directional reveal can feel like a drawer/sheet pattern if overused elsewhere in the product, so it should stay reserved for this one transition."
   ],
-  recommendedUse: "Good fit when the destination content genuinely doesn't share the card's aspect ratio or when the grid position varies a lot (e.g. after filtering/reordering) and a literal shared-element would be visually noisy."
+  recommendedUse: "Worth prototyping further as an alternative to Concept 1 when the team wants the modal's arrival to feel like 'the grid's own space opening up' rather than 'the card turning into the modal' — e.g. if user testing shows people read Concept 1's morph as the card itself being edited rather than a new view opening."
 };
 
-const ACK_DURATION = 70;
-const FIELD_DURATION = 220;
-const SURFACE_DURATION = 300;
+const ACK_DURATION = 80;
+const SOFTEN_DURATION = 150;
+const UNFOLD_DURATION = 380;
 const CLOSE_CONTENT_DURATION = 90;
-const CLOSE_SURFACE_DURATION = 220;
+const CLOSE_UNFOLD_DURATION = 300;
+const REDUCED_MOTION_CROSSFADE_DURATION = 150;
 
 function useClearableTimers() {
   const timers = useRef<number[]>([]);
@@ -74,7 +75,7 @@ function useClearableTimers() {
   return { clearAll, schedule };
 }
 
-export function FocusFieldConcept({
+export function ThresholdUnfoldConcept({
   cards,
   onLockChange
 }: {
@@ -87,7 +88,7 @@ export function FocusFieldConcept({
   const [speed, setSpeed] = useState<PlaybackSpeed>("normal");
   const [reducedMotionPreview, setReducedMotionPreview] = useState(false);
   const [contentStage, setContentStage] = useState(0);
-  const [originPoint, setOriginPoint] = useState<{ x: number; y: number } | null>(null);
+  const [unfolded, setUnfolded] = useState(false);
 
   const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const gridRef = useRef<HTMLDivElement | null>(null);
@@ -111,24 +112,27 @@ export function FocusFieldConcept({
     setPhase("idle");
     setActiveCard(null);
     setContentStage(0);
-    setOriginPoint(null);
+    setUnfolded(false);
     destRectRef.current = null;
   }
 
   function openCard(card: V3PrototypeCard) {
-    if (isLocked) return;
+    // Consistent interruption policy across all three concepts: while any
+    // transition is in flight (phase !== "idle") every trigger is locked.
+    if (isLocked) {
+      return;
+    }
 
     const cardElement = cardRefs.current[card.id];
     const gridElement = gridRef.current;
     if (!cardElement || !gridElement) return;
 
     activeCardElementRef.current = cardElement;
-    const rect: Rect = rectFromElement(cardElement);
     destRectRef.current = rectFromElement(gridElement);
-    setOriginPoint({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
     setActiveCard(card);
 
     if (reducedMotion) {
+      setUnfolded(true);
       setContentStage(3);
       setPhase("open");
       schedule(() => closeButtonRef.current?.focus(), 30);
@@ -136,17 +140,25 @@ export function FocusFieldConcept({
     }
 
     setContentStage(0);
+    setUnfolded(false);
     setPhase("acknowledge");
+
     schedule(() => setPhase("soften"), d(ACK_DURATION));
-    schedule(() => setPhase("transform"), d(ACK_DURATION + 40));
-    schedule(() => setPhase("content-enter"), d(ACK_DURATION + FIELD_DURATION));
-    schedule(() => setContentStage(1), d(ACK_DURATION + SURFACE_DURATION * 0.7));
-    schedule(() => setContentStage(2), d(ACK_DURATION + SURFACE_DURATION * 0.7 + 90));
-    schedule(() => setContentStage(3), d(ACK_DURATION + SURFACE_DURATION * 0.7 + 170));
+    schedule(() => {
+      setPhase("transform");
+      requestAnimationFrame(() => requestAnimationFrame(() => setUnfolded(true)));
+    }, d(ACK_DURATION + SOFTEN_DURATION));
+    schedule(
+      () => setPhase("content-enter"),
+      d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.75)
+    );
+    schedule(() => setContentStage(1), d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.78));
+    schedule(() => setContentStage(2), d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.78 + 90));
+    schedule(() => setContentStage(3), d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.78 + 170));
     schedule(() => {
       setPhase("open");
       closeButtonRef.current?.focus();
-    }, d(ACK_DURATION + SURFACE_DURATION * 0.7 + 230));
+    }, d(ACK_DURATION + SOFTEN_DURATION + UNFOLD_DURATION * 0.78 + 230));
   }
 
   function closeShell() {
@@ -155,20 +167,25 @@ export function FocusFieldConcept({
     clearAll();
 
     if (reducedMotion) {
+      const el = activeCardElementRef.current;
       reset();
-      schedule(() => activeCardElementRef.current?.focus(), 30);
+      schedule(() => el?.focus(), 30);
       return;
     }
 
     setPhase("closing-content");
     setContentStage(0);
 
-    schedule(() => setPhase("closing-surface"), d(CLOSE_CONTENT_DURATION));
+    schedule(() => {
+      setPhase("closing-surface");
+      setUnfolded(false);
+    }, d(CLOSE_CONTENT_DURATION));
+
     schedule(() => {
       const el = activeCardElementRef.current;
       reset();
       el?.focus();
-    }, d(CLOSE_CONTENT_DURATION + CLOSE_SURFACE_DURATION));
+    }, d(CLOSE_CONTENT_DURATION + CLOSE_UNFOLD_DURATION));
   }
 
   useEffect(() => {
@@ -187,12 +204,15 @@ export function FocusFieldConcept({
   }, [phase]);
 
   const fieldActive = phase !== "idle";
-  const surfaceVisible =
+  const panelVisible =
     phase === "transform" ||
     phase === "content-enter" ||
     phase === "open" ||
-    phase === "closing-content";
-  const surfaceSettled = surfaceVisible && phase !== "transform";
+    phase === "closing-content" ||
+    phase === "closing-surface";
+
+  const closeDuration = phase === "closing-surface" ? CLOSE_UNFOLD_DURATION : UNFOLD_DURATION;
+  const clipPath = unfolded ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)";
 
   return (
     <div>
@@ -201,8 +221,9 @@ export function FocusFieldConcept({
           disabled={isLocked && phase !== "open"}
           onReplay={() => {
             if (!activeCard) return;
+            const card = activeCard;
             reset();
-            requestAnimationFrame(() => openCard(activeCard));
+            requestAnimationFrame(() => openCard(card));
           }}
           onSpeedChange={setSpeed}
           onToggleReducedMotionPreview={() => setReducedMotionPreview((v) => !v)}
@@ -212,12 +233,11 @@ export function FocusFieldConcept({
       </div>
 
       <div className="relative overflow-hidden py-6">
-        {/* Background field plane */}
         <div
           style={{
-            filter: fieldActive ? "blur(2.5px)" : "none",
-            transform: fieldActive ? "scale(0.99)" : "scale(1)",
-            transition: `filter ${d(FIELD_DURATION)}ms cubic-bezier(0.33,1,0.68,1), transform ${d(FIELD_DURATION)}ms cubic-bezier(0.33,1,0.68,1)`
+            filter: fieldActive ? "blur(2px)" : "none",
+            opacity: fieldActive ? 0.5 : 1,
+            transition: `filter ${d(SOFTEN_DURATION)}ms cubic-bezier(0.33,1,0.68,1), opacity ${d(SOFTEN_DURATION)}ms cubic-bezier(0.33,1,0.68,1)`
           }}
         >
           <div
@@ -234,7 +254,7 @@ export function FocusFieldConcept({
 
               return (
                 <button
-                  aria-label={`Open ${card.label} (Focus Field)`}
+                  aria-label={`Open ${card.label} (Threshold Unfold)`}
                   className="rounded-[16px] text-left focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#aa7d3a]/50"
                   disabled={isLocked}
                   key={card.id}
@@ -247,14 +267,8 @@ export function FocusFieldConcept({
                     cardRefs.current[card.id] = element;
                   }}
                   style={{
-                    opacity: isActive && fieldActive ? 0.55 : fieldActive ? 0.65 : 1,
-                    transform:
-                      isActive && phase === "acknowledge"
-                        ? "translateY(-2px) scale(1)"
-                        : isActive && fieldActive
-                          ? "scale(0.97)"
-                          : "scale(1)",
-                    transition: `opacity ${d(FIELD_DURATION)}ms cubic-bezier(0.33,1,0.68,1), transform ${d(ACK_DURATION)}ms ease-out`
+                    transform: isActive && phase === "acknowledge" ? "translateY(-2px)" : "translateY(0)",
+                    transition: `transform ${d(ACK_DURATION)}ms ease-out`
                   }}
                   type="button"
                 >
@@ -268,35 +282,12 @@ export function FocusFieldConcept({
             })}
           </div>
         </div>
-
-        {/* Dedicated dim overlay to sell the depth-plane shift */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundColor: "rgba(36,31,24,0.16)",
-            opacity: fieldActive ? 1 : 0,
-            transition: `opacity ${d(FIELD_DURATION)}ms cubic-bezier(0.33,1,0.68,1)`
-          }}
-        />
       </div>
 
-      {activeCard && originPoint && destRectRef.current
+      {activeCard && destRectRef.current
         ? createPortal(
           (() => {
             const dest = destRectRef.current as Rect;
-            // Origin-relative transform-origin, expressed as a percentage of
-            // the stage/destination rect (not the viewport) so the "resolve
-            // from near the card" motion still reads correctly no matter
-            // where the stage sits on the page.
-            const originXPercent =
-              dest.width > 0
-                ? Math.min(100, Math.max(0, ((originPoint.x - dest.left) / dest.width) * 100))
-                : 50;
-            const originYPercent =
-              dest.height > 0
-                ? Math.min(100, Math.max(0, ((originPoint.y - dest.top) / dest.height) * 100))
-                : 50;
 
             return (
               <div
@@ -314,18 +305,22 @@ export function FocusFieldConcept({
                   aria-modal={phase === "open" ? true : undefined}
                   className={
                     phase === "open" || phase === "closing-content"
-                      ? "pointer-events-auto relative h-full w-full overflow-hidden rounded-[20px] bg-[#FCFBFA] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
-                      : "pointer-events-none relative h-full w-full overflow-hidden rounded-[20px] bg-[#FCFBFA] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
+                      ? "pointer-events-auto relative h-full w-full overflow-hidden rounded-[20px] bg-[linear-gradient(160deg,#FCFBFA_0%,#F3EEE7_100%)] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
+                      : "pointer-events-none relative h-full w-full overflow-hidden rounded-[20px] bg-[linear-gradient(160deg,#FCFBFA_0%,#F3EEE7_100%)] shadow-[0_24px_60px_rgba(36,31,24,0.22)]"
                   }
                   role="dialog"
-                  style={{
-                    opacity: surfaceVisible ? 1 : 0,
-                    transform: surfaceSettled ? "scale(1)" : "scale(0.93)",
-                    transformOrigin: `${originXPercent}% ${originYPercent}%`,
-                    transition: reducedMotion
-                      ? "none"
-                      : `opacity ${d(SURFACE_DURATION)}ms cubic-bezier(0.16,1,0.3,1), transform ${d(SURFACE_DURATION)}ms cubic-bezier(0.16,1,0.3,1)`
-                  }}
+                  style={
+                    reducedMotion
+                      ? {
+                        opacity: panelVisible ? 1 : 0,
+                        transition: `opacity ${d(REDUCED_MOTION_CROSSFADE_DURATION)}ms ease-out`
+                      }
+                      : {
+                        clipPath,
+                        opacity: 1,
+                        transition: `clip-path ${d(closeDuration)}ms cubic-bezier(0.16,1,0.3,1)`
+                      }
+                  }
                 >
                   <div
                     className="absolute inset-0 [&>article]:h-full [&>article]:w-full"

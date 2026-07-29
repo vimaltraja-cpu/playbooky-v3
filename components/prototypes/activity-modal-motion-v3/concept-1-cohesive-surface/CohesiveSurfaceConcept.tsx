@@ -7,7 +7,13 @@ import { ActivityCard } from "@/components/ui/ActivityCard";
 import { ActivityDetailModal } from "@/components/ui/ActivityDetailModal";
 
 import { PlaybackControls } from "../shared/PlaybackControls";
-import { buildFlipTransform, rectFromElement, scaleDuration, type Rect } from "../shared/geometry";
+import {
+  buildFlipTransform,
+  rectFromElement,
+  scaleDuration,
+  STAGE_MIN_HEIGHT_PX,
+  type Rect
+} from "../shared/geometry";
 import type { ConceptMeta, ConceptPhase, PlaybackSpeed, V3PrototypeCard } from "../shared/types";
 import { useSystemReducedMotionPreference } from "../shared/useReducedMotionPreference";
 
@@ -75,7 +81,13 @@ function useClearableTimers() {
   return { clearAll, schedule };
 }
 
-export function CohesiveSurfaceConcept({ cards }: { cards: V3PrototypeCard[] }) {
+export function CohesiveSurfaceConcept({
+  cards,
+  onLockChange
+}: {
+  cards: V3PrototypeCard[];
+  onLockChange?: (locked: boolean) => void;
+}) {
   const [phase, setPhase] = useState<ConceptPhase>("idle");
   const [activeCard, setActiveCard] = useState<V3PrototypeCard | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -95,6 +107,11 @@ export function CohesiveSurfaceConcept({ cards }: { cards: V3PrototypeCard[] }) 
   const systemReducedMotion = useSystemReducedMotionPreference();
   const reducedMotion = systemReducedMotion || reducedMotionPreview;
   const isLocked = phase !== "idle";
+
+  useEffect(() => {
+    onLockChange?.(isLocked);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLocked]);
 
   const d = (ms: number) => scaleDuration(ms, speed);
 
@@ -277,10 +294,15 @@ export function CohesiveSurfaceConcept({ cards }: { cards: V3PrototypeCard[] }) 
         />
       </div>
 
-      <div className="relative py-6" ref={gridRef}>
+      <div className="relative py-6">
         <div
-          className="mx-auto grid"
-          style={{ gap: 24, gridTemplateColumns: "repeat(5, 256px)" }}
+          className="mx-auto grid content-start"
+          ref={gridRef}
+          style={{
+            gap: 24,
+            gridTemplateColumns: "repeat(5, 256px)",
+            minHeight: STAGE_MIN_HEIGHT_PX
+          }}
         >
           {cards.map((card) => {
             const isActive = activeCard?.id === card.id;

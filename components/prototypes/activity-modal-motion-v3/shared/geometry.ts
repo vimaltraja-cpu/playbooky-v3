@@ -5,6 +5,19 @@ export type Rect = {
   width: number;
 };
 
+/**
+ * Minimum reserved height (px) for the shared "stage" element that wraps the
+ * card grid in every V3 concept. The real card set renders 2 rows at
+ * 370px/card + a 24px gap (~764px), which already clears this floor — the
+ * constant exists as a guard so a future/shorter card set (e.g. a single
+ * row) still measures a stage tall enough to hold real
+ * `ActivityDetailModal` content without the open-state panel looking
+ * cramped. Every concept must derive its open-state width/height/position
+ * from `rectFromElement` on this same stage element — never from viewport
+ * units or a fixed/centered box.
+ */
+export const STAGE_MIN_HEIGHT_PX = 640;
+
 export function rectFromElement(element: HTMLElement): Rect {
   const rect = element.getBoundingClientRect();
 

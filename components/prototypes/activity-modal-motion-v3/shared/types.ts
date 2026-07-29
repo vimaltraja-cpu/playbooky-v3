@@ -39,3 +39,22 @@ export type ConceptMeta = {
   risks: string[];
   recommendedUse: string;
 };
+
+/**
+ * The three V3 concept ids, shared between the consolidated route's server
+ * page (for reading the `?concept=` search param) and its client tab
+ * switcher. Kept in a plain (non "use client") module so both sides can
+ * import it — a Server Component cannot call a function exported from a
+ * "use client" file.
+ */
+export const V3_CONCEPT_IDS = [
+  "cohesive-surface",
+  "focus-field",
+  "threshold-unfold"
+] as const;
+
+export type V3ConceptId = (typeof V3_CONCEPT_IDS)[number];
+
+export function isV3ConceptId(value: string): value is V3ConceptId {
+  return (V3_CONCEPT_IDS as readonly string[]).includes(value);
+}
