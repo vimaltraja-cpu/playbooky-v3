@@ -202,10 +202,18 @@ function CohesiveSurfaceEngine({
   const [crossfaded, setCrossfaded] = useState(false);
   const [contentStage, setContentStage] = useState(0);
   const [cardFocused, setCardFocused] = useState(true);
+  // The decorative border frame is driven by real layout properties
+  // (left/top/width/height), not the content surface's `transform`, so its
+  // border-width/radius never get distorted by an anisotropic scale — see
+  // `borderFrameRef` below. `frameRect` mirrors the same origin-rect ->
+  // dest-rect journey `transform` takes via `buildFlipTransform`, just
+  // expressed as a literal rect instead of a translate/scale string.
+  const [frameRect, setFrameRect] = useState<Rect | null>(null);
 
   const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const gridRef = useRef<HTMLDivElement | null>(null);
   const surfaceRef = useRef<HTMLDivElement | null>(null);
+  const borderFrameRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const originRectRef = useRef<Rect | null>(null);
   const destRectRef = useRef<Rect | null>(null);
@@ -226,6 +234,7 @@ function CohesiveSurfaceEngine({
     setPhase("idle");
     setActiveCard(null);
     setTransform("none");
+    setFrameRect(null);
     setCardLayerSoftened(false);
     setCrossfaded(false);
     setContentStage(0);
@@ -239,6 +248,7 @@ function CohesiveSurfaceEngine({
 
     if (reducedMotion) {
       setTransform("none");
+      setFrameRect(destRect);
       setCardLayerSoftened(false);
       setCrossfaded(true);
       setContentStage(3);
@@ -249,6 +259,7 @@ function CohesiveSurfaceEngine({
     }
 
     setTransform(buildFlipTransform(originRect, destRect));
+    setFrameRect(originRect);
     setCardLayerSoftened(false);
     setCrossfaded(false);
     setContentStage(0);
@@ -270,10 +281,14 @@ function CohesiveSurfaceEngine({
 
     schedule(() => {
       // Kick the transform back to identity on the next frame so the
-      // browser has committed the initial FLIP transform first.
+      // browser has committed the initial FLIP transform first. The
+      // border frame's rect flips to the dest rect in the same
+      // double-rAF window so it stays in visual lockstep with the
+      // content surface's transform.
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setTransform("none");
+          setFrameRect(destRect);
         });
       });
     }, transformAt);
@@ -338,6 +353,7 @@ function CohesiveSurfaceEngine({
     schedule(() => {
       setPhase("closing-surface");
       setTransform(buildFlipTransform(origin, dest));
+      setFrameRect(origin);
     }, closingSurfaceAt);
 
     schedule(() => setCrossfaded(false), crossfadeBackAt);
@@ -588,46 +604,88 @@ function CohesiveSurfaceEngine({
 
       {activeCard
         ? createPortal(
-          <div
-            aria-label={`${activeCard.label} activity details`}
-            aria-modal={phase === "open" ? true : undefined}
-            className="pointer-events-none fixed z-50 overflow-hidden shadow-[0_18px_50px_rgba(36,31,24,0.18)] will-change-transform"
-            ref={surfaceRef}
-            role="dialog"
-            style={{
-              background: "linear-gradient(160deg,#FCFBFA 0%,#F3EEE7 100%)",
-              borderColor: strokeColor(strokeVisible),
-              borderRadius: CARD_CONTENT_RADIUS_PX,
-              borderStyle: "solid",
-              borderWidth: CARD_STROKE_WIDTH_PX,
-              boxSizing: "border-box",
-              height: destRectRef.current?.height,
-              left: destRectRef.current?.left,
-              top: destRectRef.current?.top,
-              transform,
-              transformOrigin: "top left",
-              transition: reducedMotion
-                ? "none"
-                : phase === "closing-surface" || phase === "restoring"
-                  ? `transform ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
-                  : `transform ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`,
-              width: destRectRef.current?.width
-            }}
-          >
-            {layers}
+          <>
+            <div
+              aria-label={`${activeCard.label} activity details`}
+              aria-modal={phase === "open" ? true : undefined}
+              className="pointer-events-none fixed z-50 overflow-hidden shadow-[0_18px_50px_rgba(36,31,24,0.18)] will-change-transform"
+              ref={surfaceRef}
+              role="dialog"
+              style={{
+                background: "linear-gradient(160deg,#FCFBFA 0%,#F3EEE7 100%)",
+                // Corner-radius crop mask only — the actual border stroke
+                // now lives entirely on `borderFrameRef` below, which is
+                // driven by real width/height/top/left rather than this
+                // element's `transform`, so the stroke never gets
+                // squashed by an anisotropic scale mid-flight.
+                borderRadius: CARD_CONTENT_RADIUS_PX,
+                height: destRectRef.current?.height,
+                left: destRectRef.current?.left,
+                top: destRectRef.current?.top,
+                transform,
+                transformOrigin: "top left",
+                transition: reducedMotion
+                  ? "none"
+                  : phase === "closing-surface" || phase === "restoring"
+                    ? `transform ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}`
+                    : `transform ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}`,
+                width: destRectRef.current?.width
+              }}
+            >
+              {layers}
 
-            {phase === "open" ? (
-              <button
-                aria-label="Close activity details"
-                className="pointer-events-auto absolute right-4 top-4 z-20 grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/80 text-2xl leading-none text-[#324236] shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#aa7d3a]/50"
-                onClick={closeShell}
-                ref={closeButtonRef}
-                type="button"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            ) : null}
-          </div>,
+              {phase === "open" ? (
+                <button
+                  aria-label="Close activity details"
+                  className="pointer-events-auto absolute right-4 top-4 z-20 grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/80 text-2xl leading-none text-[#324236] shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#aa7d3a]/50"
+                  onClick={closeShell}
+                  ref={closeButtonRef}
+                  type="button"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              ) : null}
+            </div>
+
+            {/*
+              Decorative border frame — purely visual (`aria-hidden`), kept
+              as a sibling overlay on top of the content surface rather than
+              a child so it never inherits `surfaceRef`'s `transform`. Its
+              width/height/top/left are driven directly (real layout
+              properties, animated via a plain CSS `transition`) from the
+              origin card's rect to the destination stage rect, using the
+              same open/close timing+easing as the content surface's
+              transform (`GLASS_EXPAND_*`/`CLOSE_*`) so the two stay in
+              visual lockstep. Because this element has no content to
+              reflow, animating layout properties directly is cheap here —
+              unlike the content surface, which deliberately avoids
+              width/height animation. Border-width and border-radius stay
+              fixed, constant pixel values the whole time, so they render
+              correctly undistorted at every point in the animation, not
+              just the two endpoints.
+            */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none fixed z-50"
+              ref={borderFrameRef}
+              style={{
+                borderColor: strokeColor(strokeVisible),
+                borderRadius: CARD_CONTENT_RADIUS_PX,
+                borderStyle: "solid",
+                borderWidth: CARD_STROKE_WIDTH_PX,
+                boxSizing: "border-box",
+                height: (frameRect ?? destRectRef.current)?.height,
+                left: (frameRect ?? destRectRef.current)?.left,
+                top: (frameRect ?? destRectRef.current)?.top,
+                transition: reducedMotion
+                  ? "none"
+                  : phase === "closing-surface" || phase === "restoring"
+                    ? `left ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, top ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, width ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, height ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
+                    : `left ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, top ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, width ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, height ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`,
+                width: (frameRect ?? destRectRef.current)?.width
+              }}
+            />
+          </>,
           document.body
         )
         : null}
