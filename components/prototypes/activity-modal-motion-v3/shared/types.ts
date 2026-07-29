@@ -41,14 +41,20 @@ export type ConceptMeta = {
 };
 
 /**
- * The three V3 concept ids, shared between the consolidated route's server
- * page (for reading the `?concept=` search param) and its client tab
+ * The four V3 concept/variant ids, shared between the consolidated route's
+ * server page (for reading the `?concept=` search param) and its client tab
  * switcher. Kept in a plain (non "use client") module so both sides can
  * import it — a Server Component cannot call a function exported from a
  * "use client" file.
+ *
+ * "cohesive-surface-framed" and "cohesive-surface-frameless" are the two
+ * stroke variants of Concept 1 (Cohesive Surface Morph) — same core engine,
+ * differing only in whether the card's border/stroke stays visible once the
+ * modal is fully open.
  */
 export const V3_CONCEPT_IDS = [
-  "cohesive-surface",
+  "cohesive-surface-framed",
+  "cohesive-surface-frameless",
   "focus-field",
   "threshold-unfold"
 ] as const;

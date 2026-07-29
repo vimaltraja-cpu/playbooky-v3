@@ -8,21 +8,25 @@ import { ActivityDetailModal } from "@/components/ui/ActivityDetailModal";
 
 import {
   blurFilter,
+  CARD_CONTENT_RADIUS_PX,
   CARD_DEFOCUS_DURATION_MS,
   CARD_DEFOCUS_EASING,
+  CARD_STROKE_WIDTH_PX,
   CARD_TO_GLASS_BLUR_PX,
   CARD_TO_GLASS_DURATION_MS,
   CLOSE_CONTENT_DEFOCUS_DURATION_MS,
   CLOSE_EASING,
   CLOSE_GLASS_CONTRACT_DURATION_MS,
   CONTENT_BLUR_START_PX,
+  CONTENT_CROSSFADE_DURATION_MS,
   CONTENT_FOCUS_DURATION_MS,
   CONTENT_FOCUS_EASING,
+  GLASS_CONTENT_CROSSFADE_CENTER_FRACTION,
   GLASS_CONTENT_FOCUS_START_FRACTION,
   GLASS_EXPAND_DURATION_MS,
   GLASS_EXPAND_EASING,
-  GLASS_SURFACE_BLUR_PX,
-  GLASS_SURFACE_TINT
+  STROKE_FADE_DURATION_MS,
+  strokeColor
 } from "../shared/glassMotion";
 import { PlaybackControls } from "../shared/PlaybackControls";
 import {
@@ -35,45 +39,98 @@ import {
 import type { ConceptMeta, ConceptPhase, PlaybackSpeed, V3PrototypeCard } from "../shared/types";
 import { useSystemReducedMotionPreference } from "../shared/useReducedMotionPreference";
 
-export const cohesiveSurfaceMeta: ConceptMeta = {
-  id: "cohesive-surface",
-  name: "Cohesive Surface Morph",
-  tagline: "Concept 1 — shared-element, solved for rigidity",
-  principle:
-    "The selected card and the modal are treated as one continuous surface. Before any geometry changes, the card's own content simplifies into a blurred, frosted glass panel — a backdrop-filter blur plus a translucent tonal fill, never a flat opaque neutralize block — so the browser never has to reveal a card's internal rows resizing mid-flight. That frosted surface then travels to the modal's footprint using a single transform (translate + scale), not width/height, so the move is GPU-composited and cannot step. Once the surface is most of the way to its final size, the modal content resolves from blurred to sharp focus — a filter: blur() animation, not an opacity-only fade — and the surface's own glass blur clears alongside it. Closing reverses the same three beats: content defocuses first, then the still-frosted surface contracts back to the origin card's exact rect, then the card itself defocuses back to its normal sharp state.",
+/**
+ * Shared write-up copy for the sequence both stroke variants run — only the
+ * closing sentence of `principle` and the stroke-specific lines in
+ * `sequence`/`specs` differ between the two exported `ConceptMeta`s below.
+ */
+const SHARED_PRINCIPLE =
+  "The selected card and the modal are treated as one continuous surface that never loses the card's own shape. On click, the card's real rendered content (not a flat neutral panel) blurs in place while its border/stroke and 16px corner radius stay exactly as they are on the card — no snap to a different shape at the moment of click. That still-bordered, still-correctly-rounded, blurred surface then travels to the modal's footprint using a single transform (translate + scale), not width/height, so the move is GPU-composited and cannot step. Roughly halfway through that flight, the blurred card content cross-dissolves into a blurred rendering of the modal's own content — two blurred layers fading through each other mid-flight, not an instant swap. As the surface finishes settling into place, that blur resolves to 0, revealing the real, crisp modal content. Closing reverses the same beats: content defocuses first, then the blurred layers cross-dissolve back from modal to card roughly halfway through the contraction, then the revealed card itself defocuses back to sharp.";
+
+const SHARED_SEQUENCE = [
+  "Selection acknowledgement — the tapped card lifts slightly (80ms).",
+  "Card content blurs in place — the card's own real content (icon/title/etc.), not a flat panel, blurs from sharp to frosted while its border and 16px radius stay unchanged (160ms).",
+  "Surface expand — the still-bordered, still-rounded, blurred surface travels via transform: translate()+scale() from the card's screen rect to the stage rect (380ms, weighted-deceleration easing).",
+  "Content crossfade — at roughly the halfway point of the expand, the blurred card-content layer cross-dissolves into a blurred rendering of the modal's content (180ms fade, centered on the expand's midpoint).",
+  "Content focus — once the surface is ~80% settled, the (now modal) content resolves from blurred to sharp focus (190ms).",
+  "Supporting content — the builder-flow row follows (120ms, staggered).",
+  "Actions — footer actions arrive last, once the surface is fully still and sharp (100ms).",
+  "Final focused state — modal is open, fully in focus; focus moves to close control.",
+  "Close — content defocuses (140ms), the blurred layers cross-dissolve back from modal to card roughly halfway through the surface's contraction (300ms total), then the revealed card itself defocuses back to sharp (180ms)."
+];
+
+const SHARED_SPECS_HEAD = [
+  { property: "Selection acknowledge", duration: "80ms", easing: "ease-out", note: "translateY(-2px) + shadow lift on the origin card only" },
+  { property: "Card content blur-in", duration: "160ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "the card's real rendered content blurs in place (filter: blur(0→8px)); border/stroke and 16px radius do not change" },
+  { property: "Sibling soften", duration: "180ms", easing: "ease-out", note: "opacity 1→0.45, blur 0→3px, staggered 12ms/card" },
+  { property: "Surface expand (transform)", duration: "380ms", easing: "cubic-bezier(0.16, 1, 0.3, 1)", note: "transform only — never left/top/width/height; radius and stroke are constants, not animated" },
+  { property: "Content crossfade", duration: "180ms", easing: "ease (opacity only)", note: "blurred card-content layer fades out as a blurred modal-content layer fades in, centered on the expand's ~50% mark" },
+  { property: "Content focus", duration: "190ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "filter: blur(10px→0) on the modal layer + opacity + translateY(6px→0); starts once the expand is ~80% settled" },
+  { property: "Supporting content", duration: "120ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "90ms after heading" },
+  { property: "Actions", duration: "100ms", easing: "ease-out", note: "80ms after supporting content — final settle" }
+];
+
+const SHARED_SPECS_TAIL = [
+  { property: "Close: content defocus", duration: "140ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "modal content blurs out (0→10px) and stays visible before the surface moves" },
+  { property: "Close: content crossfade back", duration: "180ms", easing: "ease (opacity only)", note: "blurred modal-content layer fades out as the blurred card-content layer fades in, centered on the contraction's ~50% mark" },
+  { property: "Close: surface contract", duration: "300ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "still-bordered, still-rounded surface contracts back to the origin card's exact rect — JS unmount timer matches this duration exactly, no early cut" },
+  { property: "Close: card defocus", duration: "180ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "the revealed card blurs from 8px back to sharp — the final close beat" }
+];
+
+export const cohesiveSurfaceFramedMeta: ConceptMeta = {
+  id: "cohesive-surface-framed",
+  name: "Cohesive Surface — Framed",
+  tagline: "Concept 1a — blur-crossfade morph, stroke retained",
+  principle: `${SHARED_PRINCIPLE} In this "Framed" variant the card's 2px border/stroke stays visible, unchanged, for the entire sequence — through the blur-in, the expand, the crossfade, and the settle — and remains visible on the fully open modal. Closing reverses that symmetrically: the border stays visible until the surface itself starts contracting back down toward the card.`,
   sequence: [
-    "Selection acknowledgement — the tapped card lifts slightly (80ms).",
-    "Card → glass — the card's content simplifies into a frosted, blurred glass panel with a translucent tonal fill (160ms); sibling cards soften as one field.",
-    "Glass expand — the frosted surface travels via transform: translate()+scale() from the card's screen rect to the stage rect, staying frosted throughout (380ms, weighted-deceleration easing).",
-    "Content focus — once the surface is ~80% settled, content blurs in from 10px to sharp focus while the surface's own glass blur clears alongside it (190ms).",
-    "Supporting content — the builder-flow row follows (120ms, staggered).",
-    "Actions — footer actions arrive last, once the surface is fully still and sharp (100ms).",
-    "Final focused state — modal is open, fully in focus; focus moves to close control.",
-    "Close — content defocuses and fades (140ms), the frosted surface contracts back to the origin rect (300ms), then the revealed card itself defocuses back to sharp (180ms)."
+    ...SHARED_SEQUENCE.slice(0, -1),
+    "Close — content defocuses (140ms), the border stays visible throughout, the blurred layers cross-dissolve back from modal to card roughly halfway through the surface's contraction (300ms total), then the revealed card itself defocuses back to sharp (180ms)."
   ],
   specs: [
-    { property: "Selection acknowledge", duration: "80ms", easing: "ease-out", note: "translateY(-2px) + shadow lift on the origin card only" },
-    { property: "Card → glass", duration: "160ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "card content crossfades to a frosted, blurred glass panel (backdrop-filter + translucent tint), not a flat opaque block" },
-    { property: "Sibling soften", duration: "180ms", easing: "ease-out", note: "opacity 1→0.45, blur 0→3px, staggered 12ms/card" },
-    { property: "Glass expand (transform)", duration: "380ms", easing: "cubic-bezier(0.16, 1, 0.3, 1)", note: "transform only — never left/top/width/height; surface stays frosted throughout" },
-    { property: "Content focus", duration: "190ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "filter: blur(10px→0) + opacity + translateY(6px→0); starts once the expand is ~80% settled; surface glass blur clears in the same window" },
-    { property: "Supporting content", duration: "120ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "90ms after heading" },
-    { property: "Actions", duration: "100ms", easing: "ease-out", note: "80ms after supporting content — final settle" },
-    { property: "Close: content defocus", duration: "140ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "content blurs out (0→10px) and fades before the surface moves" },
-    { property: "Close: glass contract", duration: "300ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)", note: "still-frosted surface contracts back to the origin card's exact rect — JS unmount timer matches this duration exactly, no early cut" },
-    { property: "Close: card defocus", duration: "180ms", easing: "cubic-bezier(0.22, 1, 0.36, 1)", note: "the revealed card blurs from 8px back to sharp — the final close beat" }
+    ...SHARED_SPECS_HEAD,
+    { property: "Border/stroke", duration: "n/a", easing: "n/a", note: "2px #B77B32 border stays visible, unchanged, from click through the fully open modal — no fade at any point while open" },
+    ...SHARED_SPECS_TAIL
   ],
   strengths: [
-    "Strongest sense of \"this card became the modal\" — spatial origin is unambiguous.",
-    "Transform-only geometry avoids layout thrash and the stepped/rugged look.",
-    "One continuous glass→expand→focus curve per phase — no opacity-only fades or discrete panel swaps to seam against."
+    "Strongest sense of \"this exact card became the modal\" — the border never disappears, so the shared identity of card and modal stays visually explicit the whole time.",
+    "Transform-only geometry + a constant radius/stroke avoids layout thrash and the stepped/rugged look, and rules out any shape snap at the click moment.",
+    "The blurred-content crossfade (real card pixels → real modal pixels) reads as an actual dissolve, not a panel swap — no flat neutralize block to seam against."
   ],
   risks: [
-    "Non-uniform scale can very slightly stretch the glass surface's corner radius mid-flight; needs a counter-scaled radius mask in production.",
+    "A 2px border at large open-modal scale can look visually heavy/unusual compared to a typical borderless modal — accepted as explicit direction, not a bug.",
     "Requires accurate rect measurement — resize/scroll mid-transition needs a guard (currently: interaction lock).",
-    "backdrop-filter has a real (if modest) compositing cost; should be feature-detected with a solid-tint fallback on low-end devices."
+    "Two full-content blurred layers (ActivityCard + ActivityDetailModal) mounted simultaneously during the crossfade window has a real (if modest) paint/compositing cost."
   ],
-  recommendedUse: "Best default direction for PlayBooky's activity grid — it most directly answers the brief's \"this card became the focused experience\" requirement while staying restrained."
+  recommendedUse: "Use when the border is a meaningful part of the card's identity (e.g. a builder-flow selection state) and should keep reading as \"this card, now open\" even once fully expanded."
+};
+
+export const cohesiveSurfaceFramelessMeta: ConceptMeta = {
+  id: "cohesive-surface-frameless",
+  name: "Cohesive Surface — Frameless",
+  tagline: "Concept 1b — blur-crossfade morph, stroke resolves away",
+  principle: `${SHARED_PRINCIPLE} In this "Frameless" variant the card's 2px border/stroke stays visible and unchanged through the blur-in, expand, and crossfade — identical to the Framed variant up to that point — but fades out once content reaches sharp focus at the very end of the open transition, leaving the fully open modal borderless. On close, the border fades back in as the content starts to defocus, before the surface begins contracting back down to the card.`,
+  sequence: [
+    ...SHARED_SEQUENCE.slice(0, -1),
+    "Close — the border fades back in as content starts to defocus (140ms), the blurred layers cross-dissolve back from modal to card roughly halfway through the surface's contraction (300ms total), then the revealed card itself defocuses back to sharp (180ms)."
+  ],
+  specs: [
+    ...SHARED_SPECS_HEAD,
+    { property: "Border/stroke fade-out", duration: "190ms", easing: "ease-out", note: "2px #B77B32 border stays visible through the crossfade, then fades to transparent as content resolves to sharp focus — fully open modal is borderless" },
+    ...SHARED_SPECS_TAIL.slice(0, 1),
+    { property: "Border/stroke fade-in", duration: "190ms", easing: "ease-out", note: "border fades back to #B77B32 as content starts to defocus on close, before the surface contracts" },
+    ...SHARED_SPECS_TAIL.slice(1)
+  ],
+  strengths: [
+    "Fully open modal reads as a clean, borderless surface — closer to how the rest of the product's modals look at rest.",
+    "Still keeps the strong \"this card became the modal\" read during the transition itself, since the border is present through the whole blur/expand/crossfade beat — only the settled end state differs from Framed.",
+    "The border fading back in right as the content starts to defocus on close gives an early, legible cue that the surface is about to start shrinking, before any geometry actually moves."
+  ],
+  risks: [
+    "The border appearing/disappearing is an extra animated property to keep in sync with the content-focus timing — a slow device could show the border lingering past the point content looks sharp.",
+    "Requires accurate rect measurement — resize/scroll mid-transition needs a guard (currently: interaction lock).",
+    "Two full-content blurred layers (ActivityCard + ActivityDetailModal) mounted simultaneously during the crossfade window has a real (if modest) paint/compositing cost."
+  ],
+  recommendedUse: "Best default direction for PlayBooky's activity grid if the fully open modal should match the product's existing (borderless) modal language — the border only exists as a transitional cue, not a resting-state treatment."
 };
 
 const ACK_DURATION = 80;
@@ -100,12 +157,35 @@ function useClearableTimers() {
   return { clearAll, schedule };
 }
 
-export function CohesiveSurfaceConcept({
+/** Whether the border/stroke should currently read as visible. The
+ * "framed" variant is always visible; the "frameless" variant hides only
+ * once content has resolved to sharp focus (content-enter/open), and is
+ * visible again the instant a close begins. */
+function isStrokeVisible(phase: ConceptPhase, keepStroke: boolean) {
+  if (keepStroke) {
+    return true;
+  }
+
+  return !(phase === "content-enter" || phase === "open");
+}
+
+/**
+ * Shared engine for both Concept 1 stroke variants (Framed / Frameless).
+ * The only behavioural difference between the two is whether the border
+ * fades out once content is sharp — everything else (blur-in, transform
+ * expand, crossfade, focus resolve, close sequence) is identical, so it
+ * lives here once and is parameterized by `keepStroke`.
+ */
+function CohesiveSurfaceEngine({
   cards,
-  onLockChange
+  keepStroke,
+  onLockChange,
+  variantLabel
 }: {
   cards: V3PrototypeCard[];
+  keepStroke: boolean;
   onLockChange?: (locked: boolean) => void;
+  variantLabel: string;
 }) {
   const [phase, setPhase] = useState<ConceptPhase>("idle");
   const [activeCard, setActiveCard] = useState<V3PrototypeCard | null>(null);
@@ -113,7 +193,8 @@ export function CohesiveSurfaceConcept({
   const [speed, setSpeed] = useState<PlaybackSpeed>("normal");
   const [reducedMotionPreview, setReducedMotionPreview] = useState(false);
   const [transform, setTransform] = useState("none");
-  const [radius, setRadius] = useState(16);
+  const [cardLayerSoftened, setCardLayerSoftened] = useState(false);
+  const [crossfaded, setCrossfaded] = useState(false);
   const [contentStage, setContentStage] = useState(0);
   const [cardFocused, setCardFocused] = useState(true);
 
@@ -140,7 +221,8 @@ export function CohesiveSurfaceConcept({
     setPhase("idle");
     setActiveCard(null);
     setTransform("none");
-    setRadius(16);
+    setCardLayerSoftened(false);
+    setCrossfaded(false);
     setContentStage(0);
     setCardFocused(true);
   }
@@ -152,7 +234,8 @@ export function CohesiveSurfaceConcept({
 
     if (reducedMotion) {
       setTransform("none");
-      setRadius(20);
+      setCardLayerSoftened(false);
+      setCrossfaded(true);
       setContentStage(3);
       setCardFocused(true);
       setPhase("open");
@@ -161,17 +244,23 @@ export function CohesiveSurfaceConcept({
     }
 
     setTransform(buildFlipTransform(originRect, destRect));
-    setRadius(16);
+    setCardLayerSoftened(false);
+    setCrossfaded(false);
     setContentStage(0);
     setCardFocused(true);
     setPhase("acknowledge");
 
     const softenAt = d(ACK_DURATION);
     const transformAt = softenAt + d(CARD_TO_GLASS_DURATION_MS);
+    const crossfadeAt = transformAt + d(GLASS_EXPAND_DURATION_MS * GLASS_CONTENT_CROSSFADE_CENTER_FRACTION);
     const contentEnterAt = transformAt + d(GLASS_EXPAND_DURATION_MS * GLASS_CONTENT_FOCUS_START_FRACTION);
     const openAt = contentEnterAt + d(CONTENT_STAGE_STAGGER_2) - d(CONTENT_STAGE_STAGGER_1) + d(OPEN_SETTLE_BUFFER);
 
-    schedule(() => setPhase("soften"), softenAt);
+    schedule(() => {
+      setPhase("soften");
+      setCardLayerSoftened(true);
+    }, softenAt);
+
     schedule(() => setPhase("transform"), transformAt);
 
     schedule(() => {
@@ -180,10 +269,11 @@ export function CohesiveSurfaceConcept({
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setTransform("none");
-          setRadius(20);
         });
       });
     }, transformAt);
+
+    schedule(() => setCrossfaded(true), crossfadeAt);
 
     schedule(() => setPhase("content-enter"), contentEnterAt);
     schedule(() => setContentStage(1), contentEnterAt);
@@ -236,14 +326,16 @@ export function CohesiveSurfaceConcept({
     setContentStage(0);
 
     const closingSurfaceAt = d(CLOSE_CONTENT_DEFOCUS_DURATION_MS);
+    const crossfadeBackAt = closingSurfaceAt + d(CLOSE_GLASS_CONTRACT_DURATION_MS * GLASS_CONTENT_CROSSFADE_CENTER_FRACTION);
     const restoringAt = closingSurfaceAt + d(CLOSE_GLASS_CONTRACT_DURATION_MS);
     const doneAt = restoringAt + d(CARD_DEFOCUS_DURATION_MS);
 
     schedule(() => {
       setPhase("closing-surface");
       setTransform(buildFlipTransform(origin, dest));
-      setRadius(16);
     }, closingSurfaceAt);
+
+    schedule(() => setCrossfaded(false), crossfadeBackAt);
 
     schedule(() => {
       // Card reappears already blurred, then a two-frame flip lets the
@@ -284,49 +376,56 @@ export function CohesiveSurfaceConcept({
   }, [phase]);
 
   const isSoftened = phase !== "idle";
-  const isGlassy =
-    phase === "soften" ||
-    phase === "transform" ||
-    phase === "closing-content" ||
-    phase === "closing-surface";
-  const isContentVisible =
-    phase === "content-enter" ||
-    phase === "open" ||
-    phase === "closing-content" ||
-    phase === "closing-surface";
+  const isClosingContent = phase === "closing-content";
+  const strokeVisible = isStrokeVisible(phase, keepStroke);
 
-  const contentContainer = useMemo(() => {
+  const layers = useMemo(() => {
     if (!activeCard) {
       return null;
     }
 
-    const isClosingContent = phase === "closing-content";
-    // `[&>article]:h-full [&>article]:w-full` only matches a *direct* child
-    // — ActivityDetailModal's `<article>` must not be nested inside any
-    // extra wrapper div, or it falls back to its fixed 1364x758px intrinsic
-    // size instead of filling the stage, which is what produced the
-    // "broken/shot" render this rewrite fixes. Every animated property
-    // (opacity, filter, transform) below is therefore applied to this one
-    // wrapper, not split across nested divs.
-    const contentBlurred = isClosingContent || contentStage < 1;
+    const cardLayerBlurPx = cardLayerSoftened ? CARD_TO_GLASS_BLUR_PX : 0;
+    const modalContentBlurred = isClosingContent || contentStage < 1;
 
     return (
-      <div
-        className="absolute inset-0 overflow-hidden [&>article]:h-full [&>article]:w-full"
-        style={{
-          filter: contentBlurred ? blurFilter(CONTENT_BLUR_START_PX) : blurFilter(0),
-          opacity: !isContentVisible ? 0 : isClosingContent ? 0 : contentStage >= 1 ? 1 : 0,
-          transform: contentStage >= 1 && !isClosingContent ? "translateY(0)" : "translateY(6px)",
-          transition: isClosingContent
-            ? `filter ${d(CLOSE_CONTENT_DEFOCUS_DURATION_MS)}ms ${CLOSE_EASING}, opacity ${d(CLOSE_CONTENT_DEFOCUS_DURATION_MS)}ms ${CLOSE_EASING}`
-            : `filter ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, opacity ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, transform ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}`
-        }}
-      >
-        <ActivityDetailModal activity={activeCard.modalData} contentOnly isOpen />
-      </div>
+      <>
+        {/*
+          Layer 1 — the origin card's own real content, blurred in place.
+          `[&>article]:h-full [&>article]:w-full` matches ActivityCard's
+          root <article> as a *direct* child only, letting the surface's own
+          transform (translate+scale) carry it visually from card size to
+          stage size instead of animating width/height directly.
+        */}
+        <div
+          className="absolute inset-0 overflow-hidden [&>article]:h-full [&>article]:w-full"
+          style={{
+            filter: blurFilter(cardLayerBlurPx),
+            opacity: crossfaded ? 0 : 1,
+            transition: `filter ${d(CARD_TO_GLASS_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, opacity ${d(CONTENT_CROSSFADE_DURATION_MS)}ms ease`
+          }}
+        >
+          <ActivityCard activity={activeCard.activity} variant="builder" />
+        </div>
+
+        {/* Layer 2 — a blurred rendering of the modal's own content, that
+            crossfades in against layer 1 and then resolves to sharp focus. */}
+        <div
+          className="absolute inset-0 overflow-hidden [&>article]:h-full [&>article]:w-full"
+          style={{
+            filter: modalContentBlurred ? blurFilter(CONTENT_BLUR_START_PX) : blurFilter(0),
+            opacity: crossfaded ? 1 : 0,
+            transform: contentStage >= 1 && !isClosingContent ? "translateY(0)" : "translateY(6px)",
+            transition: isClosingContent
+              ? `filter ${d(CLOSE_CONTENT_DEFOCUS_DURATION_MS)}ms ${CLOSE_EASING}, opacity ${d(CONTENT_CROSSFADE_DURATION_MS)}ms ease`
+              : `filter ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, opacity ${d(CONTENT_CROSSFADE_DURATION_MS)}ms ease, transform ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}`
+          }}
+        >
+          <ActivityDetailModal activity={activeCard.modalData} contentOnly isOpen />
+        </div>
+      </>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeCard, contentStage, phase, isContentVisible, speed]);
+  }, [activeCard, cardLayerSoftened, crossfaded, contentStage, isClosingContent, speed]);
 
   return (
     <div>
@@ -361,7 +460,7 @@ export function CohesiveSurfaceConcept({
 
             return (
               <button
-                aria-label={`Open ${card.label} (Cohesive Surface Morph)`}
+                aria-label={`Open ${card.label} (Cohesive Surface — ${variantLabel})`}
                 className="rounded-[16px] text-left transition focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#aa7d3a]/50"
                 disabled={isLocked}
                 key={card.id}
@@ -409,12 +508,11 @@ export function CohesiveSurfaceConcept({
             ref={surfaceRef}
             role="dialog"
             style={{
-              background: isGlassy
-                ? GLASS_SURFACE_TINT
-                : "linear-gradient(160deg,#FCFBFA 0%,#F3EEE7 100%)",
-              backdropFilter: isGlassy ? blurFilter(GLASS_SURFACE_BLUR_PX) : blurFilter(0),
-              WebkitBackdropFilter: isGlassy ? blurFilter(GLASS_SURFACE_BLUR_PX) : blurFilter(0),
-              borderRadius: radius,
+              background: "linear-gradient(160deg,#FCFBFA 0%,#F3EEE7 100%)",
+              borderColor: strokeColor(strokeVisible),
+              borderRadius: CARD_CONTENT_RADIUS_PX,
+              borderStyle: "solid",
+              borderWidth: CARD_STROKE_WIDTH_PX,
               boxSizing: "border-box",
               height: destRectRef.current?.height,
               left: destRectRef.current?.left,
@@ -424,12 +522,12 @@ export function CohesiveSurfaceConcept({
               transition: reducedMotion
                 ? "none"
                 : phase === "closing-surface" || phase === "restoring"
-                  ? `transform ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, border-radius ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, background ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, backdrop-filter ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}`
-                  : `transform ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, border-radius ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, background ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}, backdrop-filter ${d(CONTENT_FOCUS_DURATION_MS)}ms ${CONTENT_FOCUS_EASING}`,
+                  ? `transform ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
+                  : `transform ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`,
               width: destRectRef.current?.width
             }}
           >
-            {contentContainer}
+            {layers}
 
             {phase === "open" ? (
               <button
@@ -447,5 +545,39 @@ export function CohesiveSurfaceConcept({
         )
         : null}
     </div>
+  );
+}
+
+export function CohesiveSurfaceFramedConcept({
+  cards,
+  onLockChange
+}: {
+  cards: V3PrototypeCard[];
+  onLockChange?: (locked: boolean) => void;
+}) {
+  return (
+    <CohesiveSurfaceEngine
+      cards={cards}
+      keepStroke
+      onLockChange={onLockChange}
+      variantLabel="Framed"
+    />
+  );
+}
+
+export function CohesiveSurfaceFramelessConcept({
+  cards,
+  onLockChange
+}: {
+  cards: V3PrototypeCard[];
+  onLockChange?: (locked: boolean) => void;
+}) {
+  return (
+    <CohesiveSurfaceEngine
+      cards={cards}
+      keepStroke={false}
+      onLockChange={onLockChange}
+      variantLabel="Frameless"
+    />
   );
 }

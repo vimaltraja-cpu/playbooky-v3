@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 import {
-  cohesiveSurfaceMeta,
-  CohesiveSurfaceConcept
+  cohesiveSurfaceFramedMeta,
+  cohesiveSurfaceFramelessMeta,
+  CohesiveSurfaceFramedConcept,
+  CohesiveSurfaceFramelessConcept
 } from "@/components/prototypes/activity-modal-motion-v3/concept-1-cohesive-surface/CohesiveSurfaceConcept";
 import {
   focusFieldMeta,
@@ -23,9 +25,17 @@ import {
 } from "@/components/prototypes/activity-modal-motion-v3/shared/types";
 
 const CONCEPT_META: Record<V3ConceptId, ConceptMeta> = {
-  "cohesive-surface": cohesiveSurfaceMeta,
+  "cohesive-surface-framed": cohesiveSurfaceFramedMeta,
+  "cohesive-surface-frameless": cohesiveSurfaceFramelessMeta,
   "focus-field": focusFieldMeta,
   "threshold-unfold": thresholdUnfoldMeta
+};
+
+const TAB_LABELS: Record<V3ConceptId, string> = {
+  "cohesive-surface-framed": "1a. Framed",
+  "cohesive-surface-frameless": "1b. Frameless",
+  "focus-field": "2. Focus Field",
+  "threshold-unfold": "3. Threshold Unfold"
 };
 
 function ConceptTabs({
@@ -41,7 +51,6 @@ function ConceptTabs({
     <div className="flex flex-wrap items-center justify-center gap-2">
       {V3_CONCEPT_IDS.map((conceptId) => {
         const isActive = conceptId === activeConceptId;
-        const meta = CONCEPT_META[conceptId];
 
         return (
           <button
@@ -56,7 +65,7 @@ function ConceptTabs({
             onClick={() => onChange(conceptId)}
             type="button"
           >
-            {meta.name}
+            {TAB_LABELS[conceptId]}
           </button>
         );
       })}
@@ -72,7 +81,7 @@ export function ActivityModalMotionV3ConsolidatedClient({
   initialConceptId?: V3ConceptId;
 }) {
   const [activeConceptId, setActiveConceptId] = useState<V3ConceptId>(
-    initialConceptId ?? "cohesive-surface"
+    initialConceptId ?? "cohesive-surface-framed"
   );
   const [isLocked, setIsLocked] = useState(false);
 
@@ -107,8 +116,12 @@ export function ActivityModalMotionV3ConsolidatedClient({
           }}
         />
 
-        {activeConceptId === "cohesive-surface" ? (
-          <CohesiveSurfaceConcept cards={cards} onLockChange={setIsLocked} />
+        {activeConceptId === "cohesive-surface-framed" ? (
+          <CohesiveSurfaceFramedConcept cards={cards} onLockChange={setIsLocked} />
+        ) : null}
+
+        {activeConceptId === "cohesive-surface-frameless" ? (
+          <CohesiveSurfaceFramelessConcept cards={cards} onLockChange={setIsLocked} />
         ) : null}
 
         {activeConceptId === "focus-field" ? (

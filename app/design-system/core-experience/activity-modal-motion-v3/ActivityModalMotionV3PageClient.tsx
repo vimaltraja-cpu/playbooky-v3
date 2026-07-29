@@ -7,14 +7,17 @@ import {
   type ComponentSectionNavItem
 } from "@/components/portal/ComponentPage";
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
-import { cohesiveSurfaceMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-1-cohesive-surface/CohesiveSurfaceConcept";
+import {
+  cohesiveSurfaceFramedMeta,
+  cohesiveSurfaceFramelessMeta
+} from "@/components/prototypes/activity-modal-motion-v3/concept-1-cohesive-surface/CohesiveSurfaceConcept";
 import { focusFieldMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-2-focus-field/FocusFieldConcept";
 import { thresholdUnfoldMeta } from "@/components/prototypes/activity-modal-motion-v3/concept-3-threshold-unfold/ThresholdUnfoldConcept";
 import type { ConceptMeta } from "@/components/prototypes/activity-modal-motion-v3/shared/types";
 
 const componentMetadata = {
   category: "Core Experience",
-  confidence: "3 Exploration — not yet a review candidate",
+  confidence: "4 Explorations — not yet a review candidate",
   lastUpdated: "2026-07-29",
   owner: "Design System",
   status: "In exploration",
@@ -23,17 +26,22 @@ const componentMetadata = {
 
 const sectionItems: ComponentSectionNavItem[] = [
   { id: "problem", label: "Problem" },
-  { id: "cohesive-surface", label: "1. Cohesive Surface" },
+  { id: "cohesive-surface-framed", label: "1a. Cohesive Surface — Framed" },
+  { id: "cohesive-surface-frameless", label: "1b. Cohesive Surface — Frameless" },
   { id: "focus-field", label: "2. Focus Field" },
   { id: "threshold-unfold", label: "3. Threshold Unfold" },
   { id: "recommendation", label: "Recommendation" }
 ];
 
-// All three concepts now live on one consolidated, tabbed prototype route —
-// each "Try the full-screen prototype" link preselects that concept's tab
-// via the `concept` query param rather than pointing at its own route.
+// All four explorations now live on one consolidated, tabbed prototype
+// route — each "Try the full-screen prototype" link preselects that
+// concept/variant's tab via the `concept` query param rather than pointing
+// at its own route. Concept 1 (Cohesive Surface) ships as two variants —
+// Framed and Frameless — that share one motion engine and differ only in
+// whether the card's border/stroke stays visible on the fully open modal.
 const conceptRoutes: Record<string, string> = {
-  "cohesive-surface": "/activity-modal-motion-v3?concept=cohesive-surface",
+  "cohesive-surface-framed": "/activity-modal-motion-v3?concept=cohesive-surface-framed",
+  "cohesive-surface-frameless": "/activity-modal-motion-v3?concept=cohesive-surface-frameless",
   "focus-field": "/activity-modal-motion-v3?concept=focus-field",
   "threshold-unfold": "/activity-modal-motion-v3?concept=threshold-unfold"
 };
@@ -49,14 +57,15 @@ function ProblemSection() {
         mechanical: a rectangular container resizes, repositions, and swaps
         content in three visibly separate steps. It feels like a box being
         resized, not like the card the person tapped becoming their focused
-        experience. These three explorations each solve that rigidity with a
-        different motion principle, while reusing the same activity card and
-        activity detail modal content/visual language as V2 — this is a
-        motion-only comparison, not a redesign.
+        experience. These four explorations — three structurally different
+        motion principles, with Concept 1 further split into two stroke
+        variants — each solve that rigidity, while reusing the same activity
+        card and activity detail modal content/visual language as V2 — this
+        is a motion-only comparison, not a redesign.
       </p>
 
       <p className="mt-3 max-w-3xl text-sm leading-6 text-[#a1a1a1]">
-        All three concepts are staged on one consolidated full-screen
+        All four explorations are staged on one consolidated full-screen
         prototype route with a tab switcher — a real grid of real activity
         cards at real size, opening into a real modal that always fills the
         exact bounds of that same grid — the same way V2 is staged, rather
@@ -65,7 +74,7 @@ function ProblemSection() {
       </p>
 
       <h4 className="mt-6 text-[13px] font-semibold leading-5 text-[#ededed]">
-        Reference motion principles applied across all three
+        Reference motion principles applied across all four
       </h4>
       <ul className="mt-3 grid max-w-3xl list-disc gap-2 pl-4 text-sm leading-6 text-[#a1a1a1]">
         <li>
@@ -185,13 +194,18 @@ function RecommendationSection() {
         Recommendation
       </h3>
       <p className="mt-3 max-w-3xl text-sm leading-6 text-[#a1a1a1]">
-        All three concepts satisfy the motion brief and remain live for
+        All four explorations satisfy the motion brief and remain live for
         comparison — this page intentionally does not remove or de-emphasize
         any of them. As a closing opinion rather than a decision: Concept 1
         (Cohesive Surface Morph) is the strongest default for the activity
         grid because it most directly answers &quot;this card became the
-        focused experience&quot; while staying visually restrained and cheap
-        to run (transform + opacity only). Concept 2 (Focus Field) is the
+        focused experience,&quot; via a real blurred-content crossfade rather
+        than a flat panel swap, while staying cheap to run (transform +
+        opacity + filter only) — the Frameless variant is the better fit if
+        the fully open modal should match the rest of the product&apos;s
+        borderless modal language, while Framed keeps the border visible
+        throughout for a stronger persistent &quot;this card, now open&quot;
+        read. Concept 2 (Focus Field) is the
         better fit if the destination content&apos;s shape stops matching the
         card&apos;s aspect ratio, or if grid position becomes unstable (e.g.
         after filtering). Concept 3 (Threshold Unfold) is worth prototyping
@@ -221,7 +235,8 @@ export function ActivityModalMotionV3PageClient() {
           <ProblemSection />
 
           <div className="flex flex-col gap-6 py-4">
-            <ConceptCard meta={cohesiveSurfaceMeta} />
+            <ConceptCard meta={cohesiveSurfaceFramedMeta} />
+            <ConceptCard meta={cohesiveSurfaceFramelessMeta} />
             <ConceptCard meta={focusFieldMeta} />
             <ConceptCard meta={thresholdUnfoldMeta} />
           </div>
