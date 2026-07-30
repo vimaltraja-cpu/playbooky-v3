@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -206,6 +207,7 @@ function CohesiveSurfaceEngine({
   const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const gridRef = useRef<HTMLDivElement | null>(null);
   const surfaceRef = useRef<HTMLDivElement | null>(null);
+  const borderLayerRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const originRectRef = useRef<Rect | null>(null);
   const destRectRef = useRef<Rect | null>(null);
@@ -592,19 +594,21 @@ function CohesiveSurfaceEngine({
       {activeCard
         ? createPortal(
           <>
-            <div
-              aria-label={`${activeCard.label} activity details`}
-              aria-modal={phase === "open" ? true : undefined}
-              className="pointer-events-none fixed z-50 overflow-hidden shadow-[0_18px_50px_rgba(36,31,24,0.18)] will-change-transform"
-              ref={surfaceRef}
-              role="dialog"
-              style={{
-                background: "linear-gradient(160deg,#FCFBFA 0%,#F3EEE7 100%)",
-                // Corner-radius crop mask for the content layers. The
-                // border stroke below (an SVG child) is cropped to the
-                // exact same radius on this same element, so the crop mask
-                // and the border can never drift apart from each other.
-                borderRadius: CARD_CONTENT_RADIUS_PX,
+            {/*
+              `surfaceGeometry` is the single source of truth for the
+              surface's position/size/transform/transition, shared by
+              reference (not just by matching values) between the content
+              box and the border box below via one spread — both boxes are
+              independent `position: fixed` siblings (not a wrapper +
+              children) because a wrapper with `will-change: transform`
+              wrapping the SVG border turns out to break the border's own
+              rendering (see the border box's comment). Since both boxes
+              spread the exact same object into `style`, they cannot drift
+              positionally: there is still only one computed value, just
+              applied twice instead of inherited once.
+            */}
+            {(() => {
+              const surfaceGeometry: CSSProperties = {
                 height: destRectRef.current?.height,
                 left: destRectRef.current?.left,
                 top: destRectRef.current?.top,
@@ -616,71 +620,128 @@ function CohesiveSurfaceEngine({
                     ? `transform ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}`
                     : `transform ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}`,
                 width: destRectRef.current?.width
-              }}
-            >
-              {layers}
+              };
 
-              {/*
-                Border stroke — rendered as an SVG child of `surfaceRef`
-                rather than a CSS `border`, and rather than a separately
-                positioned sibling element. As a normal DOM child sitting
-                inside `surfaceRef`'s box, it is painted under the exact
-                same `transform` value as the content layers above (a
-                `transform` on a parent carries every descendant along with
-                it in the same paint — there is no second value, no second
-                clock, so lag/desync between the border and the content is
-                structurally impossible). A plain CSS `border` would still
-                have worked positionally, but its rendered thickness gets
-                visually squashed by `surfaceRef`'s non-uniform FLIP scale;
-                `vector-effect="non-scaling-stroke"` on the SVG `<rect>`
-                keeps the stroke's on-screen width constant regardless of
-                that ancestor scale. The `<rect>`'s geometry (its rx/ry
-                corner radius) is not protected by non-scaling-stroke and
-                will read as a slightly non-circular arc while the
-                non-uniform scale is still resolving, settling into a true
-                circular 16px radius once the transform reaches
-                `scale(1)` — an acceptable, minor cosmetic tradeoff.
-                `viewBox` is sized to `surfaceRef`'s own fixed destRect
-                box (only the outer transform animates, matching how the
-                content layers above are scaled), so the rect's coordinates
-                never need to change during the transition either.
-              */}
-              {destRectRef.current ? (
-                <svg
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 z-10"
-                  viewBox={`0 0 ${destRectRef.current.width} ${destRectRef.current.height}`}
-                >
-                  <rect
-                    fill="none"
-                    height={Math.max(0, destRectRef.current.height - CARD_STROKE_WIDTH_PX)}
-                    rx={CARD_CONTENT_RADIUS_PX}
-                    ry={CARD_CONTENT_RADIUS_PX}
-                    stroke={strokeColor(strokeVisible)}
-                    strokeWidth={CARD_STROKE_WIDTH_PX}
+              return (
+                <>
+                  {/*
+                    Content box — clips Layer 1/Layer 2 to the surface's
+                    rounded shape. This is the only element with
+                    `overflow: hidden`, so it is the only element that can
+                    clip anything; the border below intentionally lives
+                    outside it, on its own sibling fixed element, not as a
+                    child. `will-change: transform` stays on this box
+                    (it's the big blurred content layer that benefits most
+                    from GPU compositing) but is deliberately kept off the
+                    border box below — see that box's comment for why.
+                  */}
+                  <div
+                    aria-label={`${activeCard.label} activity details`}
+                    aria-modal={phase === "open" ? true : undefined}
+                    className="pointer-events-none fixed z-50 overflow-hidden shadow-[0_18px_50px_rgba(36,31,24,0.18)] will-change-transform"
+                    ref={surfaceRef}
+                    role="dialog"
                     style={{
-                      transition: reducedMotion ? "none" : `stroke ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
+                      ...surfaceGeometry,
+                      background: "linear-gradient(160deg,#FCFBFA 0%,#F3EEE7 100%)",
+                      borderRadius: CARD_CONTENT_RADIUS_PX
                     }}
-                    vectorEffect="non-scaling-stroke"
-                    width={Math.max(0, destRectRef.current.width - CARD_STROKE_WIDTH_PX)}
-                    x={CARD_STROKE_WIDTH_PX / 2}
-                    y={CARD_STROKE_WIDTH_PX / 2}
-                  />
-                </svg>
-              ) : null}
+                  >
+                    {layers}
 
-              {phase === "open" ? (
-                <button
-                  aria-label="Close activity details"
-                  className="pointer-events-auto absolute right-4 top-4 z-20 grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/80 text-2xl leading-none text-[#324236] shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#aa7d3a]/50"
-                  onClick={closeShell}
-                  ref={closeButtonRef}
-                  type="button"
-                >
-                  <span aria-hidden="true">×</span>
-                </button>
-              ) : null}
-            </div>
+                    {phase === "open" ? (
+                      <button
+                        aria-label="Close activity details"
+                        className="pointer-events-auto absolute right-4 top-4 z-20 grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/80 text-2xl leading-none text-[#324236] shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#aa7d3a]/50"
+                        onClick={closeShell}
+                        ref={closeButtonRef}
+                        type="button"
+                      >
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    ) : null}
+                  </div>
+
+                  {/*
+                    Border box — an independent `position: fixed` sibling
+                    of the content box (not a child, and not wrapped
+                    together with it under a shared parent), spreading the
+                    exact same `surfaceGeometry` object so it can never
+                    drift from the content box's position/size/transform.
+                    It has no `overflow: hidden`, so the SVG stroke below
+                    can never get cut off by a clip boundary while the
+                    transform is mid-animation.
+
+                    Two distinct, separately-verified Chromium rendering
+                    bugs had to be avoided to get here, neither of which is
+                    a clipping problem:
+                    1. `vector-effect="non-scaling-stroke"` on a *rounded*
+                       `<rect>` (rx/ry set) under this surface's extreme
+                       non-uniform FLIP scale renders a completely
+                       invisible stroke on whichever axis is most
+                       compressed — confirmed via isolated repros using the
+                       exact live transform matrix. So this rect
+                       deliberately does NOT use non-scaling-stroke; a
+                       plain (scaling) stroke is thinner than
+                       `CARD_STROKE_WIDTH_PX` only for the brief instant
+                       right after click, is always at least partially
+                       visible, and resolves to the exact correct width
+                       the moment scale reaches `scale(1)`.
+                    2. `will-change: transform` on any ancestor of this SVG
+                       reliably breaks the same way — Chromium composites
+                       that ancestor onto its own layer and rasterizes the
+                       straight edges of the stroke away entirely (only the
+                       rounded corners survive), independent of
+                       non-scaling-stroke. That's why `will-change` lives
+                       only on the content box above and never on this box
+                       or any wrapper around this box.
+                    The rect's own inset (`x`/`y` = half the stroke width)
+                    is correct once the transform settles to `scale(1)`;
+                    since nothing clips this box, the stroke can safely
+                    extend a little outside its own nominal box
+                    mid-animation without being cut off. Its rx/ry corner
+                    radius will likewise read as a slightly non-circular
+                    arc while the non-uniform scale is still resolving,
+                    settling into a true circular 16px radius once the
+                    transform reaches `scale(1)` — an acceptable, minor
+                    cosmetic tradeoff. `viewBox` is sized to the surface's
+                    own fixed destRect box (only the outer transform
+                    animates, matching how the content layers are scaled),
+                    so the rect's coordinates never need to change during
+                    the transition either.
+                  */}
+                  {destRectRef.current ? (
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none fixed z-50"
+                      ref={borderLayerRef}
+                      style={surfaceGeometry}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className="absolute inset-0"
+                        viewBox={`0 0 ${destRectRef.current.width} ${destRectRef.current.height}`}
+                      >
+                        <rect
+                          fill="none"
+                          height={Math.max(0, destRectRef.current.height - CARD_STROKE_WIDTH_PX)}
+                          rx={CARD_CONTENT_RADIUS_PX}
+                          ry={CARD_CONTENT_RADIUS_PX}
+                          stroke={strokeColor(strokeVisible)}
+                          strokeWidth={CARD_STROKE_WIDTH_PX}
+                          style={{
+                            transition: reducedMotion ? "none" : `stroke ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
+                          }}
+                          width={Math.max(0, destRectRef.current.width - CARD_STROKE_WIDTH_PX)}
+                          x={CARD_STROKE_WIDTH_PX / 2}
+                          y={CARD_STROKE_WIDTH_PX / 2}
+                        />
+                      </svg>
+                    </div>
+                  ) : null}
+                </>
+              );
+            })()}
           </>,
           document.body
         )
