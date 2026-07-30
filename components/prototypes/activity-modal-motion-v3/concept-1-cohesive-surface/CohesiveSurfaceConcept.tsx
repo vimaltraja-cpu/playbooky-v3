@@ -144,6 +144,47 @@ const CONTENT_STAGE_STAGGER_1 = 90;
 const CONTENT_STAGE_STAGGER_2 = 170;
 const OPEN_SETTLE_BUFFER = 230;
 
+/**
+ * The page background behind this prototype route (see
+ * `app/activity-modal-motion-v3/ActivityModalMotionV3ConsolidatedClient.tsx`'s
+ * `<main className="... bg-[#F3EEE7] ...">`) — there is no dimming scrim
+ * behind the modal, so this is genuinely what's visible immediately outside
+ * the surface's true rounded corner, both in the grid's gutters around the
+ * origin card and in the page's own padding around the fully open modal.
+ */
+const CORNER_MASK_COLOR = "#F3EEE7";
+
+/**
+ * A handful of px — comfortably larger than the worst-case sub-pixel sliver
+ * produced by clipping the content box's local (pre-transform) border-radius
+ * under the most extreme non-uniform FLIP scale, immediately after click.
+ */
+const CORNER_MASK_SPREAD_PX = 4;
+
+/**
+ * Whether the content box's local border-radius clip can currently be
+ * visually distorted by a non-uniform FLIP `transform: scale()` (see the
+ * border-overlay comment above for why that distortion happens at all).
+ * True only for the phases where the surface's transform is actively
+ * carrying a non-identity scale — the click-triggered expand (through the
+ * point the transform resets to `none`) and the close-triggered contract
+ * (through the point the surface is sitting at the origin card's size,
+ * still under a non-uniform scale, right before `reset()` clears it). Once
+ * the transform is identity (content-enter/open) or hasn't been (re)applied
+ * yet (idle/closing-content, before the contraction starts), the content
+ * box's own radius is undistorted and matches the border overlay exactly,
+ * so there is no sliver left to mask.
+ */
+function isCornerMaskVisible(phase: ConceptPhase) {
+  return (
+    phase === "acknowledge" ||
+    phase === "soften" ||
+    phase === "transform" ||
+    phase === "closing-surface" ||
+    phase === "restoring"
+  );
+}
+
 function useClearableTimers() {
   const timers = useRef<number[]>([]);
 
@@ -748,14 +789,43 @@ function CohesiveSurfaceEngine({
                     by never letting the border's geometry live under a CSS
                     transform in the first place.)
 
-                    The only CSS transition kept here is on `border-color`,
-                    for the Frameless variant's fade — that is a genuinely
-                    independent property from position/size, so it does not
-                    fight with the imperative `left`/`top`/`width`/`height`
-                    writes above (those are set via individual `.style.*`
-                    properties, never `.style.cssText` or the whole `style`
-                    object, so React's `border-color`/`transition` values set
-                    via the `style` prop are never clobbered).
+                    The only CSS transitions kept here are on `border-color`
+                    (the Frameless variant's fade) and `box-shadow` (the
+                    corner-mask halo below) — both are genuinely independent
+                    properties from position/size, so neither fights with the
+                    imperative `left`/`top`/`width`/`height` writes above
+                    (those are set via individual `.style.*` properties,
+                    never `.style.cssText` or the whole `style` object, so
+                    React's `border-color`/`box-shadow`/`transition` values
+                    set via the `style` prop are never clobbered).
+
+                    `boxShadow` here is a solid, zero-blur, spread-only halo
+                    (`0 0 0 <spread> <color>`) — because this box's own
+                    `border-radius` is correct and undistorted (it's derived
+                    from `surfaceRef`'s live rect every frame, same as the
+                    border itself, never from a CSS transform), a box-shadow
+                    on it naturally inherits that same true radius, just
+                    offset outward. That's what makes it able to mask the
+                    content box's separate, distorted local-radius sliver
+                    (see the content box's `overflow:hidden` comment above):
+                    it paints a few px of the real page background color
+                    just outside the true rounded corner, covering whatever
+                    of the content's own (slightly squarer, mid-transition)
+                    corner peeks out past it — while a plain rectangle would
+                    have worked purely by being "big enough", this shape
+                    happens to already be the correct rounded shape too,
+                    since it's offset from the same live geometry. It's only
+                    switched on while the surface's transform can actually be
+                    non-uniform (`isCornerMaskVisible` — the acknowledge/
+                    soften/transform beats of the open sequence and the
+                    closing-surface/restoring beats of the close sequence).
+                    Once the transform is identity (content-enter/open,
+                    where the content box's own radius is already
+                    undistorted and matches the border exactly) there is no
+                    sliver left to cover, so the halo is switched off rather
+                    than left permanently on — with nothing to mask, a
+                    lingering few-px page-background halo would just be a
+                    new, unnecessary artifact of its own.
                   */}
                   <div
                     aria-hidden="true"
@@ -766,7 +836,12 @@ function CohesiveSurfaceEngine({
                       borderRadius: CARD_CONTENT_RADIUS_PX,
                       borderStyle: "solid",
                       borderWidth: CARD_STROKE_WIDTH_PX,
-                      transition: reducedMotion ? "none" : `border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
+                      boxShadow: isCornerMaskVisible(phase)
+                        ? `0 0 0 ${CORNER_MASK_SPREAD_PX}px ${CORNER_MASK_COLOR}`
+                        : "none",
+                      transition: reducedMotion
+                        ? "none"
+                        : `border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out, box-shadow ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
                     }}
                   />
                 </>
