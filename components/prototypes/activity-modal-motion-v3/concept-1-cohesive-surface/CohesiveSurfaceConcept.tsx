@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { ActivityCard } from "@/components/ui/ActivityCard";
@@ -207,7 +207,8 @@ function CohesiveSurfaceEngine({
   const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const gridRef = useRef<HTMLDivElement | null>(null);
   const surfaceRef = useRef<HTMLDivElement | null>(null);
-  const borderLayerRef = useRef<HTMLDivElement | null>(null);
+  const borderOverlayRef = useRef<HTMLDivElement | null>(null);
+  const borderOverlayRafRef = useRef<number | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const originRectRef = useRef<Rect | null>(null);
   const destRectRef = useRef<Rect | null>(null);
@@ -220,6 +221,69 @@ function CohesiveSurfaceEngine({
     onLockChange?.(isLocked);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLocked]);
+
+  /**
+   * Border overlay geometry tracking — the border box is a `position: fixed`
+   * sibling with NO `transform`/`transition` on its own position/size, so
+   * there is nothing for the surface's non-uniform FLIP scale to distort.
+   * Instead, every animation frame this reads `surfaceRef`'s *actual live
+   * rendered* `getBoundingClientRect()` (however the content box currently
+   * looks — already correct, since content already renders correctly) and
+   * writes that straight onto the border box's `left`/`top`/`width`/`height`
+   * imperatively. That guarantees the border is always visually identical to
+   * the content box's position/size, because it's derived from the content
+   * box's real rendered state every frame, not a second parallel animation
+   * that could desync from it.
+   *
+   * The loop runs for the entire lifetime of `activeCard !== null` (started
+   * on open, stopped on reset/unmount) rather than trying to precisely
+   * bracket only the "moving" phases — reading one element's
+   * `getBoundingClientRect()` and writing four style properties per frame is
+   * cheap, and this is far more robust against interrupted/replayed
+   * transitions than trying to time-box the loop to match the timer
+   * machinery above. `useLayoutEffect` (not `useEffect`) so the first sync
+   * happens before the browser paints the newly-mounted overlay, avoiding a
+   * one-frame flash at `left:0;top:0;width:0;height:0`. Cleanup cancels the
+   * rAF id via a ref, and — because this effect is keyed on `activeCard`
+   * (which becomes `null` on every `reset()`, including interrupted closes)
+   * — React runs that cleanup automatically any time `reset()` fires, so it
+   * participates in the same interrupt-safe cleanup discipline as
+   * `clearAll()`'s timers without needing to be threaded through them.
+   */
+  useLayoutEffect(() => {
+    if (!activeCard) {
+      return;
+    }
+
+    function syncBorderOverlay() {
+      const rect = surfaceRef.current?.getBoundingClientRect();
+      const overlay = borderOverlayRef.current;
+
+      if (!rect || !overlay) {
+        return;
+      }
+
+      overlay.style.left = `${rect.left}px`;
+      overlay.style.top = `${rect.top}px`;
+      overlay.style.width = `${rect.width}px`;
+      overlay.style.height = `${rect.height}px`;
+    }
+
+    function tick() {
+      syncBorderOverlay();
+      borderOverlayRafRef.current = requestAnimationFrame(tick);
+    }
+
+    syncBorderOverlay();
+    borderOverlayRafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (borderOverlayRafRef.current !== null) {
+        cancelAnimationFrame(borderOverlayRafRef.current);
+        borderOverlayRafRef.current = null;
+      }
+    };
+  }, [activeCard]);
 
   const d = (ms: number) => scaleDuration(ms, speed);
 
@@ -272,10 +336,11 @@ function CohesiveSurfaceEngine({
 
     schedule(() => {
       // Kick the transform back to identity on the next frame so the
-      // browser has committed the initial FLIP transform first. The SVG
-      // border lives inside `surfaceRef` and shares this exact `transform`
-      // value, so it flips to identity in the same frame as the content —
-      // there is nothing else to keep in sync.
+      // browser has committed the initial FLIP transform first. The border
+      // overlay isn't part of this transform at all — it's driven every
+      // frame by the border-overlay-tracking `useLayoutEffect`, which reads
+      // `surfaceRef`'s live rendered rect, so it naturally follows along
+      // regardless of when this transform resets.
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setTransform("none");
@@ -595,17 +660,14 @@ function CohesiveSurfaceEngine({
         ? createPortal(
           <>
             {/*
-              `surfaceGeometry` is the single source of truth for the
-              surface's position/size/transform/transition, shared by
-              reference (not just by matching values) between the content
-              box and the border box below via one spread — both boxes are
-              independent `position: fixed` siblings (not a wrapper +
-              children) because a wrapper with `will-change: transform`
-              wrapping the SVG border turns out to break the border's own
-              rendering (see the border box's comment). Since both boxes
-              spread the exact same object into `style`, they cannot drift
-              positionally: there is still only one computed value, just
-              applied twice instead of inherited once.
+              `surfaceGeometry` is the content box's position/size/transform/
+              transition. The border box below is deliberately NOT part of
+              this object — it is a separate `position: fixed` sibling whose
+              `left`/`top`/`width`/`height` are driven imperatively, every
+              animation frame, from `surfaceRef.getBoundingClientRect()` (see
+              the border-overlay-tracking `useLayoutEffect` above), so it can
+              never drift from the content box's actual rendered geometry
+              regardless of the non-uniform FLIP scale applied here.
             */}
             {(() => {
               const surfaceGeometry: CSSProperties = {
@@ -663,82 +725,50 @@ function CohesiveSurfaceEngine({
                   </div>
 
                   {/*
-                    Border box — an independent `position: fixed` sibling
-                    of the content box (not a child, and not wrapped
-                    together with it under a shared parent), spreading the
-                    exact same `surfaceGeometry` object so it can never
-                    drift from the content box's position/size/transform.
-                    It has no `overflow: hidden`, so the SVG stroke below
-                    can never get cut off by a clip boundary while the
-                    transform is mid-animation.
+                    Border box — an independent `position: fixed` sibling of
+                    the content box (not a child, and not wrapped together
+                    with it under a shared parent). It carries a plain CSS
+                    `border` (not an SVG stroke) and deliberately has NO
+                    `transform`/`transition` on its own position or size —
+                    `left`/`top`/`width`/`height` are set imperatively every
+                    animation frame by the border-overlay-tracking
+                    `useLayoutEffect` above, reading `surfaceRef`'s actual
+                    live `getBoundingClientRect()`. That removes the border
+                    from the scaled coordinate system entirely: there is
+                    nothing left for the surface's non-uniform FLIP scale to
+                    distort, and nothing that can desync from a second
+                    parallel animation, because this box is just being told
+                    the truth about where the content box currently is,
+                    continuously. (Four earlier CSS-only attempts —
+                    transform-scaled border, a separately left/top/width/
+                    height-animated sibling, a clipped SVG rect with
+                    non-scaling-stroke, and an unclipped SVG rect — each
+                    fixed one failure mode but hit a new one; see git log for
+                    this file. This JS-driven approach sidesteps all of them
+                    by never letting the border's geometry live under a CSS
+                    transform in the first place.)
 
-                    Two distinct, separately-verified Chromium rendering
-                    bugs had to be avoided to get here, neither of which is
-                    a clipping problem:
-                    1. `vector-effect="non-scaling-stroke"` on a *rounded*
-                       `<rect>` (rx/ry set) under this surface's extreme
-                       non-uniform FLIP scale renders a completely
-                       invisible stroke on whichever axis is most
-                       compressed — confirmed via isolated repros using the
-                       exact live transform matrix. So this rect
-                       deliberately does NOT use non-scaling-stroke; a
-                       plain (scaling) stroke is thinner than
-                       `CARD_STROKE_WIDTH_PX` only for the brief instant
-                       right after click, is always at least partially
-                       visible, and resolves to the exact correct width
-                       the moment scale reaches `scale(1)`.
-                    2. `will-change: transform` on any ancestor of this SVG
-                       reliably breaks the same way — Chromium composites
-                       that ancestor onto its own layer and rasterizes the
-                       straight edges of the stroke away entirely (only the
-                       rounded corners survive), independent of
-                       non-scaling-stroke. That's why `will-change` lives
-                       only on the content box above and never on this box
-                       or any wrapper around this box.
-                    The rect's own inset (`x`/`y` = half the stroke width)
-                    is correct once the transform settles to `scale(1)`;
-                    since nothing clips this box, the stroke can safely
-                    extend a little outside its own nominal box
-                    mid-animation without being cut off. Its rx/ry corner
-                    radius will likewise read as a slightly non-circular
-                    arc while the non-uniform scale is still resolving,
-                    settling into a true circular 16px radius once the
-                    transform reaches `scale(1)` — an acceptable, minor
-                    cosmetic tradeoff. `viewBox` is sized to the surface's
-                    own fixed destRect box (only the outer transform
-                    animates, matching how the content layers are scaled),
-                    so the rect's coordinates never need to change during
-                    the transition either.
+                    The only CSS transition kept here is on `border-color`,
+                    for the Frameless variant's fade — that is a genuinely
+                    independent property from position/size, so it does not
+                    fight with the imperative `left`/`top`/`width`/`height`
+                    writes above (those are set via individual `.style.*`
+                    properties, never `.style.cssText` or the whole `style`
+                    object, so React's `border-color`/`transition` values set
+                    via the `style` prop are never clobbered).
                   */}
-                  {destRectRef.current ? (
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none fixed z-50"
-                      ref={borderLayerRef}
-                      style={surfaceGeometry}
-                    >
-                      <svg
-                        aria-hidden="true"
-                        className="absolute inset-0"
-                        viewBox={`0 0 ${destRectRef.current.width} ${destRectRef.current.height}`}
-                      >
-                        <rect
-                          fill="none"
-                          height={Math.max(0, destRectRef.current.height - CARD_STROKE_WIDTH_PX)}
-                          rx={CARD_CONTENT_RADIUS_PX}
-                          ry={CARD_CONTENT_RADIUS_PX}
-                          stroke={strokeColor(strokeVisible)}
-                          strokeWidth={CARD_STROKE_WIDTH_PX}
-                          style={{
-                            transition: reducedMotion ? "none" : `stroke ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
-                          }}
-                          width={Math.max(0, destRectRef.current.width - CARD_STROKE_WIDTH_PX)}
-                          x={CARD_STROKE_WIDTH_PX / 2}
-                          y={CARD_STROKE_WIDTH_PX / 2}
-                        />
-                      </svg>
-                    </div>
-                  ) : null}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none fixed z-50"
+                    ref={borderOverlayRef}
+                    style={{
+                      borderColor: strokeColor(strokeVisible),
+                      borderRadius: CARD_CONTENT_RADIUS_PX,
+                      borderStyle: "solid",
+                      borderWidth: CARD_STROKE_WIDTH_PX,
+                      transition: reducedMotion ? "none" : `border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
+                    }}
+                  />
                 </>
               );
             })()}
