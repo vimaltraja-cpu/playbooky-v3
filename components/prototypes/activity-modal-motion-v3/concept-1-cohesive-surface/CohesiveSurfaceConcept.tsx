@@ -202,18 +202,10 @@ function CohesiveSurfaceEngine({
   const [crossfaded, setCrossfaded] = useState(false);
   const [contentStage, setContentStage] = useState(0);
   const [cardFocused, setCardFocused] = useState(true);
-  // The decorative border frame is driven by real layout properties
-  // (left/top/width/height), not the content surface's `transform`, so its
-  // border-width/radius never get distorted by an anisotropic scale — see
-  // `borderFrameRef` below. `frameRect` mirrors the same origin-rect ->
-  // dest-rect journey `transform` takes via `buildFlipTransform`, just
-  // expressed as a literal rect instead of a translate/scale string.
-  const [frameRect, setFrameRect] = useState<Rect | null>(null);
 
   const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const gridRef = useRef<HTMLDivElement | null>(null);
   const surfaceRef = useRef<HTMLDivElement | null>(null);
-  const borderFrameRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const originRectRef = useRef<Rect | null>(null);
   const destRectRef = useRef<Rect | null>(null);
@@ -234,7 +226,6 @@ function CohesiveSurfaceEngine({
     setPhase("idle");
     setActiveCard(null);
     setTransform("none");
-    setFrameRect(null);
     setCardLayerSoftened(false);
     setCrossfaded(false);
     setContentStage(0);
@@ -248,7 +239,6 @@ function CohesiveSurfaceEngine({
 
     if (reducedMotion) {
       setTransform("none");
-      setFrameRect(destRect);
       setCardLayerSoftened(false);
       setCrossfaded(true);
       setContentStage(3);
@@ -259,7 +249,6 @@ function CohesiveSurfaceEngine({
     }
 
     setTransform(buildFlipTransform(originRect, destRect));
-    setFrameRect(originRect);
     setCardLayerSoftened(false);
     setCrossfaded(false);
     setContentStage(0);
@@ -281,14 +270,13 @@ function CohesiveSurfaceEngine({
 
     schedule(() => {
       // Kick the transform back to identity on the next frame so the
-      // browser has committed the initial FLIP transform first. The
-      // border frame's rect flips to the dest rect in the same
-      // double-rAF window so it stays in visual lockstep with the
-      // content surface's transform.
+      // browser has committed the initial FLIP transform first. The SVG
+      // border lives inside `surfaceRef` and shares this exact `transform`
+      // value, so it flips to identity in the same frame as the content —
+      // there is nothing else to keep in sync.
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setTransform("none");
-          setFrameRect(destRect);
         });
       });
     }, transformAt);
@@ -353,7 +341,6 @@ function CohesiveSurfaceEngine({
     schedule(() => {
       setPhase("closing-surface");
       setTransform(buildFlipTransform(origin, dest));
-      setFrameRect(origin);
     }, closingSurfaceAt);
 
     schedule(() => setCrossfaded(false), crossfadeBackAt);
@@ -613,11 +600,10 @@ function CohesiveSurfaceEngine({
               role="dialog"
               style={{
                 background: "linear-gradient(160deg,#FCFBFA 0%,#F3EEE7 100%)",
-                // Corner-radius crop mask only — the actual border stroke
-                // now lives entirely on `borderFrameRef` below, which is
-                // driven by real width/height/top/left rather than this
-                // element's `transform`, so the stroke never gets
-                // squashed by an anisotropic scale mid-flight.
+                // Corner-radius crop mask for the content layers. The
+                // border stroke below (an SVG child) is cropped to the
+                // exact same radius on this same element, so the crop mask
+                // and the border can never drift apart from each other.
                 borderRadius: CARD_CONTENT_RADIUS_PX,
                 height: destRectRef.current?.height,
                 left: destRectRef.current?.left,
@@ -634,6 +620,55 @@ function CohesiveSurfaceEngine({
             >
               {layers}
 
+              {/*
+                Border stroke — rendered as an SVG child of `surfaceRef`
+                rather than a CSS `border`, and rather than a separately
+                positioned sibling element. As a normal DOM child sitting
+                inside `surfaceRef`'s box, it is painted under the exact
+                same `transform` value as the content layers above (a
+                `transform` on a parent carries every descendant along with
+                it in the same paint — there is no second value, no second
+                clock, so lag/desync between the border and the content is
+                structurally impossible). A plain CSS `border` would still
+                have worked positionally, but its rendered thickness gets
+                visually squashed by `surfaceRef`'s non-uniform FLIP scale;
+                `vector-effect="non-scaling-stroke"` on the SVG `<rect>`
+                keeps the stroke's on-screen width constant regardless of
+                that ancestor scale. The `<rect>`'s geometry (its rx/ry
+                corner radius) is not protected by non-scaling-stroke and
+                will read as a slightly non-circular arc while the
+                non-uniform scale is still resolving, settling into a true
+                circular 16px radius once the transform reaches
+                `scale(1)` — an acceptable, minor cosmetic tradeoff.
+                `viewBox` is sized to `surfaceRef`'s own fixed destRect
+                box (only the outer transform animates, matching how the
+                content layers above are scaled), so the rect's coordinates
+                never need to change during the transition either.
+              */}
+              {destRectRef.current ? (
+                <svg
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 z-10"
+                  viewBox={`0 0 ${destRectRef.current.width} ${destRectRef.current.height}`}
+                >
+                  <rect
+                    fill="none"
+                    height={Math.max(0, destRectRef.current.height - CARD_STROKE_WIDTH_PX)}
+                    rx={CARD_CONTENT_RADIUS_PX}
+                    ry={CARD_CONTENT_RADIUS_PX}
+                    stroke={strokeColor(strokeVisible)}
+                    strokeWidth={CARD_STROKE_WIDTH_PX}
+                    style={{
+                      transition: reducedMotion ? "none" : `stroke ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
+                    }}
+                    vectorEffect="non-scaling-stroke"
+                    width={Math.max(0, destRectRef.current.width - CARD_STROKE_WIDTH_PX)}
+                    x={CARD_STROKE_WIDTH_PX / 2}
+                    y={CARD_STROKE_WIDTH_PX / 2}
+                  />
+                </svg>
+              ) : null}
+
               {phase === "open" ? (
                 <button
                   aria-label="Close activity details"
@@ -646,45 +681,6 @@ function CohesiveSurfaceEngine({
                 </button>
               ) : null}
             </div>
-
-            {/*
-              Decorative border frame — purely visual (`aria-hidden`), kept
-              as a sibling overlay on top of the content surface rather than
-              a child so it never inherits `surfaceRef`'s `transform`. Its
-              width/height/top/left are driven directly (real layout
-              properties, animated via a plain CSS `transition`) from the
-              origin card's rect to the destination stage rect, using the
-              same open/close timing+easing as the content surface's
-              transform (`GLASS_EXPAND_*`/`CLOSE_*`) so the two stay in
-              visual lockstep. Because this element has no content to
-              reflow, animating layout properties directly is cheap here —
-              unlike the content surface, which deliberately avoids
-              width/height animation. Border-width and border-radius stay
-              fixed, constant pixel values the whole time, so they render
-              correctly undistorted at every point in the animation, not
-              just the two endpoints.
-            */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none fixed z-50"
-              ref={borderFrameRef}
-              style={{
-                borderColor: strokeColor(strokeVisible),
-                borderRadius: CARD_CONTENT_RADIUS_PX,
-                borderStyle: "solid",
-                borderWidth: CARD_STROKE_WIDTH_PX,
-                boxSizing: "border-box",
-                height: (frameRect ?? destRectRef.current)?.height,
-                left: (frameRect ?? destRectRef.current)?.left,
-                top: (frameRect ?? destRectRef.current)?.top,
-                transition: reducedMotion
-                  ? "none"
-                  : phase === "closing-surface" || phase === "restoring"
-                    ? `left ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, top ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, width ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, height ${d(CLOSE_GLASS_CONTRACT_DURATION_MS)}ms ${CLOSE_EASING}, border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`
-                    : `left ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, top ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, width ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, height ${d(GLASS_EXPAND_DURATION_MS)}ms ${GLASS_EXPAND_EASING}, border-color ${d(STROKE_FADE_DURATION_MS)}ms ease-out`,
-                width: (frameRect ?? destRectRef.current)?.width
-              }}
-            />
           </>,
           document.body
         )
