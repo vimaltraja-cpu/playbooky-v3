@@ -2,6 +2,47 @@
   --recommendation-screen-css: 1;
 }
 
+.journeyRoot {
+  min-height: 100svh;
+  position: relative;
+  width: 100%;
+}
+
+.journeySurface {
+  min-height: 100svh;
+  opacity: 1;
+  filter: blur(0);
+  transform: translateZ(0);
+  transition:
+    opacity 720ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, filter;
+  width: 100%;
+}
+
+.journeySurfaceExit {
+  filter: blur(18px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.journeySurfaceEnter {
+  animation: recommendation-journey-enter 900ms cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+@keyframes recommendation-journey-enter {
+  from {
+    filter: blur(18px);
+    opacity: 0;
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
 .recommendationScreen:global(.recommendation-loading-experience) {
   font-family:
     Geist,
@@ -560,6 +601,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .journeySurface {
+    transition-duration: 180ms;
+  }
+
+  .journeySurfaceExit {
+    filter: none;
+    opacity: 0;
+  }
+
+  .journeySurfaceEnter {
+    animation-duration: 220ms;
+    animation-name: recommendation-reduced-crossfade;
+    filter: none;
+  }
+
   .recommendationScreen :global(.recommendation-loading-image-first-in) {
     animation-duration: 500ms;
     animation-name: recommendation-reduced-crossfade;
