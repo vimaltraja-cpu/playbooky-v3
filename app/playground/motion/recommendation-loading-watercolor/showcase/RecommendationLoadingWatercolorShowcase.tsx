@@ -4,72 +4,31 @@ import { useEffect, useId, useMemo, useState } from "react";
 import Link from "next/link";
 
 import { recommendationLoadingStages } from "@/components/product/RecommendationLoadingExperience";
+import {
+  BUBBLE_CURVE_TIMING,
+  FOCUS_EASING_CSS,
+  OUTGOING_FADE_EASING_CSS,
+  RECOMMENDATION_WATERCOLOR_STAGE_SIZE,
+  jitterRecommendationWatercolorDroplet,
+  recommendationWatercolorDroplets,
+  recommendationWatercolorMotion,
+  type RecommendationWatercolorBubbleCurve,
+  type RecommendationWatercolorDroplet,
+  type RecommendationWatercolorFocusEasing,
+  type RecommendationWatercolorOutgoingFadeEasing
+} from "@/lib/design-system/recommendation-watercolor-motion";
 
-const STAGE_SIZE = 400;
+const STAGE_SIZE = RECOMMENDATION_WATERCOLOR_STAGE_SIZE;
 const CENTER = STAGE_SIZE / 2;
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-type Droplet = {
-  angleDeg: number;
-  delayPct: number;
-  distancePx: number;
-  id: string;
-  radiusPx: number;
-};
-
-let dropletIdCounter = 0;
-function nextDropletId() {
-  dropletIdCounter += 1;
-  return `showcase-bubble-${dropletIdCounter}`;
-}
+type Droplet = RecommendationWatercolorDroplet;
+type BubbleCurve = RecommendationWatercolorBubbleCurve;
+type OutgoingFadeEasing = RecommendationWatercolorOutgoingFadeEasing;
+type FocusEasing = RecommendationWatercolorFocusEasing;
 
 function tunedDefaultDroplets(): Droplet[] {
-  return [
-    { angleDeg: 0, delayPct: 0, distancePx: 0, id: nextDropletId(), radiusPx: 180 },
-    { angleDeg: 225, delayPct: 0.75, distancePx: 127, id: nextDropletId(), radiusPx: 235 },
-    { angleDeg: 315, delayPct: 1.5, distancePx: 127, id: nextDropletId(), radiusPx: 235 },
-    { angleDeg: 135, delayPct: 2.25, distancePx: 127, id: nextDropletId(), radiusPx: 235 },
-    { angleDeg: 45, delayPct: 3, distancePx: 127, id: nextDropletId(), radiusPx: 235 },
-    { angleDeg: 180, delayPct: 3.75, distancePx: 140, id: nextDropletId(), radiusPx: 175 },
-    { angleDeg: 0, delayPct: 4.5, distancePx: 140, id: nextDropletId(), radiusPx: 175 },
-    { angleDeg: 270, delayPct: 5.25, distancePx: 140, id: nextDropletId(), radiusPx: 175 },
-    { angleDeg: 90, delayPct: 6, distancePx: 140, id: nextDropletId(), radiusPx: 175 }
-  ];
+  return recommendationWatercolorDroplets.map((droplet) => ({ ...droplet }));
 }
-
-function jitterDroplet(droplet: Droplet): Droplet {
-  const rand = (range: number) => (Math.random() * 2 - 1) * range;
-  return {
-    ...droplet,
-    angleDeg: (droplet.angleDeg + rand(18) + 360) % 360,
-    delayPct: clamp(droplet.delayPct + rand(0.6), 0, 100),
-    distancePx: clamp(droplet.distancePx + rand(14), 0, 200),
-    radiusPx: clamp(droplet.radiusPx + rand(16), 20, 280)
-  };
-}
-
-type BubbleCurve = "linear" | "ease-in";
-const BUBBLE_CURVE_TIMING: Record<BubbleCurve, string> = {
-  "ease-in": "cubic-bezier(0.32, 0, 0.67, 0)",
-  linear: "linear"
-};
-
-type OutgoingFadeEasing = "gentle" | "linear" | "quick";
-const OUTGOING_FADE_EASING_CSS: Record<OutgoingFadeEasing, string> = {
-  gentle: "cubic-bezier(0.32, 0, 0.24, 1)",
-  linear: "linear",
-  quick: "cubic-bezier(0.55, 0, 0.15, 1)"
-};
-
-type FocusEasing = "ease-out" | "linear" | "snap";
-const FOCUS_EASING_CSS: Record<FocusEasing, string> = {
-  "ease-out": "cubic-bezier(0.22, 1, 0.36, 1)",
-  linear: "linear",
-  snap: "cubic-bezier(0.7, 0, 0.84, 0)"
-};
 
 function useStageCycle({
   intervalMs,
@@ -251,20 +210,46 @@ export function RecommendationLoadingWatercolorShowcase() {
   const [replayCount, setReplayCount] = useState(0);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
 
-  const [outgoingFadeStartMs, setOutgoingFadeStartMs] = useState(0);
-  const [outgoingFadeDurationMs, setOutgoingFadeDurationMs] = useState(3000);
-  const [outgoingFadeEasing, setOutgoingFadeEasing] = useState<OutgoingFadeEasing>("gentle");
-  const [outgoingMaxBlurPx, setOutgoingMaxBlurPx] = useState(9);
-  const [outgoingMaxDesaturatePct, setOutgoingMaxDesaturatePct] = useState(50);
+  const [outgoingFadeStartMs, setOutgoingFadeStartMs] = useState(
+    recommendationWatercolorMotion.layer1.fadeStartMs
+  );
+  const [outgoingFadeDurationMs, setOutgoingFadeDurationMs] = useState(
+    recommendationWatercolorMotion.layer1.fadeDurationMs
+  );
+  const [outgoingFadeEasing, setOutgoingFadeEasing] = useState<OutgoingFadeEasing>(
+    recommendationWatercolorMotion.layer1.fadeEasing
+  );
+  const [outgoingMaxBlurPx, setOutgoingMaxBlurPx] = useState(
+    recommendationWatercolorMotion.layer1.maxBlurPx
+  );
+  const [outgoingMaxDesaturatePct, setOutgoingMaxDesaturatePct] = useState(
+    recommendationWatercolorMotion.layer1.maxDesaturatePct
+  );
 
-  const [incomingStartMs, setIncomingStartMs] = useState(300);
-  const [incomingGrowMs, setIncomingGrowMs] = useState(5250);
-  const [bubbleCurve, setBubbleCurve] = useState<BubbleCurve>("ease-in");
-  const [incomingHoldMs, setIncomingHoldMs] = useState(400);
-  const [incomingFocusMs, setIncomingFocusMs] = useState(1000);
-  const [focusEasing, setFocusEasing] = useState<FocusEasing>("ease-out");
-  const [incomingStickMs, setIncomingStickMs] = useState(400);
-  const [organicRandomize, setOrganicRandomize] = useState(true);
+  const [incomingStartMs, setIncomingStartMs] = useState(
+    recommendationWatercolorMotion.layer2.comeInStartMs
+  );
+  const [incomingGrowMs, setIncomingGrowMs] = useState(
+    recommendationWatercolorMotion.layer2.comeInDurationMs
+  );
+  const [bubbleCurve, setBubbleCurve] = useState<BubbleCurve>(
+    recommendationWatercolorMotion.layer2.bubbleCurve
+  );
+  const [incomingHoldMs, setIncomingHoldMs] = useState(
+    recommendationWatercolorMotion.layer2.holdMs
+  );
+  const [incomingFocusMs, setIncomingFocusMs] = useState(
+    recommendationWatercolorMotion.layer2.focusPullMs
+  );
+  const [focusEasing, setFocusEasing] = useState<FocusEasing>(
+    recommendationWatercolorMotion.layer2.focusEasing
+  );
+  const [incomingStickMs, setIncomingStickMs] = useState(
+    recommendationWatercolorMotion.layer2.stickMs
+  );
+  const [organicRandomize, setOrganicRandomize] = useState(
+    recommendationWatercolorMotion.layer2.organicRandomize
+  );
   const [droplets] = useState<Droplet[]>(() => tunedDefaultDroplets());
 
   const outgoingFadeEndMs = outgoingFadeStartMs + outgoingFadeDurationMs;
@@ -307,7 +292,7 @@ export function RecommendationLoadingWatercolorShowcase() {
     if (!organicRandomize) {
       return droplets;
     }
-    return droplets.map((droplet) => jitterDroplet(droplet));
+    return droplets.map((droplet) => jitterRecommendationWatercolorDroplet(droplet));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [droplets, organicRandomize, transitionKey]);
 

@@ -10,6 +10,17 @@ import {
 } from "react";
 import Image from "next/image";
 
+import {
+  BUBBLE_CURVE_TIMING,
+  FOCUS_EASING_CSS,
+  OUTGOING_FADE_EASING_CSS,
+  RECOMMENDATION_WATERCOLOR_STAGE_SIZE,
+  getRecommendationWatercolorTotalCycleMs,
+  jitterRecommendationWatercolorDroplet,
+  recommendationWatercolorDroplets,
+  recommendationWatercolorMotion,
+  type RecommendationWatercolorDroplet
+} from "@/lib/design-system/recommendation-watercolor-motion";
 import styles from "./RecommendationScreens.module.css";
 
 export type RecommendationLoadingStageId =
@@ -58,138 +69,15 @@ export const recommendationLoadingStages: RecommendationLoadingStage[] = [
   }
 ];
 
-const RECOMMENDATION_WATERCOLOR_MOTION = {
-  layer1: {
-    fadeDurationMs: 3000,
-    fadeEasing: "gentle",
-    fadeStartMs: 0,
-    maxBlurPx: 9,
-    maxDesaturatePct: 50
-  },
-  layer2: {
-    bubbleCurve: "ease-in",
-    bubbleCount: 9,
-    comeInDurationMs: 5250,
-    comeInStartMs: 300,
-    focusEasing: "ease-out",
-    focusPullMs: 1000,
-    holdMs: 400,
-    organicRandomize: true,
-    stickMs: 400
-  },
-  totalCycleMs: 7350
-} as const;
-
-const STAGE_ADVANCE_MS = RECOMMENDATION_WATERCOLOR_MOTION.totalCycleMs;
-const WATERCOLOR_STAGE_SIZE = 400;
+const RECOMMENDATION_WATERCOLOR_MOTION = recommendationWatercolorMotion;
+const WATERCOLOR_DROPLETS = recommendationWatercolorDroplets;
+const STAGE_ADVANCE_MS = getRecommendationWatercolorTotalCycleMs(
+  RECOMMENDATION_WATERCOLOR_MOTION
+);
+const WATERCOLOR_STAGE_SIZE = RECOMMENDATION_WATERCOLOR_STAGE_SIZE;
 const WATERCOLOR_CENTER = WATERCOLOR_STAGE_SIZE / 2;
 
-type WatercolorDroplet = {
-  angleDeg: number;
-  delayPct: number;
-  distancePx: number;
-  id: string;
-  radiusPx: number;
-};
-
-const WATERCOLOR_DROPLETS: WatercolorDroplet[] = [
-  {
-    angleDeg: 0,
-    delayPct: 0,
-    distancePx: 0,
-    id: "recommendation-loading-watercolor-droplet-1",
-    radiusPx: 180
-  },
-  {
-    angleDeg: 225,
-    delayPct: 0.75,
-    distancePx: 127,
-    id: "recommendation-loading-watercolor-droplet-2",
-    radiusPx: 235
-  },
-  {
-    angleDeg: 315,
-    delayPct: 1.5,
-    distancePx: 127,
-    id: "recommendation-loading-watercolor-droplet-3",
-    radiusPx: 235
-  },
-  {
-    angleDeg: 135,
-    delayPct: 2.25,
-    distancePx: 127,
-    id: "recommendation-loading-watercolor-droplet-4",
-    radiusPx: 235
-  },
-  {
-    angleDeg: 45,
-    delayPct: 3,
-    distancePx: 127,
-    id: "recommendation-loading-watercolor-droplet-5",
-    radiusPx: 235
-  },
-  {
-    angleDeg: 180,
-    delayPct: 3.75,
-    distancePx: 140,
-    id: "recommendation-loading-watercolor-droplet-6",
-    radiusPx: 175
-  },
-  {
-    angleDeg: 0,
-    delayPct: 4.5,
-    distancePx: 140,
-    id: "recommendation-loading-watercolor-droplet-7",
-    radiusPx: 175
-  },
-  {
-    angleDeg: 270,
-    delayPct: 5.25,
-    distancePx: 140,
-    id: "recommendation-loading-watercolor-droplet-8",
-    radiusPx: 175
-  },
-  {
-    angleDeg: 90,
-    delayPct: 6,
-    distancePx: 140,
-    id: "recommendation-loading-watercolor-droplet-9",
-    radiusPx: 175
-  }
-];
-
-const BUBBLE_CURVE_TIMING = {
-  "ease-in": "cubic-bezier(0.32, 0, 0.67, 0)",
-  linear: "linear"
-} as const;
-
-const OUTGOING_FADE_EASING_CSS = {
-  gentle: "cubic-bezier(0.32, 0, 0.24, 1)",
-  linear: "linear",
-  quick: "cubic-bezier(0.55, 0, 0.15, 1)"
-} as const;
-
-const FOCUS_EASING_CSS = {
-  "ease-out": "cubic-bezier(0.22, 1, 0.36, 1)",
-  linear: "linear",
-  snap: "cubic-bezier(0.7, 0, 0.84, 0)"
-} as const;
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-function jitterDroplet(droplet: WatercolorDroplet): WatercolorDroplet {
-  const rand = (range: number) => (Math.random() * 2 - 1) * range;
-
-  return {
-    ...droplet,
-    angleDeg: (droplet.angleDeg + rand(18) + 360) % 360,
-    delayPct: clamp(droplet.delayPct + rand(0.6), 0, 100),
-    distancePx: clamp(droplet.distancePx + rand(14), 0, 200),
-    radiusPx: clamp(droplet.radiusPx + rand(16), 20, 280)
-  };
-}
+type WatercolorDroplet = RecommendationWatercolorDroplet;
 
 function formatPercent(value: number) {
   return value.toFixed(2);
@@ -363,12 +251,15 @@ export function RecommendationLoadingExperience({
     }
 
     return WATERCOLOR_DROPLETS.map((droplet) => ({
-      ...jitterDroplet(droplet),
+      ...jitterRecommendationWatercolorDroplet(droplet),
       id: `${droplet.id}-${transitionKey}`
     }));
   }, [hasMounted, transitionKey]);
   const dynamicWatercolorCss = useMemo(() => {
-    const { layer1, layer2, totalCycleMs } = RECOMMENDATION_WATERCOLOR_MOTION;
+    const { layer1, layer2 } = RECOMMENDATION_WATERCOLOR_MOTION;
+    const totalCycleMs = getRecommendationWatercolorTotalCycleMs(
+      RECOMMENDATION_WATERCOLOR_MOTION
+    );
     const h1 = layer2.comeInStartMs + layer2.comeInDurationMs;
     const h2 = h1 + layer2.holdMs;
     const h3 = h2 + layer2.focusPullMs;

@@ -12,8 +12,21 @@ import {
 import Link from "next/link";
 
 import { recommendationLoadingStages } from "@/components/product/RecommendationLoadingExperience";
+import {
+  BUBBLE_CURVE_TIMING,
+  FOCUS_EASING_CSS,
+  OUTGOING_FADE_EASING_CSS,
+  RECOMMENDATION_WATERCOLOR_STAGE_SIZE,
+  jitterRecommendationWatercolorDroplet,
+  recommendationWatercolorDroplets,
+  recommendationWatercolorMotion,
+  type RecommendationWatercolorBubbleCurve,
+  type RecommendationWatercolorDroplet,
+  type RecommendationWatercolorFocusEasing,
+  type RecommendationWatercolorOutgoingFadeEasing
+} from "@/lib/design-system/recommendation-watercolor-motion";
 
-const STAGE_SIZE = 400;
+const STAGE_SIZE = RECOMMENDATION_WATERCOLOR_STAGE_SIZE;
 const CENTER = STAGE_SIZE / 2;
 
 // A fixed ms-per-pixel scale for the master timeline grid. Fixed (not
@@ -26,62 +39,23 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-type Droplet = {
-  angleDeg: number;
-  delayPct: number;
-  distancePx: number;
-  id: string;
-  radiusPx: number;
-};
-
-let dropletIdCounter = 0;
-function nextDropletId() {
-  dropletIdCounter += 1;
-  return `bubble-${dropletIdCounter}`;
-}
+type Droplet = RecommendationWatercolorDroplet;
 
 // The tuned, verified-safe default layout (angle + distance so each
 // bubble is independently editable). Radii and delays were chosen by
 // simulating the actual coverage math so the union of all nine reliably
 // covers the whole frame by the end of Layer 2's "come in" — editing
 // them by hand can break that guarantee, which is fine for exploring but
-// worth knowing.
+// worth knowing. Green-lit loading reads the same defaults from
+// `recommendation-watercolor-motion`.
 function tunedDefaultDroplets(): Droplet[] {
-  return [
-    { angleDeg: 0, delayPct: 0, distancePx: 0, id: nextDropletId(), radiusPx: 180 },
-    { angleDeg: 225, delayPct: 0.75, distancePx: 127, id: nextDropletId(), radiusPx: 235 },
-    { angleDeg: 315, delayPct: 1.5, distancePx: 127, id: nextDropletId(), radiusPx: 235 },
-    { angleDeg: 135, delayPct: 2.25, distancePx: 127, id: nextDropletId(), radiusPx: 235 },
-    { angleDeg: 45, delayPct: 3, distancePx: 127, id: nextDropletId(), radiusPx: 235 },
-    { angleDeg: 180, delayPct: 3.75, distancePx: 140, id: nextDropletId(), radiusPx: 175 },
-    { angleDeg: 0, delayPct: 4.5, distancePx: 140, id: nextDropletId(), radiusPx: 175 },
-    { angleDeg: 270, delayPct: 5.25, distancePx: 140, id: nextDropletId(), radiusPx: 175 },
-    { angleDeg: 90, delayPct: 6, distancePx: 140, id: nextDropletId(), radiusPx: 175 }
-  ];
-}
-
-// Jitters one bubble's angle/distance/radius/delay by a small random
-// amount, within a range tight enough that frame coverage still holds
-// (the tuned radii carry ~30-60px of safety margin, and turbulence
-// already displaces edges by ~24px). Called fresh every cycle so the
-// bleed never looks quite the same way twice.
-function jitterDroplet(droplet: Droplet): Droplet {
-  const rand = (range: number) => (Math.random() * 2 - 1) * range;
-  return {
+  return recommendationWatercolorDroplets.map((droplet) => ({
     ...droplet,
-    angleDeg: (droplet.angleDeg + rand(18) + 360) % 360,
-    delayPct: clamp(droplet.delayPct + rand(0.6), 0, 100),
-    distancePx: clamp(droplet.distancePx + rand(14), 0, 200),
-    radiusPx: clamp(droplet.radiusPx + rand(16), 20, 280)
-  };
+    id: `playground-${droplet.id}`
+  }));
 }
 
-type BubbleCurve = "linear" | "ease-in";
-
-const BUBBLE_CURVE_TIMING: Record<BubbleCurve, string> = {
-  "ease-in": "cubic-bezier(0.32, 0, 0.67, 0)",
-  linear: "linear"
-};
+type BubbleCurve = RecommendationWatercolorBubbleCurve;
 
 const BUBBLE_CURVE_LABELS: Record<BubbleCurve, string> = {
   "ease-in":
@@ -90,13 +64,7 @@ const BUBBLE_CURVE_LABELS: Record<BubbleCurve, string> = {
     "Linear — constant speed the whole way, but with the tuned defaults it finishes covering the frame at ~85% of the come-in duration, leaving the tail idle."
 };
 
-type OutgoingFadeEasing = "gentle" | "linear" | "quick";
-
-const OUTGOING_FADE_EASING_CSS: Record<OutgoingFadeEasing, string> = {
-  gentle: "cubic-bezier(0.32, 0, 0.24, 1)",
-  linear: "linear",
-  quick: "cubic-bezier(0.55, 0, 0.15, 1)"
-};
+type OutgoingFadeEasing = RecommendationWatercolorOutgoingFadeEasing;
 
 const OUTGOING_FADE_EASING_LABELS: Record<OutgoingFadeEasing, string> = {
   gentle: "Gentle (default) — fades slowly at first, then drops away faster near the end",
@@ -104,19 +72,19 @@ const OUTGOING_FADE_EASING_LABELS: Record<OutgoingFadeEasing, string> = {
   quick: "Quick — most of the fade happens early, then it lingers faint before disappearing"
 };
 
-type FocusEasing = "ease-out" | "linear" | "snap";
-
-const FOCUS_EASING_CSS: Record<FocusEasing, string> = {
-  "ease-out": "cubic-bezier(0.22, 1, 0.36, 1)",
-  linear: "linear",
-  snap: "cubic-bezier(0.7, 0, 0.84, 0)"
-};
+type FocusEasing = RecommendationWatercolorFocusEasing;
 
 const FOCUS_EASING_LABELS: Record<FocusEasing, string> = {
   "ease-out": "Ease-out (default) — fast at first, lingers soft at the very end",
   linear: "Linear — constant speed the whole way",
   snap: "Snap — stays soft longer, then resolves to sharp abruptly at the end"
 };
+
+let dropletIdCounter = 0;
+function nextDropletId() {
+  dropletIdCounter += 1;
+  return `playground-bubble-${dropletIdCounter}`;
+}
 
 // Layer 2's own "hold, focus, stick" — matches current production
 // exactly (blur-hold and stick both 0ms there — no pause at all: it
@@ -714,34 +682,59 @@ export function RecommendationLoadingWatercolorPlayground() {
   const instanceId = useId().replace(/:/g, "");
   const [paused, setPaused] = useState(false);
   const [replayCount, setReplayCount] = useState(0);
-  const [focusEasing, setFocusEasing] = useState<FocusEasing>("ease-out");
-  const [bubbleCurve, setBubbleCurve] = useState<BubbleCurve>("ease-in");
+  const [focusEasing, setFocusEasing] = useState<FocusEasing>(
+    recommendationWatercolorMotion.layer2.focusEasing
+  );
+  const [bubbleCurve, setBubbleCurve] = useState<BubbleCurve>(
+    recommendationWatercolorMotion.layer2.bubbleCurve
+  );
   const [droplets, setDroplets] = useState<Droplet[]>(() => tunedDefaultDroplets());
   // On by default: every cycle jitters each bubble's angle, distance,
   // radius, and delay a little so the bleed is never quite identical
   // twice. The table above stays the source of truth you edit — this
   // just wobbles a fresh copy of it each time the stage advances.
-  const [organicRandomize, setOrganicRandomize] = useState(true);
+  const [organicRandomize, setOrganicRandomize] = useState(
+    recommendationWatercolorMotion.layer2.organicRandomize
+  );
 
   // ---- Layer 1 (purple) — the current illustration already on screen.
   // Its only job on this timeline is going out: a start point and an end
   // point, in raw ms, fully independent of Layer 2.
-  const [outgoingFadeStartMs, setOutgoingFadeStartMs] = useState(0);
-  const [outgoingFadeEndMs, setOutgoingFadeEndMs] = useState(3000);
+  const [outgoingFadeStartMs, setOutgoingFadeStartMs] = useState(
+    recommendationWatercolorMotion.layer1.fadeStartMs
+  );
+  const [outgoingFadeEndMs, setOutgoingFadeEndMs] = useState(
+    recommendationWatercolorMotion.layer1.fadeStartMs +
+      recommendationWatercolorMotion.layer1.fadeDurationMs
+  );
   const [outgoingFadeEasing, setOutgoingFadeEasing] =
-    useState<OutgoingFadeEasing>("gentle");
-  const [outgoingMaxBlurPx, setOutgoingMaxBlurPx] = useState(9);
-  const [outgoingMaxDesaturatePct, setOutgoingMaxDesaturatePct] = useState(50);
+    useState<OutgoingFadeEasing>(recommendationWatercolorMotion.layer1.fadeEasing);
+  const [outgoingMaxBlurPx, setOutgoingMaxBlurPx] = useState(
+    recommendationWatercolorMotion.layer1.maxBlurPx
+  );
+  const [outgoingMaxDesaturatePct, setOutgoingMaxDesaturatePct] = useState(
+    recommendationWatercolorMotion.layer1.maxDesaturatePct
+  );
 
   // ---- Layer 2 (green) — the new illustration. One continuous,
   // sequential run: come in (bubbles) → blurred hold → focus pull →
   // stick. incomingStartMs positions the whole run on the timeline;
   // everything else is a duration for one stage of it.
-  const [incomingStartMs, setIncomingStartMs] = useState(300);
-  const [incomingGrowMs, setIncomingGrowMs] = useState(5250);
-  const [incomingHoldMs, setIncomingHoldMs] = useState(400);
-  const [incomingFocusMs, setIncomingFocusMs] = useState(1000);
-  const [incomingStickMs, setIncomingStickMs] = useState(400);
+  const [incomingStartMs, setIncomingStartMs] = useState(
+    recommendationWatercolorMotion.layer2.comeInStartMs
+  );
+  const [incomingGrowMs, setIncomingGrowMs] = useState(
+    recommendationWatercolorMotion.layer2.comeInDurationMs
+  );
+  const [incomingHoldMs, setIncomingHoldMs] = useState(
+    recommendationWatercolorMotion.layer2.holdMs
+  );
+  const [incomingFocusMs, setIncomingFocusMs] = useState(
+    recommendationWatercolorMotion.layer2.focusPullMs
+  );
+  const [incomingStickMs, setIncomingStickMs] = useState(
+    recommendationWatercolorMotion.layer2.stickMs
+  );
 
   const clampedIncomingStartMs = clamp(incomingStartMs, 0, TIMELINE_MS);
   const h1 = clampedIncomingStartMs + incomingGrowMs;
@@ -789,7 +782,9 @@ export function RecommendationLoadingWatercolorPlayground() {
     if (!organicRandomize) {
       return droplets;
     }
-    return droplets.map((droplet) => jitterDroplet(droplet));
+    return droplets.map((droplet) =>
+      jitterRecommendationWatercolorDroplet(droplet)
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [droplets, organicRandomize, transitionKey]);
 
