@@ -310,6 +310,8 @@
   width: 174.84px;
 }
 .recommendationScreen :global(.recommendation-reveal-template-illustration) {
+  /* Extra air between the last text line and the reveal card fan. */
+  margin-top: 48px;
   overflow: visible;
 }
 .recommendationScreen
@@ -385,6 +387,11 @@
 }
 
 .recommendationScreen:global(.recommendation-loading-experience[data-viewport="mobile"].recommendation-reveal-template-experience)
+  :global(.recommendation-reveal-template-illustration) {
+  margin-top: 48px;
+}
+
+.recommendationScreen:global(.recommendation-loading-experience[data-viewport="mobile"].recommendation-reveal-template-experience)
   :global(.recommendation-loading-eyebrow) {
   width: 238.22px;
 }
@@ -423,6 +430,11 @@
   :global(.recommendation-loading-illustration) {
   margin-top: 0;
   width: min(34vw, 340px);
+}
+
+.recommendationScreen:global(.recommendation-loading-experience[data-viewport="tablet-landscape"].recommendation-reveal-template-experience)
+  :global(.recommendation-reveal-template-illustration) {
+  margin-top: 48px;
 }
 .recommendationScreen :global(.recommendation-reveal-stage[data-viewport="mobile"]) {
   height: 511.53px;

@@ -1,5 +1,5 @@
-import { RecommendationLoadingExperience } from "@/components/product/RecommendationLoadingExperience";
+import { RecommendationLoadingRevealJourney } from "@/components/product/RecommendationLoadingRevealJourney";
 
 export default function RecommendationLoadingPage() {
-  return <RecommendationLoadingExperience />;
+  return <RecommendationLoadingRevealJourney />;
 }

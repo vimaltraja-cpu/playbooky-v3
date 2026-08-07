@@ -307,10 +307,15 @@ export function RecommendationExperienceShell({
 export function RecommendationLoadingExperience({
   className = "",
   lockedStage,
+  loop = true,
+  onComplete,
   viewport
 }: {
   className?: string;
   lockedStage?: RecommendationLoadingStageId;
+  /** When false, finish after one full pass through all stages, then call onComplete. */
+  loop?: boolean;
+  onComplete?: () => void;
   viewport?: RecommendationLoadingViewport;
 }) {
   // useId() output (e.g. ":r0:") includes colons, which are valid in an
@@ -471,6 +476,14 @@ ${effectiveDroplets
     }
 
     const timeoutId = window.setTimeout(() => {
+      const isLastStage =
+        activeIndex >= recommendationLoadingStages.length - 1;
+
+      if (isLastStage && !loop) {
+        onComplete?.();
+        return;
+      }
+
       setPreviousIndex(activeIndex);
       setActiveIndex(
         (current) => (current + 1) % recommendationLoadingStages.length
@@ -481,7 +494,7 @@ ${effectiveDroplets
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [activeIndex, isLocked]);
+  }, [activeIndex, isLocked, loop, onComplete]);
 
   return (
     <RecommendationExperienceShell
