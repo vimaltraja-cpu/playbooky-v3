@@ -247,16 +247,37 @@
 }
 .recommendationScreen :global(.recommendation-reveal-stage[data-phase="pending"])
   :global(.recommendation-reveal-card) {
+  opacity: 0;
+  pointer-events: none;
   transform: translate(
       calc(var(--card-start-x) - var(--card-final-x)),
       calc(var(--card-start-y) - var(--card-final-y))
     )
-    rotate(0deg) scale(0.985);
+    rotate(0deg) scale(0.86);
 }
+
 .recommendationScreen :global(.recommendation-reveal-stage[data-phase="pending"])
   :global(.recommendation-reveal-card-centre) {
-  transform: rotate(0deg) scale(0.985);
+  transform: rotate(0deg) scale(0.86);
 }
+
+.recommendationScreen :global(.recommendation-reveal-stage[data-phase="centre"])
+  :global(.recommendation-reveal-card-side) {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(
+      calc(var(--card-start-x) - var(--card-final-x)),
+      calc(var(--card-start-y) - var(--card-final-y))
+    )
+    rotate(0deg) scale(0.92);
+}
+
+.recommendationScreen :global(.recommendation-reveal-stage[data-phase="centre"])
+  :global(.recommendation-reveal-card-centre) {
+  animation: recommendation-centre-elastic-enter 1100ms
+    cubic-bezier(0.22, 1.45, 0.36, 1) both;
+}
+
 .recommendationScreen :global(.recommendation-reveal-card > article) {
   box-shadow:
     0 14px 28px -20px rgba(31, 28, 22, 0.34),
@@ -274,16 +295,18 @@
 }
 .recommendationScreen
   :global(.recommendation-reveal-stage[data-phase="revealing"])
-  :global(.recommendation-reveal-card) {
-  animation: recommendation-card-deal 1600ms cubic-bezier(0.2, 0, 0, 1) both;
+  :global(.recommendation-reveal-card-side) {
+  animation: recommendation-card-deal 1500ms cubic-bezier(0.2, 0, 0, 1) both;
   animation-delay: var(--card-motion-delay);
 }
 .recommendationScreen
   :global(.recommendation-reveal-stage[data-phase="revealing"])
+  :global(.recommendation-reveal-card-centre),
+.recommendationScreen
+  :global(.recommendation-reveal-stage[data-phase="complete"])
   :global(.recommendation-reveal-card-centre) {
-  animation: recommendation-centre-card-enter 900ms cubic-bezier(0.2, 0, 0, 1)
-    both;
-  animation-delay: 0ms;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
 }
 .recommendationScreen
   :global(
@@ -497,18 +520,35 @@
   :global(.recommendation-reveal-card),
 .recommendationScreen :global(.recommendation-reveal-stage[data-viewport="mobile"][data-phase="pending"])
   :global(.recommendation-reveal-card-centre) {
-  transform: translate(-50%, -50%) rotate(0deg) scale(0.94);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(0deg) scale(0.86);
 }
+
+.recommendationScreen :global(.recommendation-reveal-stage[data-viewport="mobile"][data-phase="centre"])
+  :global(.recommendation-reveal-card-side) {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(0deg) scale(0.9);
+}
+
+.recommendationScreen :global(.recommendation-reveal-stage[data-viewport="mobile"][data-phase="centre"])
+  :global(.recommendation-reveal-card-centre) {
+  animation: recommendation-mobile-centre-elastic-enter 1100ms
+    cubic-bezier(0.22, 1.45, 0.36, 1) both;
+}
+
 .recommendationScreen :global(.recommendation-reveal-stage[data-viewport="mobile"][data-phase="revealing"])
-  :global(.recommendation-reveal-card) {
+  :global(.recommendation-reveal-card-side) {
   animation: recommendation-mobile-card-deal 540ms
     cubic-bezier(0.18, 0.9, 0.22, 1) both;
   animation-delay: var(--card-delay);
 }
+
 .recommendationScreen :global(.recommendation-reveal-stage[data-viewport="mobile"][data-phase="revealing"])
+  :global(.recommendation-reveal-card-centre),
+.recommendationScreen :global(.recommendation-reveal-stage[data-viewport="mobile"][data-phase="complete"])
   :global(.recommendation-reveal-card-centre) {
-  animation: recommendation-mobile-centre-card-enter 460ms
-    cubic-bezier(0.2, 0, 0, 1) both;
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
 }
 
 @keyframes recommendation-label-shimmer {
@@ -547,15 +587,46 @@
 
 @keyframes recommendation-card-deal {
   0% {
+    opacity: 0;
     transform: translate(
         calc(var(--card-start-x) - var(--card-final-x)),
         calc(var(--card-start-y) - var(--card-final-y))
       )
-      rotate(0deg) scale(0.985);
+      rotate(0deg) scale(0.92);
+  }
+
+  18% {
+    opacity: 1;
   }
 
   100% {
+    opacity: 1;
     transform: translate(0, 0) rotate(var(--card-final-rotation)) scale(1);
+  }
+}
+
+@keyframes recommendation-centre-elastic-enter {
+  0% {
+    filter: blur(14px);
+    opacity: 0;
+    transform: rotate(0deg) scale(0.78);
+  }
+
+  58% {
+    filter: blur(2px);
+    opacity: 1;
+    transform: rotate(0deg) scale(1.1);
+  }
+
+  78% {
+    filter: blur(0);
+    transform: rotate(0deg) scale(0.97);
+  }
+
+  100% {
+    filter: blur(0);
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
   }
 }
 
@@ -566,6 +637,31 @@
 
   100% {
     transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes recommendation-mobile-centre-elastic-enter {
+  0% {
+    filter: blur(12px);
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.78);
+  }
+
+  58% {
+    filter: blur(2px);
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1.1);
+  }
+
+  78% {
+    filter: blur(0);
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.97);
+  }
+
+  100% {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
   }
 }
 
@@ -628,10 +724,14 @@
     background-position: 50%;
     background-size: 100% 100%;
   }
+  .recommendationScreen :global(.recommendation-reveal-stage[data-phase="centre"])
+  :global(.recommendation-reveal-card-centre),
   .recommendationScreen :global(.recommendation-reveal-stage[data-phase="revealing"])
-  :global(.recommendation-reveal-card),
-  .recommendationScreen :global(.recommendation-reveal-stage[data-phase="revealing"])
-  :global(.recommendation-reveal-card-centre) {
+  :global(.recommendation-reveal-card-side),
+  .recommendationScreen :global(.recommendation-reveal-stage[data-viewport="mobile"][data-phase="centre"])
+  :global(.recommendation-reveal-card-centre),
+  .recommendationScreen :global(.recommendation-reveal-stage[data-viewport="mobile"][data-phase="revealing"])
+  :global(.recommendation-reveal-card-side) {
     animation-duration: 220ms;
     animation-name: recommendation-reduced-reveal-fade;
     animation-delay: 0ms;

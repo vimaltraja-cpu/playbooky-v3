@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 
 import {
+  CARD_FAN_MS,
+  CENTRE_CARD_ENTER_MS,
   RecommendationCardReveal,
+  REVEAL_PRELOAD_LAG_MS,
+  preloadRecommendationRevealAssets,
   recommendationRevealCards,
   type RecommendationCardRevealPhase
 } from "@/components/product/RecommendationCardReveal";
@@ -62,6 +66,12 @@ function toSentenceCase(value: string) {
     .toLowerCase()}`;
 }
 
+function wait(ms: number) {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+}
+
 const recommendationRevealWorkshop = {
   activityCards: recommendationRevealCards.map((card) => card.activity),
   description: exampleGeneratedWorkshopFlow.objective,
@@ -111,18 +121,48 @@ export function RecommendationRevealTemplateExperience({
   }, [viewport]);
 
   useEffect(() => {
-    setRevealPhase("pending");
+    let cancelled = false;
 
-    const revealTimeoutId = window.setTimeout(() => {
+    async function runRevealSequence() {
+      setRevealPhase("pending");
+
+      // Mount cards invisibly first and wait for illustrations so the centre
+      // card never pops in empty.
+      await preloadRecommendationRevealAssets(
+        recommendationRevealWorkshop.activityCards
+      );
+
+      if (cancelled) {
+        return;
+      }
+
+      await wait(REVEAL_PRELOAD_LAG_MS);
+
+      if (cancelled) {
+        return;
+      }
+
+      setRevealPhase("centre");
+      await wait(CENTRE_CARD_ENTER_MS);
+
+      if (cancelled) {
+        return;
+      }
+
       setRevealPhase("revealing");
-    }, 300);
-    const completeTimeoutId = window.setTimeout(() => {
+      await wait(CARD_FAN_MS);
+
+      if (cancelled) {
+        return;
+      }
+
       setRevealPhase("complete");
-    }, effectiveViewport === "mobile" ? 2400 : 2600);
+    }
+
+    void runRevealSequence();
 
     return () => {
-      window.clearTimeout(revealTimeoutId);
-      window.clearTimeout(completeTimeoutId);
+      cancelled = true;
     };
   }, [effectiveViewport]);
 
