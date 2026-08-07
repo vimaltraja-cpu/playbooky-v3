@@ -114,22 +114,22 @@ export const recommendationWatercolorDroplets: RecommendationWatercolorDroplet[]
 
 export const recommendationWatercolorMotion: RecommendationWatercolorMotion = {
   layer1: {
-    fadeDurationMs: 3000,
+    fadeDurationMs: 5550,
     fadeEasing: "gentle",
-    fadeStartMs: 0,
-    maxBlurPx: 9,
-    maxDesaturatePct: 50
+    fadeStartMs: 3400,
+    maxBlurPx: 3,
+    maxDesaturatePct: 20
   },
   layer2: {
     bubbleCurve: "ease-in",
     bubbleCount: recommendationWatercolorDroplets.length,
     comeInDurationMs: 5250,
-    comeInStartMs: 300,
+    comeInStartMs: 600,
     focusEasing: "ease-out",
-    focusPullMs: 1000,
-    holdMs: 400,
+    focusPullMs: 700,
+    holdMs: 0,
     organicRandomize: true,
-    stickMs: 400
+    stickMs: 200
   }
 };
 
