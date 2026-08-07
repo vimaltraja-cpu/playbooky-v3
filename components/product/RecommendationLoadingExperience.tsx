@@ -1,6 +1,13 @@
 "use client";
 
-import { type ReactNode, useEffect, useId, useMemo, useState } from "react";
+import {
+  type ReactNode,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import Image from "next/image";
 
 import styles from "./RecommendationScreens.module.css";
@@ -329,24 +336,37 @@ export function RecommendationLoadingExperience({
   const [activeIndex, setActiveIndex] = useState(getStageIndex(lockedStage));
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const [transitionKey, setTransitionKey] = useState(0);
+  const [hasMounted, setHasMounted] = useState(false);
   const [responsiveViewport, setResponsiveViewport] =
     useState<RecommendationLoadingViewport>("desktop");
+  const onCompleteRef = useRef(onComplete);
   const isLocked = Boolean(lockedStage);
   const activeStage = recommendationLoadingStages[activeIndex];
   const previousStage =
     previousIndex === null ? null : recommendationLoadingStages[previousIndex];
   const effectiveViewport = viewport ?? responsiveViewport;
   const loadingCopy = getLoadingCopy();
+
+  onCompleteRef.current = onComplete;
+
+  // Keep the first paint deterministic so SSR HTML matches the client.
+  // Organic jitter is applied only after mount / later stage transitions.
   const effectiveDroplets = useMemo(() => {
-    if (!RECOMMENDATION_WATERCOLOR_MOTION.layer2.organicRandomize) {
-      return WATERCOLOR_DROPLETS;
+    if (
+      !hasMounted ||
+      !RECOMMENDATION_WATERCOLOR_MOTION.layer2.organicRandomize
+    ) {
+      return WATERCOLOR_DROPLETS.map((droplet) => ({
+        ...droplet,
+        id: `${droplet.id}-${transitionKey}`
+      }));
     }
 
     return WATERCOLOR_DROPLETS.map((droplet) => ({
       ...jitterDroplet(droplet),
       id: `${droplet.id}-${transitionKey}`
     }));
-  }, [transitionKey]);
+  }, [hasMounted, transitionKey]);
   const dynamicWatercolorCss = useMemo(() => {
     const { layer1, layer2, totalCycleMs } = RECOMMENDATION_WATERCOLOR_MOTION;
     const h1 = layer2.comeInStartMs + layer2.comeInDurationMs;
@@ -449,6 +469,10 @@ ${effectiveDroplets
   ]);
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (!lockedStage) {
       return;
     }
@@ -480,7 +504,7 @@ ${effectiveDroplets
         activeIndex >= recommendationLoadingStages.length - 1;
 
       if (isLastStage && !loop) {
-        onComplete?.();
+        onCompleteRef.current?.();
         return;
       }
 
@@ -494,7 +518,7 @@ ${effectiveDroplets
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [activeIndex, isLocked, loop, onComplete]);
+  }, [activeIndex, isLocked, loop]);
 
   return (
     <RecommendationExperienceShell
