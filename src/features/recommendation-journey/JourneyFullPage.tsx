@@ -16,7 +16,7 @@ import {
   recommendationRevealCards
 } from "@/components/product/RecommendationCardReveal";
 import { RecommendationCardRevealExperience } from "@/components/product/RecommendationCardRevealExperience";
-import { RecommendationLoadingExperience } from "@/components/product/RecommendationLoadingExperience";
+import { RecommendationLoadingRevealJourney } from "@/components/product/RecommendationLoadingRevealJourney";
 import { ActivityGridInteractiveLayer } from "@/components/product/recommendation-reveal-to-grid/ActivityGridInteractiveLayer";
 import { SiteBackgroundWash } from "@/components/ui/SiteBackgroundWash";
 import { diagnosisQuestions } from "@/lib/design-system/diagnosis-options";
@@ -278,7 +278,7 @@ function renderStage(stageId: JourneyStageId) {
   }
 
   if (stageId === "loading") {
-    return <RecommendationLoadingExperience />;
+    return <RecommendationLoadingRevealJourney />;
   }
 
   if (stageId === "reveal") {

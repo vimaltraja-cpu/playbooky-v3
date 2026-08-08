@@ -103,7 +103,7 @@ export function generateExampleWorkshopFlow(
     durationMinutes: diagnosis.input.constraints.durationMinutes,
     id: "generated-flow-discovery-root-cause",
     objective:
-      "Help the team understand likely root causes behind the onboarding drop and turn that understanding into a clear problem statement.",
+      "Help the team understand the likely root cause behind the onboarding drop and turn that understanding into a clear problem statement.",
     participantCount: diagnosis.input.constraints.participantCount,
     successCriteria: [
       "The team has a shared understanding of likely root causes.",

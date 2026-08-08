@@ -1,7 +1,28 @@
 "use client";
 
-import { type ReactNode, useEffect, useId, useMemo, useState } from "react";
+import {
+  type ReactNode,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import Image from "next/image";
+
+import {
+  BUBBLE_CURVE_TIMING,
+  FOCUS_EASING_CSS,
+  OUTGOING_FADE_EASING_CSS,
+  RECOMMENDATION_WATERCOLOR_STAGE_SIZE,
+  getRecommendationWatercolorLabelHandoffMs,
+  getRecommendationWatercolorTotalCycleMs,
+  jitterRecommendationWatercolorDroplet,
+  recommendationWatercolorDroplets,
+  recommendationWatercolorFirstStageHoldMs,
+  recommendationWatercolorMotion
+} from "@/lib/design-system/recommendation-watercolor-motion";
+import styles from "./RecommendationScreens.module.css";
 
 export type RecommendationLoadingStageId =
   "goal" | "challenges" | "context" | "participation" | "building";
@@ -49,138 +70,17 @@ export const recommendationLoadingStages: RecommendationLoadingStage[] = [
   }
 ];
 
-const RECOMMENDATION_WATERCOLOR_MOTION = {
-  layer1: {
-    fadeDurationMs: 3000,
-    fadeEasing: "gentle",
-    fadeStartMs: 0,
-    maxBlurPx: 9,
-    maxDesaturatePct: 50
-  },
-  layer2: {
-    bubbleCurve: "ease-in",
-    bubbleCount: 9,
-    comeInDurationMs: 5250,
-    comeInStartMs: 300,
-    focusEasing: "ease-out",
-    focusPullMs: 1000,
-    holdMs: 400,
-    organicRandomize: true,
-    stickMs: 400
-  },
-  totalCycleMs: 7350
-} as const;
-
-const STAGE_ADVANCE_MS = RECOMMENDATION_WATERCOLOR_MOTION.totalCycleMs;
-const WATERCOLOR_STAGE_SIZE = 400;
+const RECOMMENDATION_WATERCOLOR_MOTION = recommendationWatercolorMotion;
+const WATERCOLOR_DROPLETS = recommendationWatercolorDroplets;
+const STAGE_ADVANCE_MS = getRecommendationWatercolorTotalCycleMs(
+  RECOMMENDATION_WATERCOLOR_MOTION
+);
+const FIRST_STAGE_HOLD_MS = recommendationWatercolorFirstStageHoldMs;
+const LABEL_HANDOFF_MS = getRecommendationWatercolorLabelHandoffMs(
+  RECOMMENDATION_WATERCOLOR_MOTION
+);
+const WATERCOLOR_STAGE_SIZE = RECOMMENDATION_WATERCOLOR_STAGE_SIZE;
 const WATERCOLOR_CENTER = WATERCOLOR_STAGE_SIZE / 2;
-
-type WatercolorDroplet = {
-  angleDeg: number;
-  delayPct: number;
-  distancePx: number;
-  id: string;
-  radiusPx: number;
-};
-
-const WATERCOLOR_DROPLETS: WatercolorDroplet[] = [
-  {
-    angleDeg: 0,
-    delayPct: 0,
-    distancePx: 0,
-    id: "recommendation-loading-watercolor-droplet-1",
-    radiusPx: 180
-  },
-  {
-    angleDeg: 225,
-    delayPct: 0.75,
-    distancePx: 127,
-    id: "recommendation-loading-watercolor-droplet-2",
-    radiusPx: 235
-  },
-  {
-    angleDeg: 315,
-    delayPct: 1.5,
-    distancePx: 127,
-    id: "recommendation-loading-watercolor-droplet-3",
-    radiusPx: 235
-  },
-  {
-    angleDeg: 135,
-    delayPct: 2.25,
-    distancePx: 127,
-    id: "recommendation-loading-watercolor-droplet-4",
-    radiusPx: 235
-  },
-  {
-    angleDeg: 45,
-    delayPct: 3,
-    distancePx: 127,
-    id: "recommendation-loading-watercolor-droplet-5",
-    radiusPx: 235
-  },
-  {
-    angleDeg: 180,
-    delayPct: 3.75,
-    distancePx: 140,
-    id: "recommendation-loading-watercolor-droplet-6",
-    radiusPx: 175
-  },
-  {
-    angleDeg: 0,
-    delayPct: 4.5,
-    distancePx: 140,
-    id: "recommendation-loading-watercolor-droplet-7",
-    radiusPx: 175
-  },
-  {
-    angleDeg: 270,
-    delayPct: 5.25,
-    distancePx: 140,
-    id: "recommendation-loading-watercolor-droplet-8",
-    radiusPx: 175
-  },
-  {
-    angleDeg: 90,
-    delayPct: 6,
-    distancePx: 140,
-    id: "recommendation-loading-watercolor-droplet-9",
-    radiusPx: 175
-  }
-];
-
-const BUBBLE_CURVE_TIMING = {
-  "ease-in": "cubic-bezier(0.32, 0, 0.67, 0)",
-  linear: "linear"
-} as const;
-
-const OUTGOING_FADE_EASING_CSS = {
-  gentle: "cubic-bezier(0.32, 0, 0.24, 1)",
-  linear: "linear",
-  quick: "cubic-bezier(0.55, 0, 0.15, 1)"
-} as const;
-
-const FOCUS_EASING_CSS = {
-  "ease-out": "cubic-bezier(0.22, 1, 0.36, 1)",
-  linear: "linear",
-  snap: "cubic-bezier(0.7, 0, 0.84, 0)"
-} as const;
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-function jitterDroplet(droplet: WatercolorDroplet): WatercolorDroplet {
-  const rand = (range: number) => (Math.random() * 2 - 1) * range;
-
-  return {
-    ...droplet,
-    angleDeg: (droplet.angleDeg + rand(18) + 360) % 360,
-    delayPct: clamp(droplet.delayPct + rand(0.6), 0, 100),
-    distancePx: clamp(droplet.distancePx + rand(14), 0, 200),
-    radiusPx: clamp(droplet.radiusPx + rand(16), 20, 280)
-  };
-}
 
 function formatPercent(value: number) {
   return value.toFixed(2);
@@ -263,6 +163,7 @@ export function RecommendationExperienceShell({
     <div
       aria-label={ariaLabel}
       className={[
+        styles.recommendationScreen,
         "recommendation-loading-experience relative isolate flex min-h-screen flex-col overflow-hidden bg-[#F6F1E8] text-[#171614]",
         className
       ].join(" ")}
@@ -304,10 +205,15 @@ export function RecommendationExperienceShell({
 export function RecommendationLoadingExperience({
   className = "",
   lockedStage,
+  loop = true,
+  onComplete,
   viewport
 }: {
   className?: string;
   lockedStage?: RecommendationLoadingStageId;
+  /** When false, finish after one full pass through all stages, then call onComplete. */
+  loop?: boolean;
+  onComplete?: () => void;
   viewport?: RecommendationLoadingViewport;
 }) {
   // useId() output (e.g. ":r0:") includes colons, which are valid in an
@@ -320,27 +226,50 @@ export function RecommendationLoadingExperience({
   const washKeyframesName = `recommendation-loading-watercolor-wash-${watercolorInstanceId}`;
   const [activeIndex, setActiveIndex] = useState(getStageIndex(lockedStage));
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const [labelIndex, setLabelIndex] = useState(getStageIndex(lockedStage));
   const [transitionKey, setTransitionKey] = useState(0);
+  const [hasMounted, setHasMounted] = useState(false);
   const [responsiveViewport, setResponsiveViewport] =
     useState<RecommendationLoadingViewport>("desktop");
+  const onCompleteRef = useRef(onComplete);
+  const labelHandoffTimerRef = useRef<number | null>(null);
   const isLocked = Boolean(lockedStage);
   const activeStage = recommendationLoadingStages[activeIndex];
   const previousStage =
     previousIndex === null ? null : recommendationLoadingStages[previousIndex];
+  const labelStage = recommendationLoadingStages[labelIndex];
   const effectiveViewport = viewport ?? responsiveViewport;
   const loadingCopy = getLoadingCopy();
+  // First beat has no previous stage, so watercolor cannot run yet — use a
+  // short hold, then start the first bleed. Later beats use the full cycle.
+  const advanceDelayMs =
+    previousIndex === null ? FIRST_STAGE_HOLD_MS : STAGE_ADVANCE_MS;
+
+  onCompleteRef.current = onComplete;
+
+  // Keep the first paint deterministic so SSR HTML matches the client.
+  // Organic jitter is applied only after mount / later stage transitions.
   const effectiveDroplets = useMemo(() => {
-    if (!RECOMMENDATION_WATERCOLOR_MOTION.layer2.organicRandomize) {
-      return WATERCOLOR_DROPLETS;
+    if (
+      !hasMounted ||
+      !RECOMMENDATION_WATERCOLOR_MOTION.layer2.organicRandomize
+    ) {
+      return WATERCOLOR_DROPLETS.map((droplet) => ({
+        ...droplet,
+        id: `${droplet.id}-${transitionKey}`
+      }));
     }
 
     return WATERCOLOR_DROPLETS.map((droplet) => ({
-      ...jitterDroplet(droplet),
+      ...jitterRecommendationWatercolorDroplet(droplet),
       id: `${droplet.id}-${transitionKey}`
     }));
-  }, [transitionKey]);
+  }, [hasMounted, transitionKey]);
   const dynamicWatercolorCss = useMemo(() => {
-    const { layer1, layer2, totalCycleMs } = RECOMMENDATION_WATERCOLOR_MOTION;
+    const { layer1, layer2 } = RECOMMENDATION_WATERCOLOR_MOTION;
+    const totalCycleMs = getRecommendationWatercolorTotalCycleMs(
+      RECOMMENDATION_WATERCOLOR_MOTION
+    );
     const h1 = layer2.comeInStartMs + layer2.comeInDurationMs;
     const h2 = h1 + layer2.holdMs;
     const h3 = h2 + layer2.focusPullMs;
@@ -441,12 +370,23 @@ ${effectiveDroplets
   ]);
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (!lockedStage) {
       return;
     }
 
+    if (labelHandoffTimerRef.current !== null) {
+      window.clearTimeout(labelHandoffTimerRef.current);
+      labelHandoffTimerRef.current = null;
+    }
+
+    const nextIndex = getStageIndex(lockedStage);
     setPreviousIndex(null);
-    setActiveIndex(getStageIndex(lockedStage));
+    setActiveIndex(nextIndex);
+    setLabelIndex(nextIndex);
   }, [lockedStage]);
 
   useEffect(() => {
@@ -463,22 +403,50 @@ ${effectiveDroplets
   }, [viewport]);
 
   useEffect(() => {
+    return () => {
+      if (labelHandoffTimerRef.current !== null) {
+        window.clearTimeout(labelHandoffTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (isLocked) {
       return;
     }
 
     const timeoutId = window.setTimeout(() => {
+      const isLastStage =
+        activeIndex >= recommendationLoadingStages.length - 1;
+
+      if (isLastStage && !loop) {
+        onCompleteRef.current?.();
+        return;
+      }
+
+      const nextIndex =
+        (activeIndex + 1) % recommendationLoadingStages.length;
+
+      // Illustration leads: start the bleed immediately, keep the shimmer
+      // label on the outgoing stage until Layer 1 fade begins.
       setPreviousIndex(activeIndex);
-      setActiveIndex(
-        (current) => (current + 1) % recommendationLoadingStages.length
-      );
+      setActiveIndex(nextIndex);
       setTransitionKey((current) => current + 1);
-    }, STAGE_ADVANCE_MS);
+
+      if (labelHandoffTimerRef.current !== null) {
+        window.clearTimeout(labelHandoffTimerRef.current);
+      }
+
+      labelHandoffTimerRef.current = window.setTimeout(() => {
+        setLabelIndex(nextIndex);
+        labelHandoffTimerRef.current = null;
+      }, LABEL_HANDOFF_MS);
+    }, advanceDelayMs);
 
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [activeIndex, isLocked]);
+  }, [activeIndex, advanceDelayMs, isLocked, loop]);
 
   return (
     <RecommendationExperienceShell
@@ -488,8 +456,12 @@ ${effectiveDroplets
       eyebrow={loadingCopy.eyebrow}
       heading={loadingCopy.heading}
       metadata={
-        <p aria-live="polite" className="recommendation-loading-label">
-          {activeStage.label}
+        <p
+          aria-live="polite"
+          className="recommendation-loading-label"
+          key={`recommendation-loading-label-${labelStage.id}`}
+        >
+          {labelStage.label}
         </p>
       }
       viewport={effectiveViewport}
@@ -631,81 +603,6 @@ ${effectiveDroplets
           />
         ) : null}
       </div>
-    </RecommendationExperienceShell>
-  );
-}
-
-export function RecommendationRevealTemplateExperience({
-  className = "",
-  lockedStage,
-  viewport
-}: {
-  className?: string;
-  lockedStage?: RecommendationLoadingStageId;
-  viewport?: RecommendationLoadingViewport;
-}) {
-  const [activeIndex, setActiveIndex] = useState(getStageIndex(lockedStage));
-  const [responsiveViewport, setResponsiveViewport] =
-    useState<RecommendationLoadingViewport>("desktop");
-  const activeStage = recommendationLoadingStages[activeIndex];
-  const effectiveViewport = viewport ?? responsiveViewport;
-  const loadingCopy = getLoadingCopy();
-
-  useEffect(() => {
-    if (!lockedStage) {
-      return;
-    }
-
-    setActiveIndex(getStageIndex(lockedStage));
-  }, [lockedStage]);
-
-  useEffect(() => {
-    if (viewport) {
-      return;
-    }
-
-    const updateViewport = () => setResponsiveViewport(getResponsiveViewport());
-
-    updateViewport();
-    window.addEventListener("resize", updateViewport);
-
-    return () => window.removeEventListener("resize", updateViewport);
-  }, [viewport]);
-
-  useEffect(() => {
-    if (lockedStage) {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      setActiveIndex(
-        (current) => (current + 1) % recommendationLoadingStages.length
-      );
-    }, STAGE_ADVANCE_MS);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [activeIndex, lockedStage]);
-
-  return (
-    <RecommendationExperienceShell
-      ariaLabel="Recommendation reveal template"
-      className={className}
-      copy={loadingCopy.copy}
-      eyebrow={loadingCopy.eyebrow}
-      heading={loadingCopy.heading}
-      metadata={
-        <p aria-live="polite" className="recommendation-loading-label">
-          {activeStage.label}
-        </p>
-      }
-      viewport={effectiveViewport}
-    >
-      <div
-        aria-hidden="true"
-        className="recommendation-loading-illustration recommendation-loading-illustration-empty relative grid aspect-square place-items-center"
-      />
     </RecommendationExperienceShell>
   );
 }

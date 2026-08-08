@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 
 import {
+  CARD_FAN_MS,
+  CENTRE_CARD_ENTER_MS,
   RecommendationCardReveal,
+  REVEAL_PRELOAD_LAG_MS,
+  preloadRecommendationRevealAssets,
   recommendationRevealCards,
   type RecommendationCardRevealPhase
 } from "@/components/product/RecommendationCardReveal";
@@ -50,6 +54,24 @@ function pluralise(count: number, singular: string) {
   return `${count} ${singular}${count === 1 ? "" : "s"}`;
 }
 
+function toSentenceCase(value: string) {
+  const normalisedValue = value.trim();
+
+  if (!normalisedValue) {
+    return normalisedValue;
+  }
+
+  return `${normalisedValue.charAt(0).toUpperCase()}${normalisedValue
+    .slice(1)
+    .toLowerCase()}`;
+}
+
+function wait(ms: number) {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+}
+
 const recommendationRevealWorkshop = {
   activityCards: recommendationRevealCards.map((card) => card.activity),
   description: exampleGeneratedWorkshopFlow.objective,
@@ -69,14 +91,18 @@ const recommendationRevealWorkshop = {
       "Participant"
     )
   },
-  title: exampleGeneratedWorkshopFlow.title
+  title: toSentenceCase(exampleGeneratedWorkshopFlow.title)
 };
 
 export function RecommendationRevealTemplateExperience({
   className = "",
+  continueLabel = "Continue to activities",
+  onContinue,
   viewport
 }: {
   className?: string;
+  continueLabel?: string;
+  onContinue?: () => void;
   viewport?: RecommendationLoadingViewport;
 }) {
   const [responsiveViewport, setResponsiveViewport] =
@@ -99,18 +125,48 @@ export function RecommendationRevealTemplateExperience({
   }, [viewport]);
 
   useEffect(() => {
-    setRevealPhase("pending");
+    let cancelled = false;
 
-    const revealTimeoutId = window.setTimeout(() => {
+    async function runRevealSequence() {
+      setRevealPhase("pending");
+
+      // Mount cards invisibly first and wait for illustrations so the centre
+      // card never pops in empty.
+      await preloadRecommendationRevealAssets(
+        recommendationRevealWorkshop.activityCards
+      );
+
+      if (cancelled) {
+        return;
+      }
+
+      await wait(REVEAL_PRELOAD_LAG_MS);
+
+      if (cancelled) {
+        return;
+      }
+
+      setRevealPhase("centre");
+      await wait(CENTRE_CARD_ENTER_MS);
+
+      if (cancelled) {
+        return;
+      }
+
       setRevealPhase("revealing");
-    }, 300);
-    const completeTimeoutId = window.setTimeout(() => {
+      await wait(CARD_FAN_MS);
+
+      if (cancelled) {
+        return;
+      }
+
       setRevealPhase("complete");
-    }, effectiveViewport === "mobile" ? 2400 : 2600);
+    }
+
+    void runRevealSequence();
 
     return () => {
-      window.clearTimeout(revealTimeoutId);
-      window.clearTimeout(completeTimeoutId);
+      cancelled = true;
     };
   }, [effectiveViewport]);
 
@@ -121,7 +177,11 @@ export function RecommendationRevealTemplateExperience({
         " "
       )}
       copy={recommendationRevealWorkshop.description}
-      eyebrow="YOUR RECOMMENDED WORKSHOP"
+      eyebrow={
+        <span className="recommendation-reveal-template-eyebrow-text">
+          YOUR RECOMMENDED WORKSHOP
+        </span>
+      }
       heading={
         <span className="recommendation-reveal-template-title">
           {recommendationRevealWorkshop.title}
@@ -146,6 +206,17 @@ export function RecommendationRevealTemplateExperience({
           />
         </div>
       </div>
+      {onContinue && revealPhase === "complete" ? (
+        <div className="recommendation-reveal-continue">
+          <button
+            className="recommendation-reveal-continue-button"
+            onClick={onContinue}
+            type="button"
+          >
+            {continueLabel}
+          </button>
+        </div>
+      ) : null}
     </RecommendationExperienceShell>
   );
 }

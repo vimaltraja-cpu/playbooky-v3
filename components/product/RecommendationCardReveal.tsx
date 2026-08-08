@@ -11,7 +11,11 @@ import {
 export type RecommendationCardRevealViewport =
   "mobile" | "tablet-portrait" | "tablet-landscape" | "desktop";
 
-export type RecommendationCardRevealPhase = "pending" | "revealing" | "complete";
+export type RecommendationCardRevealPhase =
+  | "pending"
+  | "centre"
+  | "revealing"
+  | "complete";
 export type RecommendationCardRevealPlayback = "normal" | "slow";
 export type RecommendationCardRevealMotion = "paired" | "reduced";
 
@@ -196,9 +200,13 @@ export const recommendationRevealCards: RecommendationRevealCard[] = [
 ];
 
 const desktopCentreCard = recommendationRevealCards.find(
-  (card) => card.id === "commitment-check"
+  (card) => card.pair === 0
 )!;
 const mobileRotations = [-24, -16, -8, 0, 8, 16, 24];
+
+export const CENTRE_CARD_ENTER_MS = 1100;
+export const CARD_FAN_MS = 1500;
+export const REVEAL_PRELOAD_LAG_MS = 220;
 
 function getCardDelay(
   card: RecommendationRevealCard,
@@ -208,7 +216,31 @@ function getCardDelay(
     return 0;
   }
 
-  return 160 + (card.pair - 1) * 200;
+  return 80 + (card.pair - 1) * 160;
+}
+
+export function preloadRecommendationRevealAssets(
+  activityCards?: RecommendationRevealActivityCard[]
+) {
+  if (typeof window === "undefined") {
+    return Promise.resolve();
+  }
+
+  const sources = recommendationRevealCards.map(
+    (card, index) => activityCards?.[index]?.illustration ?? card.activity.illustration
+  );
+
+  return Promise.all(
+    sources.map(
+      (src) =>
+        new Promise<void>((resolve) => {
+          const image = new window.Image();
+          image.onload = () => resolve();
+          image.onerror = () => resolve();
+          image.src = src;
+        })
+    )
+  ).then(() => undefined);
 }
 
 export function RecommendationCardReveal({
@@ -241,6 +273,7 @@ export function RecommendationCardReveal({
     ...card,
     activity: activityCards?.[index] ?? card.activity
   }));
+  const centreCardId = cards.find((card) => card.pair === 0)?.id ?? "commitment-check";
   // The card shown in the reveal deck must be the same real size as the
   // card it lands on in the activity grid for that breakpoint -- if the
   // shapes don't match, the reveal-to-grid transition has to stretch a
@@ -265,9 +298,9 @@ export function RecommendationCardReveal({
           <div
             className={[
               "recommendation-reveal-card",
-              card.id === "commitment-check"
+              card.id === centreCardId
                 ? "recommendation-reveal-card-centre"
-                : "",
+                : "recommendation-reveal-card-side",
               card.pair === 1 ? "recommendation-reveal-card-inner" : "",
               card.pair === 2 ? "recommendation-reveal-card-middle" : "",
               card.pair === 3 ? "recommendation-reveal-card-outer" : ""
