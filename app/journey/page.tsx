@@ -1,11 +1,10 @@
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
-import { ProductJourney } from "@/components/product/ProductJourney";
-
+/**
+ * Wrong surface. The signed-off Composer → Diagnosis spine is
+ * `/internal/journey` (local Mac work that was never pushed to this branch).
+ * Do not rebuild a substitute here.
+ */
 export default function ProductJourneyPage() {
-  return (
-    <Suspense fallback={null}>
-      <ProductJourney />
-    </Suspense>
-  );
+  redirect("/recommendation-loading");
 }

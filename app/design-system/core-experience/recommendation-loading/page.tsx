@@ -44,7 +44,7 @@ const overviewCopy = {
   whenToUse:
     "Use it after Diagnosis completion while PlayBooky is preparing the recommendation, including the linked reveal journey.",
   whereItAppears:
-    "Product routes /journey (after Diagnosis) and /recommendation-loading (loading → reveal), plus this Design Portal review page.",
+    "Product route /recommendation-loading (loading → reveal). Intended stitch target after Diagnosis in /internal/journey once that local spine is pushed.",
   whyItExists:
     "To make analysis feel intentional, calm, and premium before the recommended workshop appears."
 };
@@ -52,7 +52,7 @@ const overviewCopy = {
 const specs = [
   ["Status", "Green-lit / Approved"],
   ["Product route", "/recommendation-loading"],
-  ["Stitched journey", "/journey (Composer → Diagnosis → Recommendation)"],
+  ["Intended upstream", "/internal/journey (Composer → Diagnosis — Mac local, not yet on GitHub)"],
   ["Portal route", "/design-system/core-experience/recommendation-loading"],
   ["Motion source", "lib/design-system/recommendation-watercolor-motion.ts"],
   ["Sequence", "Goals -> Challenges -> Context -> Participants -> Outcome"],

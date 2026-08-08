@@ -1,7 +1,12 @@
 /**
  * Green-lit product surfaces — approved for product use.
- * Playground tuners may still exist for refinement, but product screens must
- * consume these green-lit implementations (not forked exploration copies).
+ *
+ * IMPORTANT:
+ * - Composer + Diagnosis were green-lit on `/internal/journey` on the Mac
+ *   workspace. That work was never committed/pushed to GitHub.
+ * - Do not invent substitute screens at `/journey`.
+ * - When `/internal/journey` lands on this branch, wire Recommendation Loading
+ *   into that spine — do not rebuild Composer/Diagnosis.
  */
 
 export type GreenlitSurface = {
@@ -31,15 +36,5 @@ export const greenlitSurfaces: GreenlitSurface[] = [
   }
 ];
 
-/** Stitched product journey: Composer → Diagnosis → green-lit Recommendation. */
-export const productJourneyHref = "/journey";
-
-export const productJourneyStages = [
-  { id: "composer", label: "Composer", href: "/journey?stage=composer" },
-  { id: "diagnosis", label: "Diagnosis", href: "/journey?stage=diagnosis" },
-  {
-    id: "recommendation",
-    label: "Recommendation",
-    href: "/journey?stage=recommendation"
-  }
-] as const;
+/** Signed-off Composer → Diagnosis spine (must come from Mac push). */
+export const internalJourneyHref = "/internal/journey";

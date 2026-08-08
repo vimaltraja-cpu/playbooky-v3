@@ -182,22 +182,6 @@ export const portalNavigation: PortalNavSection[] = [
       {
         category: "Core Experience",
         description:
-          "Stitched product journey: Composer → Diagnosis → green-lit Recommendation Loading.",
-        href: "/journey",
-        icon: "git-merge",
-        keywords: [
-          "journey",
-          "composer",
-          "diagnosis",
-          "recommendation",
-          "loading",
-          "greenlit"
-        ],
-        label: "Product Journey"
-      },
-      {
-        category: "Core Experience",
-        description:
           "Activity card structure, visual states, and usage guidance for workshop recommendations.",
         href: "/design-system/core-experience/activity-card",
         icon: "activity",
