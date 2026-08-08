@@ -50,10 +50,7 @@ export type Diagnosis = {
 };
 
 export type BuildingBlockType =
-  | "activity"
-  | "hybrid"
-  | "synthesis"
-  | "technique";
+  "activity" | "hybrid" | "synthesis" | "technique";
 
 /**
  * Engine/execution language.
@@ -80,6 +77,7 @@ export type BuildingBlock = {
  * Steps are what make a generated workshop executable.
  */
 export type BuildingBlockStep = {
+  displayName?: string;
   durationMinutes: number;
   facilitatorNotes: string;
   id: string;
@@ -108,6 +106,7 @@ export type WorkshopDesignLogicRule = {
  * Executable step inside a generated workshop flow.
  */
 export type WorkshopFlowStep = {
+  displayName?: string;
   durationMinutes: number;
   facilitatorNotes: string;
   instructions: string;

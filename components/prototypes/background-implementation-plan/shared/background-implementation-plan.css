@@ -1,0 +1,34 @@
+.background-implementation-plan-stage {
+  position: relative;
+  width: 100%;
+}
+
+.background-implementation-plan-stage .homepage-text-layout {
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.background-implementation-plan-stage__bg {
+  /* Pinned to the true viewport (not the stage's content box). The stage's
+     height is driven by the composer content, which is often narrower/
+     shorter than the browser window (it renders in its "framed" preview
+     size), so an absolutely-positioned bg tied to that box gets clipped to
+     a rectangle smaller than the window — exactly the hard-edged cutoff
+     bug. Fixed positioning always covers the real viewport regardless of
+     how the content around it is sized. */
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.background-implementation-plan-stage__bg canvas {
+  display: block;
+  height: 100%;
+  width: 100%;
+}

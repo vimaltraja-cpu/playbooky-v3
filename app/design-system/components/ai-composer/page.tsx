@@ -539,6 +539,7 @@ export default function AIComposerPage() {
 
           <ComponentViewportShowroom
             description="Use the viewport control to review how the same component is positioned inside desktop, tablet, and mobile preview frames."
+            preservePanelOnViewportChange
             renderPreview={(viewport) => (
               <ViewportPreview viewport={viewport} />
             )}

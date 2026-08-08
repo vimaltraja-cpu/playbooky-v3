@@ -132,10 +132,10 @@ export function ComponentSectionNav({
     const order: Record<string, number> = {
       accessibility: 5,
       overview: 0,
-      specs: 1,
-      states: 3,
+      specs: 3,
+      states: 2,
       tokens: 4,
-      viewports: 2
+      viewports: 1
     };
     const aIndex = items.findIndex((item) => item.id === a.id);
     const bIndex = items.findIndex((item) => item.id === b.id);
@@ -402,12 +402,14 @@ export type ViewportShowroomItem<Viewport extends string> = {
 };
 
 export function ComponentViewportShowroom<Viewport extends string>({
+  canvasClassName,
   description,
   preservePanelOnViewportChange,
   renderPreview,
   title = "Viewport",
   viewports
 }: {
+  canvasClassName?: string;
   description: string;
   preservePanelOnViewportChange?: boolean;
   renderPreview: (viewport: Viewport) => ReactNode;
@@ -416,6 +418,7 @@ export function ComponentViewportShowroom<Viewport extends string>({
 }) {
   return (
     <ViewportReviewLayout
+      canvasClassName={canvasClassName}
       description={description}
       preservePanelOnViewportChange={preservePanelOnViewportChange}
       renderPreview={renderPreview}
@@ -435,12 +438,14 @@ export type ComponentShowroomState<State extends string> = {
 
 export function ComponentStateShowroom<State extends string>({
   autoplayEnabled = true,
+  canvasClassName,
   description,
   renderPreview,
   states,
   title = "States"
 }: {
   autoplayEnabled?: boolean;
+  canvasClassName?: string;
   description: string;
   renderPreview: (state: State, isReducedMotion: boolean) => ReactNode;
   states: Array<ComponentShowroomState<State>>;
@@ -552,7 +557,13 @@ export function ComponentStateShowroom<State extends string>({
       <div className="mt-5 grid gap-4 min-[1500px]:grid-cols-[minmax(820px,1fr)_320px]">
         <div
           aria-labelledby={`state-tab-${activeItem.id}`}
-          className={`${previewPanelClassName} flex min-h-[430px] min-w-0 items-center justify-center p-5 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none`}
+          className={[
+            previewPanelClassName,
+            "flex min-h-[430px] min-w-0 items-center justify-center p-5 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+            canvasClassName
+          ]
+            .filter(Boolean)
+            .join(" ")}
           id={`state-panel-${activeItem.id}`}
           key={activeItem.id}
           role="tabpanel"
@@ -691,6 +702,216 @@ export function ComponentAccessibilitySection({
             </dl>
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+export type ComponentMatrixAxisItem<Id extends string> = {
+  id: Id;
+  label: string;
+};
+
+export type ComponentMatrixNotes = Array<[string, string]>;
+
+/**
+ * A three-axis (viewport x state x motion) review surface.
+ *
+ * `ComponentViewportShowroom` and `ComponentStateShowroom` above each let a
+ * reviewer control one axis at a time, which means a combination like
+ * "Tablet + Hover" or "Mobile + Selected" is never actually visible on
+ * screen — whichever axis isn't the active control silently falls back to
+ * whatever default the page author hardcoded into `renderPreview`. This
+ * component is the fix: viewport, state, and motion are independent
+ * controls over the *same* preview, so every combination the reviewer picks
+ * is the combination that renders. Built for the Diagnosis Card's viewport
+ * and state sign-off; written generically so any future responsive
+ * component page can reuse the same review pattern instead of re-deriving
+ * it.
+ */
+export function ComponentMatrixShowroom<
+  Viewport extends string,
+  State extends string
+>({
+  canvasClassName,
+  description,
+  motionNotes,
+  renderPreview,
+  stateAxis,
+  stateNotes,
+  title = "Viewport & state",
+  viewportAxis,
+  viewportNotes
+}: {
+  canvasClassName?: string;
+  description: string;
+  motionNotes?: ComponentMatrixNotes;
+  renderPreview: (
+    viewport: Viewport,
+    state: State,
+    reducedMotion: boolean
+  ) => ReactNode;
+  stateAxis: {
+    items: Array<ComponentMatrixAxisItem<State>>;
+    title?: string;
+  };
+  stateNotes?: (state: State) => ComponentMatrixNotes;
+  title?: string;
+  viewportAxis: {
+    items: Array<ComponentMatrixAxisItem<Viewport>>;
+    title?: string;
+  };
+  viewportNotes?: (viewport: Viewport) => ComponentMatrixNotes;
+}) {
+  const [activeViewport, setActiveViewport] = useState(
+    viewportAxis.items[0].id
+  );
+  const [activeState, setActiveState] = useState(stateAxis.items[0].id);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const systemPrefersReducedMotion = usePrefersReducedMotion();
+
+  const notes: ComponentMatrixNotes = [
+    ...(viewportNotes?.(activeViewport) ?? []),
+    ...(stateNotes?.(activeState) ?? []),
+    ...(motionNotes ?? [])
+  ];
+
+  return (
+    <section id="states" className="scroll-mt-28 py-8">
+      <SectionHeading description={description} title={title} />
+
+      <div className="mt-5 flex flex-col gap-3">
+        <div>
+          <p className="mb-2 text-[12px] font-medium leading-5 text-[#737373]">
+            {viewportAxis.title ?? "Viewport"}
+          </p>
+          <div
+            aria-label={viewportAxis.title ?? "Viewport"}
+            className="flex w-fit max-w-full flex-wrap gap-1 rounded-md border border-white/[0.14] bg-[#0a0a0a] p-1"
+            role="tablist"
+          >
+            {viewportAxis.items.map((item) => (
+              <button
+                aria-selected={activeViewport === item.id}
+                className={[
+                  "rounded px-3 py-1.5 text-[13px] font-medium leading-5 transition-colors duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+                  activeViewport === item.id
+                    ? "bg-white/[0.08] text-[#ededed]"
+                    : "text-[#8f8f8f] hover:bg-white/[0.055] hover:text-[#d4d4d4]"
+                ].join(" ")}
+                key={item.id}
+                onClick={() => setActiveViewport(item.id)}
+                role="tab"
+                type="button"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-[12px] font-medium leading-5 text-[#737373]">
+            {stateAxis.title ?? "State"}
+          </p>
+          <div
+            aria-label={stateAxis.title ?? "State"}
+            className="flex w-fit max-w-full flex-wrap gap-1 rounded-md border border-white/[0.14] bg-[#0a0a0a] p-1"
+            role="tablist"
+          >
+            {stateAxis.items.map((item) => (
+              <button
+                aria-selected={activeState === item.id}
+                className={[
+                  "rounded px-3 py-1.5 text-[13px] font-medium leading-5 transition-colors duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+                  activeState === item.id
+                    ? "bg-white/[0.08] text-[#ededed]"
+                    : "text-[#8f8f8f] hover:bg-white/[0.055] hover:text-[#d4d4d4]"
+                ].join(" ")}
+                key={item.id}
+                onClick={() => setActiveState(item.id)}
+                role="tab"
+                type="button"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-[12px] font-medium leading-5 text-[#737373]">
+            Motion
+          </p>
+          <div
+            aria-label="Motion"
+            className="flex w-fit max-w-full gap-1 rounded-md border border-white/[0.14] bg-[#0a0a0a] p-1"
+            role="tablist"
+          >
+            {[
+              { id: false, label: "Normal" },
+              { id: true, label: "Reduced motion" }
+            ].map((option) => (
+              <button
+                aria-selected={reducedMotion === option.id}
+                className={[
+                  "rounded px-3 py-1.5 text-[13px] font-medium leading-5 transition-colors duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+                  reducedMotion === option.id
+                    ? "bg-white/[0.08] text-[#ededed]"
+                    : "text-[#8f8f8f] hover:bg-white/[0.055] hover:text-[#d4d4d4]"
+                ].join(" ")}
+                key={String(option.id)}
+                onClick={() => setReducedMotion(option.id)}
+                role="tab"
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+          {systemPrefersReducedMotion ? (
+            <p className="mt-2 text-[12px] leading-5 text-[#737373]">
+              Your system already prefers reduced motion; this control lets
+              you preview either presentation regardless.
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="mt-5 grid items-start gap-4 min-[1500px]:grid-cols-[minmax(820px,1fr)_320px]">
+        <div
+          className={[
+            previewPanelClassName,
+            "flex h-[430px] min-w-0 items-center justify-center p-5",
+            canvasClassName
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          <div className="max-w-full overflow-x-auto py-8">
+            {renderPreview(activeViewport, activeState, reducedMotion)}
+          </div>
+        </div>
+        <div className={`${panelClassName} p-4`}>
+          <h4 className="text-[13px] font-medium leading-5 text-[#ededed]">
+            {viewportAxis.items.find((item) => item.id === activeViewport)
+              ?.label}{" "}
+            +{" "}
+            {stateAxis.items.find((item) => item.id === activeState)?.label}
+          </h4>
+          <dl className="mt-4 space-y-4">
+            {notes.map(([term, description]) => (
+              <div key={term}>
+                <dt className="text-[12px] font-medium leading-5 text-[#737373]">
+                  {term}
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-[#a1a1a1]">
+                  {description}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
     </section>
   );

@@ -1,0 +1,333 @@
+﻿Activity Name,Activity Outcomes,Activity family,Best Used When,Complexity,Duration,Energy Level,Facilitator Notes,FigJam Board Requirements,Good Output Looks Like,If Running Long,Inputs Required,Layout Type,Outputs Produced,Preparation Needed,Purpose,Recommended Participants,Remote Friendly,Stage,Step-by-Step Flow,Techniques Used,Timing Breakdown
+Assumption Collecting,,,The team suspects decisions are being driven by opinion rather than evidence.,,60 mins,,"Create a safe environment for participants to challenge existing thinking.
+
+Distinguish assumptions from facts.
+
+Prioritise assumptions that carry the greatest risk.",,,,Team context,,"Insights, Risks",,Identify assumptions influencing decisions.,,Yes,Understand,,,
+Newspaper Headline,,,The team needs a shared vision of success.,,60 mins,,"Encourage ambitious thinking.
+
+Avoid discussing constraints too early.
+
+Use the headlines to create a shared picture of success.",,,,Business goal,,"Alignment, Shared goal",,Define future success by imagining a positive headline about the outcome.,,Yes,Goals,,,
+Roles & Responsibilities,,,Ownership or accountability is unclear.,,60 mins,,"Keep the discussion objective and focused on clarity.
+
+Avoid turning the session into a performance review.
+
+Focus on improving collaboration and accountability.",,,,"Stakeholders, Team context",,"Alignment, Decision",,Clarify ownership and responsibilities across teams.,,Yes,Understand,,,
+Reverse Brainstorm,,,"The team feels stuck, is suffering from groupthink, or keeps generating similar ideas.",,60 mins,,"This works best when teams are stuck or repeating the same ideas.
+
+Encourage humour and exaggeration.
+
+The value comes from reversing the negative ideas.",,,,"Problem statement, Team context",,Ideas,,Generate solutions by exploring how to make the problem worse first.,,Yes,Ideas,,,
+Three Little Pigs,,,"The team needs to evaluate whether solutions are fragile, developing or robust.",,60 mins,,"Focus discussion on evidence rather than opinion.
+
+Challenge assumptions.
+
+Use the exercise to identify risk and increase confidence in decision making.",,,,"Ideas, Opportunities, Stakeholders",,"Decision, Insights",,"Assess ideas, processes or initiatives based on confidence and maturity.",,Yes,Discuss,,,
+Start Stop Continue,,,"The team needs alignment, reflection or agreement on future ways of working.",,60 mins,,"Keep the discussion constructive.
+
+Avoid personal criticism.
+
+Focus on behaviours, processes and ways of working rather than individuals.
+
+Push for actionable outcomes.",,,,"Stakeholders, Team context",,"Action plan, Alignment",,"Create alignment by identifying behaviours, activities or processes the team should start, stop or continue.",,Yes,Decide,,,
+Fishbowl,,,The group has differing viewpoints or sensitive topics need discussion.,,60 mins,,"Ensure balanced participation.
+
+Avoid allowing a small number of people to dominate.
+
+Focus on listening and understanding rather than winning arguments.",,,,"Problem statement, Stakeholders",,"Alignment, Insights",,Enable structured discussion around difficult topics while ensuring all perspectives are heard.,,Hybrid,Discuss,,,
+Stakeholder Map,,,"The team needs to understand who is involved, affected, or influential.",,60 mins,,"Encourage participants to consider both obvious and hidden stakeholders.
+
+Look for conflicting incentives.
+
+Use the exercise to identify engagement risks and opportunities.",,,,"Stakeholders, Team context",,"Alignment, Insights",,"Identify stakeholders, influence, needs, and relationships.",,Yes,Understand,,,
+Democratic Discussion,,,The team needs broad participation and collective ownership of outcomes.,,60 mins,,"Protect equal participation.
+
+Watch for dominant personalities.
+
+Encourage quieter participants to contribute.
+
+Focus on shared understanding.",,,,"Stakeholders, Team context",,"Alignment, Decision",,Create equal opportunity for participation and decision making.,,Yes,Discuss,,,
+Blind Vote,,,The team needs to choose between options fairly and quickly.,,5 mins,,"Use when dominant personalities may influence decisions.
+
+Avoid debating options during voting.
+
+The objective is to reveal genuine preferences.",,,,"Ideas, Opportunities",,Decision,,Help the group make a quick decision without influence from louder voices.,,Yes,Decide,,,
+Prototype Persona,,,Research is limited but the team needs a shared understanding of users.,,60 mins,,"Make it clear that the persona is a working hypothesis.
+
+Avoid creating overly detailed fictional profiles.
+
+Focus on creating shared understanding rather than perfection.",,,,"Existing research, User feedback",,Insights,,Create provisional user personas from existing knowledge.,,Yes,Understand,,,
+SWOT Analysis,,,"The team needs structured evaluation of a challenge, opportunity or strategy.",,90 mins,,"Keep discussions balanced across all four areas.
+
+Avoid spending too much time debating individual items.
+
+Focus on identifying patterns and strategic implications.",,,,"Ideas, Problem statement, Stakeholders",,"Decision, Insights",,"Assess strengths, weaknesses, opportunities and threats.",,Yes,Evaluate,,,
+Sticky Steps,,,The team knows the goal but needs a practical path forward.,,30 mins,,"Encourage participants to think in small achievable steps.
+
+Challenge large vague actions.
+
+Focus on creating momentum and clarity.",,,,Business goal,,Action plan,,Break a goal into small achievable steps.,,Yes,Goals,,,
+Storyboard,,,The team wants to explore and communicate end-to-end solution ideas.,,90 mins,,"Keep participants focused on the experience rather than detailed UI solutions.
+
+Encourage discussion around assumptions and risks.
+
+Use the storyboard as a conversation tool rather than an artefact to perfect.",,,,"Ideas, Problem statement, User feedback",,Ideas,,"Visualise future experiences, concepts or service journeys.",,Yes,Ideas,,,
+Crazy Eights,,,"The team needs options, concepts, or alternative approaches.",,30 mins,,"Emphasise speed over quality.
+
+Encourage participants to avoid self-editing.
+
+The goal is variety and exploration rather than polished ideas.",,,,"Opportunities, Problem statement",,Ideas,,Generate a range of solution ideas quickly.,,Yes,Ideas,,,
+Five Whys,,,The team sees symptoms but does not yet understand the underlying cause.,,30 mins,,"Do not force exactly five iterations.
+
+Stop when the conversation reaches a meaningful root cause.
+
+Avoid blaming people.
+
+Focus on systems, behaviours and contributing factors.",,,,Problem statement,,Insights,,Explore root causes by repeatedly asking why a problem is happening.,,Yes,Understand,,,
+"Heart, Head, Hand",,,The team wants balanced decision making and needs to consider multiple viewpoints.,,30 mins,,"Encourage participants to contribute to all three areas.
+
+Watch for teams focusing too heavily on logic and ignoring emotional or practical factors.
+
+Use the discussion to reveal hidden trade-offs.",,,,"Ideas, Opportunities",,"Decision, Insights",,"Evaluate ideas from emotional, logical and practical perspectives.",,Yes,Evaluate,,,
+"Rose, Thorn, Bud",,,"The team wants a balanced evaluation of a project, feature, process or experience.",,30 mins,,"Encourage balanced thinking.
+
+Prevent the conversation from becoming overly negative.
+
+Use the opportunity section to identify future actions.",,,,"Existing research, Ideas, User feedback",,"Ideas, Insights",,"Identify positives, challenges and opportunities within a situation.",,Yes,Evaluate,,,
+Journey Map,,,"The team needs to understand user behaviour, friction, drop-off, or experience gaps.",,60 mins,,"Focus on the current experience before discussing solutions.
+
+Use evidence wherever possible.
+
+Encourage participants from different disciplines to contribute.
+
+Pay particular attention to moments of confusion, frustration and drop-off.",,,,"Analytics, Existing research, User feedback",,"Insights, Journey map",,Map the user or customer experience from start to finish.,,Yes,Understand,,,
+Mad Sad Glad,,,"The team needs reflection, retrospectives or emotional insight.",,60 mins,,"Create psychological safety.
+
+Encourage honesty.
+
+Focus on understanding experiences rather than defending decisions.
+
+Look for recurring patterns.",,,,"Stakeholders, Team context",,"Alignment, Insights",,"Explore emotional responses to a project, initiative or experience.",,Yes,Discuss,,,
+Empathy Map,,,The team needs deeper understanding of users.,,60 mins,,"Encourage participants to use evidence rather than assumptions.
+
+Keep the discussion focused on the user rather than business needs.
+
+Challenge unsupported statements.",,,,"Existing research, User feedback",,Insights,,"Explore what users think, feel, see and do.",,Yes,Understand,,,
+Objectives and Key Results (OKRs),"Alignment, Commitment, Goal setting, Strategy definition, Success measurement",,"The team has competing priorities, unclear success measures, multiple stakeholder opinions, or lacks a shared direction. Useful for quarterly planning, strategy workshops and project kick-offs.",Medium,60 mins,Medium,"Push for a single objective.
+
+Challenge vague wording.
+
+Avoid discussing solutions.
+
+Focus on outcomes rather than outputs.
+
+Encourage ambitious but realistic key results.
+
+Keep debate time-boxed.
+
+Use voting to break deadlocks.","Section 1 – Workshop Overview
+
+Section 2 – Proposed Objectives
+
+Section 3 – Objective Clustering
+
+Section 4 – Objective Voting
+
+Section 5 – Metrics Generation
+
+Section 6 – Metrics Clustering
+
+Section 7 – Metrics Voting
+
+Section 8 – Final OKRs
+
+Section 9 – Actions & Owners","One agreed objective.
+
+Three measurable key results.
+
+Named owners.
+
+Review cadence agreed.
+
+Clear understanding of what success looks like.","Reduce discussion time.
+
+Move to voting sooner.
+
+Capture unresolved points in a parking lot.
+
+Use facilitator decision-making if alignment cannot be reached within the allocated time.
+
+If metric generation is running long, stop at the top five metrics and move into prioritisation.","Business goal, Stakeholders, Team context",Hybrid,"Alignment, Key results, Shared goal, Success metrics",Before the workshop ask participants to submit one proposed objective.Prepare a board with:- Objective submission area- Objective clustering area- Voting area- Metrics generation area- Final OKR area- Actions and owners areaEnsure everyone understands the purpose of the session before joining.,Create alignment around a shared objective and define measurable indicators of success.,4–12 participants,Hybrid,Goals,"Step 1 – Introduction
+
+Explain the purpose of the session.
+
+Introduce Objectives and Key Results.
+
+Explain that the goal is to align around one primary objective and define measurable indicators of success.
+
+---
+
+Step 2 – Review Objectives
+
+Review all submitted objectives.
+
+Ensure everyone understands each proposal.
+
+Clarify wording where necessary.
+
+---
+
+Step 3 – Theme Sort Objectives
+
+Group similar objectives together.
+
+Identify common themes.
+
+Discuss overlaps and differences.
+
+---
+
+Step 4 – Select Objective
+
+Discuss the strongest options.
+
+Run a blind vote.
+
+If necessary conduct a second round.
+
+Agree one primary objective.
+
+---
+
+Step 5 – Generate Success Metrics
+
+Ask participants:
+
+How would we know we are making progress?
+
+Capture all suggested metrics.
+
+Focus on quantity over quality initially.
+
+---
+
+Step 6 – Theme Sort Metrics
+
+Group similar metrics.
+
+Remove duplicates.
+
+Identify the strongest indicators of success.
+
+---
+
+Step 7 – Select Metrics
+
+Use dot voting or blind voting.
+
+Select the three most meaningful metrics.
+
+---
+
+Step 8 – Create Key Results
+
+Convert each metric into a measurable target.
+
+Example:
+
+Metric:
+Customer retention
+
+Key Result:
+Increase customer retention from 62% to 75%.
+
+---
+
+Step 9 – Review and Commit
+
+Review the final objective.
+
+Review all key results.
+
+Confirm ownership.
+
+Agree review cadence and next steps.","Blind vote, Clustering, Discussion, Dot voting, Theme Sort","5 mins – Introduction
+
+5 mins – Review Objectives
+
+10 mins – Theme Sort Objectives
+
+10 mins – Discuss & Blind Vote
+
+10 mins – Generate Metrics
+
+5 mins – Theme Sort Metrics
+
+5 mins – Vote on Metrics
+
+5 mins – Create Key Results
+
+5 mins – Review & Commit
+
+Total = 60 mins"
+G.R.O.W,,,"The team needs clarity on direction, objectives or next steps.",,60 mins,,"Keep the conversation grounded in reality.
+
+Avoid jumping straight to solutions.
+
+Spend sufficient time exploring the current situation before discussing options.
+
+Ensure the session ends with clear commitments and actions.",,,,"Business goal, Team context",,"Action plan, Shared goal",,"Help individuals or teams define goals, understand reality, explore options and agree actions.",,Yes,Goals,,,
+Problem Statement,,,The team has different interpretations of the problem or the challenge feels too broad.,,60 mins,,"Prevent participants from jumping to solutions.
+
+Focus on the problem itself.
+
+Keep statements specific and evidence-based.
+
+Challenge vague language.",,,,"Existing research, Problem statement, User feedback",,"Alignment, Problem statement",,Turn a broad or unclear challenge into a focused problem statement.,,Yes,Frame,,,
+Impact Effort Map,,,The team has several options and needs to prioritise.,,30 mins,,"Focus on relative comparison rather than precise scoring.
+
+Challenge assumptions around effort and impact.
+
+Look for opportunities to create alignment across the group.",,,,"Ideas, Opportunities",,"Decision, Prioritised list",,Compare ideas or opportunities based on expected impact and effort.,,Yes,Evaluate,,,
+Who What When,,,The team has made a decision and needs to agree next steps.,,10 mins,,"Do not leave actions unassigned.
+
+Push for clear ownership.
+
+Ensure deadlines are realistic.
+
+End the workshop with visible accountability.",,,,"Decision, Stakeholders",,Action plan,,"Turn decisions into clear ownership, actions, and timings.",,Yes,Decide,,,
+Sailboat,,,The team needs alignment around goals and obstacles.,,60 mins,,"Use the visual metaphor to encourage participation.
+
+Ensure both positive and negative factors are explored.
+
+Focus on practical actions that can be taken after the workshop.",,,,"Business goal, Team context",,"Alignment, Risks, Shared goal",,"Explore goals, risks, blockers and opportunities using a visual metaphor.",,Yes,Goals,,,
+How Might We,,,The team understands the problem and needs to create useful opportunity statements.,,60 mins,,"Encourage open-ended questions.
+
+Avoid leading questions that imply a solution.
+
+Focus on creating opportunity spaces rather than constraints.",,,,"Insights, Problem statement",,"Ideas, Problem statement",,Reframe problems into opportunity-focused prompts for ideation.,,Yes,Frame,,,
+Round Robin,,,You want contributions from every participant and need to avoid dominant voices.,,30 mins,,"Ensure equal participation.
+
+Prevent dominant voices from taking over.
+
+Keep the pace moving.
+
+Focus on idea generation rather than evaluation.",,,,"Problem statement, Team context",,Ideas,,Generate ideas collaboratively while ensuring equal participation.,,Yes,Ideas,,,
+Mind Map,,,The team needs a broad range of possibilities.,,30 mins,,"Encourage quantity over quality initially.
+
+Avoid judging ideas during generation.
+
+Look for clusters and connections that may not be obvious.
+
+Use the final discussion to identify promising areas for further exploration.",,,,Problem statement,,Ideas,,Generate ideas through associative thinking.,,Yes,Ideas,,,
+Service Map,,,The team needs to understand operational complexity.,,90 mins,,"Keep participants focused on the whole service rather than isolated touchpoints.
+
+Look for bottlenecks, handoffs and operational complexity.
+
+Encourage contributions from multiple disciplines.",,,,"Existing research, Stakeholders",,"Alignment, Insights",,"Visualise people, systems and processes involved in delivering a service.",,Yes,Understand,,,
+Premortem,,,The team wants to reduce risk and improve decision quality.,,60 mins,,"Create psychological safety.
+
+Encourage participants to surface uncomfortable truths.
+
+Avoid turning the session into a solution workshop too early.",,,,"Ideas, Opportunities, Stakeholders",,"Decision, Risks",,Identify potential risks before implementation begins.,,Yes,Evaluate,,,

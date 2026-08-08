@@ -38,12 +38,12 @@ const componentMetadata = {
 
 const sectionItems: ComponentSectionNavItem[] = [
   { id: "overview", label: "Overview" },
-  { id: "viewports", label: "Viewport" },
-  { id: "states", label: "States" },
   { id: "specs", label: "Specs" },
-  { id: "tokens", label: "Tokens" },
+  { id: "viewports", label: "Viewport" },
+  { id: "library", label: "Library" },
+  { id: "states", label: "States" },
   { id: "accessibility", label: "Accessibility" },
-  { id: "library", label: "Library" }
+  { id: "tokens", label: "Tokens" }
 ];
 
 const overviewCopy = {
@@ -393,6 +393,8 @@ export function ActivityCardPageClient({
         >
           <ComponentOverviewSection {...overviewCopy} />
 
+          <SpecsSection />
+
           <ComponentViewportShowroom
             description="The approved card does not change by viewport yet. These frames show the same card inside desktop, tablet, and mobile preview containers."
             renderPreview={(viewport) => (
@@ -402,6 +404,10 @@ export function ActivityCardPageClient({
               />
             )}
             viewports={viewportItems}
+          />
+
+          <LibrarySection
+            activities={activities}
           />
 
           <ComponentStateShowroom
@@ -418,13 +424,6 @@ export function ActivityCardPageClient({
             states={showroomStates}
           />
 
-          <SpecsSection />
-
-          <ComponentTokensSection
-            description="These values are present in the approved visual component and remain pending tokenisation."
-            tokens={tokenRows}
-          />
-
           <ComponentAccessibilitySection
             contrastNotes={accessibilityNotes.contrastNotes}
             focusBehaviour={accessibilityNotes.focusBehaviour}
@@ -434,8 +433,9 @@ export function ActivityCardPageClient({
             unresolvedIssues={accessibilityNotes.unresolvedIssues}
           />
 
-          <LibrarySection
-            activities={activities}
+          <ComponentTokensSection
+            description="These values are present in the approved visual component and remain pending tokenisation."
+            tokens={tokenRows}
           />
         </ComponentPageShell>
       </div>

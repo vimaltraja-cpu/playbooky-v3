@@ -84,6 +84,15 @@ export const portalNavigation: PortalNavSection[] = [
           {
             category: "Product System",
             description:
+              "Overview of the activities, building blocks, steps and rules that power generated workshops.",
+            href: "/design-system/product-system/libraries",
+            icon: "folder",
+            keywords: ["libraries", "overview", "workshop os", "relationships"],
+            label: "Libraries Overview"
+          },
+          {
+            category: "Product System",
+            description:
               "The reusable building-block catalogue that powers generated workshop flows.",
             href: "/design-system/product-system/libraries/building-block-library",
             icon: "package",
@@ -107,6 +116,15 @@ export const portalNavigation: PortalNavSection[] = [
             icon: "grid",
             keywords: ["activities", "filters", "recommendations", "source data"],
             label: "Activity Library"
+          },
+          {
+            category: "Product System",
+            description:
+              "Internal sandbox for testing how diagnosis signals change the active generated workshop.",
+            href: "/design-system/product-system/libraries/active-library",
+            icon: "sliders",
+            keywords: ["active library", "generation", "sandbox", "diagnosis", "rules"],
+            label: "Active Library"
           }
         ],
         icon: "folder",
@@ -170,7 +188,37 @@ export const portalNavigation: PortalNavSection[] = [
         href: "/design-system/core-experience/recommendation-loading",
         icon: "target",
         keywords: ["recommendations", "loading", "analysis", "sequence"],
-        label: "Recommendation Loading"
+        label: "Recommendation Loading Experience"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "The post-loading recommendation deck reveal that fans activity cards out from Commitment Check.",
+        href: "/design-system/core-experience/recommendation-card-reveal",
+        icon: "3-layers",
+        keywords: [
+          "recommendations",
+          "card reveal",
+          "deck reveal",
+          "fan",
+          "deal"
+        ],
+        label: "Recommendation Card Reveal"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "A user-triggered motion study where the recommendation card fan transforms into the workshop grid.",
+        href: "/design-system/core-experience/recommendation-reveal-to-grid",
+        icon: "layout",
+        keywords: [
+          "recommendations",
+          "workshop grid",
+          "transition",
+          "motion",
+          "cards"
+        ],
+        label: "Recommendation Reveal -> Workshop Grid Transition"
       },
       {
         category: "Core Experience",
@@ -193,11 +241,54 @@ export const portalNavigation: PortalNavSection[] = [
       {
         category: "Core Experience",
         description:
+          "Responsive landing and inner-page header navigation for PlayBooky pages.",
+        href: "/design-system/core-experience/header-navigation",
+        icon: "navigation",
+        keywords: ["header", "navigation", "landing", "inner page", "responsive"],
+        label: "Header Navigation"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Responsive homepage opening layout for the logo, headline, guidance text, and AI Composer.",
+        href: "/design-system/core-experience/homepage-text-layout",
+        icon: "monitor",
+        keywords: ["homepage", "hero", "text layout", "composer", "responsive"],
+        label: "Homepage Text Layout"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Responsive homepage composer area layout for the guidance link and AI Composer.",
+        href: "/design-system/core-experience/homepage-composer-layout",
+        icon: "message-circle",
+        keywords: ["homepage", "composer", "guidance", "responsive"],
+        label: "Homepage Composer Layout"
+      },
+      {
+        category: "Core Experience",
+        description:
           "Static desktop review for the Builder Activity Detail Modal.",
         href: "/design-system/core-experience/activity-detail-modal",
         icon: "maximize-2",
         keywords: ["activity", "modal", "detail", "builder"],
         label: "Activity Detail Modal"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Motion explorations for the Workshop Ready contextual navigation active state and icon.",
+        href: "/design-system/core-experience/workshop-navigation-motion",
+        icon: "navigation",
+        keywords: [
+          "navigation",
+          "workshop ready",
+          "facilitator guide",
+          "figjam",
+          "playbooky live",
+          "motion"
+        ],
+        label: "Workshop Navigation Motion"
       }
     ],
     icon: "monitor",

@@ -1,0 +1,552 @@
+.concept-stage-frame {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+}
+
+.concept-stage-label {
+  color: #7d5330;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+.concept-stage-illustration {
+  aspect-ratio: 1 / 1;
+  position: relative;
+  width: min(60vw, 360px);
+}
+
+.concept-stage-image {
+  display: block;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  transform-origin: 50% 50%;
+  width: 100%;
+  will-change: opacity, transform, filter;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Concept 1 — Center Bloom                                               */
+/* The incoming image opens outward from a small point at dead centre.    */
+/* ---------------------------------------------------------------------- */
+
+.concept-bloom-active {
+  animation: concept-bloom-in 1400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  z-index: 1;
+}
+
+.concept-bloom-previous {
+  animation: concept-bloom-out 1400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes concept-bloom-in {
+  0% {
+    clip-path: circle(2% at 50% 50%);
+    filter: blur(18px) saturate(0.9);
+    opacity: 0;
+    transform: scale(1.14);
+  }
+
+  38% {
+    clip-path: circle(32% at 50% 50%);
+    filter: blur(6px) saturate(0.96);
+    opacity: 1;
+  }
+
+  100% {
+    clip-path: circle(75% at 50% 50%);
+    filter: blur(0) saturate(1);
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes concept-bloom-out {
+  0% {
+    filter: blur(0);
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  60% {
+    filter: blur(6px);
+    opacity: 0.55;
+    transform: scale(1.03);
+  }
+
+  100% {
+    filter: blur(14px) saturate(0.85);
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Concept 2 — Liquid Takeover                                            */
+/* A feathered (not hard-edged) mask expands with a slight elastic        */
+/* overshoot; the outgoing image is swallowed inward toward the centre.   */
+/* ---------------------------------------------------------------------- */
+
+.concept-liquid-active {
+  animation: concept-liquid-in 1600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  z-index: 1;
+}
+
+.concept-liquid-previous {
+  animation: concept-liquid-out 1500ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes concept-liquid-in {
+  0% {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 0%,
+      transparent 6%
+    );
+    mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 6%);
+    filter: blur(10px);
+    opacity: 0;
+    transform: scale(0.86);
+  }
+
+  55% {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 46%,
+      transparent 66%
+    );
+    mask-image: radial-gradient(circle at 50% 50%, #000 46%, transparent 66%);
+    filter: blur(2px);
+    opacity: 1;
+    transform: scale(1.035);
+  }
+
+  100% {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 68%,
+      transparent 92%
+    );
+    mask-image: radial-gradient(circle at 50% 50%, #000 68%, transparent 92%);
+    filter: blur(0);
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes concept-liquid-out {
+  0% {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 100%,
+      transparent 130%
+    );
+    mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 100%,
+      transparent 130%
+    );
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 0%,
+      transparent 8%
+    );
+    mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 8%);
+    filter: blur(8px);
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Concept 3 — Aperture Flare                                             */
+/* A light bloom leads the reveal; the outgoing image blows out and       */
+/* burns away rather than simply fading.                                  */
+/* ---------------------------------------------------------------------- */
+
+.concept-flare-active {
+  animation: concept-flare-in 1300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  z-index: 1;
+}
+
+.concept-flare-previous {
+  animation: concept-flare-out 900ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.concept-flare-glow {
+  background: radial-gradient(
+    circle,
+    rgba(255, 252, 247, 0.95) 0%,
+    rgba(255, 226, 180, 0.75) 30%,
+    rgba(217, 156, 86, 0.35) 55%,
+    transparent 75%
+  );
+  border-radius: 999px;
+  filter: blur(8px);
+  height: 30%;
+  left: 50%;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.15);
+  width: 30%;
+  z-index: 2;
+  animation: concept-flare-burst 1300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes concept-flare-in {
+  0% {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 0%,
+      transparent 10%
+    );
+    mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 10%);
+    filter: brightness(1.6) blur(6px);
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  50% {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 50%,
+      transparent 74%
+    );
+    mask-image: radial-gradient(circle at 50% 50%, #000 50%, transparent 74%);
+    filter: brightness(1.15) blur(1px);
+    opacity: 1;
+  }
+
+  100% {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 70%,
+      transparent 95%
+    );
+    mask-image: radial-gradient(circle at 50% 50%, #000 70%, transparent 95%);
+    filter: brightness(1) blur(0);
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes concept-flare-out {
+  0% {
+    filter: brightness(1);
+    opacity: 1;
+  }
+
+  40% {
+    filter: brightness(1.8);
+    opacity: 0.7;
+  }
+
+  100% {
+    filter: brightness(2.2) blur(6px);
+    opacity: 0;
+  }
+}
+
+@keyframes concept-flare-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.15);
+  }
+
+  30% {
+    opacity: 0.9;
+  }
+
+  55% {
+    opacity: 0.75;
+    transform: translate(-50%, -50%) scale(1.6);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3.2);
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Concept — Watercolor Bleed (gooey metaballs)                           */
+/* Several small droplets appear at scattered, uneven points and uneven   */
+/* times near the centre. A "goo" filter (blur + alpha threshold) fuses   */
+/* overlapping droplets into one continuously-reconfiguring amorphous     */
+/* mass as they grow, and a light turbulence pass roughens the fused      */
+/* edge further. Because the droplets never share a centre or a start     */
+/* time, the overall silhouette is never radially symmetric — it reads    */
+/* as spreading, not as an expanding circle. The outgoing image actively  */
+/* recedes (softens, desaturates, thins out) over the same span, so both  */
+/* images are visibly reacting to each other rather than one just         */
+/* occluding the other.                                                   */
+/* ---------------------------------------------------------------------- */
+
+.watercolor-illustration {
+  position: relative;
+}
+
+.watercolor-svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.watercolor-image-previous {
+  animation-name: watercolor-previous-recede;
+  animation-timing-function: cubic-bezier(0.32, 0, 0.24, 1);
+  animation-fill-mode: both;
+}
+
+.watercolor-image-active {
+  animation-name: watercolor-active-in;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+@keyframes watercolor-previous-recede {
+  0% {
+    filter: blur(0) saturate(1) brightness(1);
+    opacity: 1;
+  }
+
+  55% {
+    filter: blur(3px) saturate(0.8) brightness(1.02);
+    opacity: 0.75;
+  }
+
+  100% {
+    filter: blur(9px) saturate(0.5) brightness(1.05);
+    opacity: 0;
+  }
+}
+
+@keyframes watercolor-active-in {
+  0% {
+    filter: blur(10px) saturate(0.8) brightness(1.05);
+  }
+
+  83% {
+    /* Mask has fully revealed the image by here (t=5s of 6s) — it is
+       still meant to read as blurred at this point, not sharpening yet.
+       This blurred-reveal stretch is deliberately the majority of the
+       beat. */
+    filter: blur(8px) saturate(0.86) brightness(1.03);
+  }
+
+  100% {
+    /* Resolves to full focus between t=5s and t=6s — the smallest part
+       of the cycle. */
+    filter: blur(0) saturate(1) brightness(1);
+  }
+}
+
+/* Each droplet grows independently — different start delay, different
+   final radius, different position offset from centre — so the fused
+   mass they form together never reads as a single expanding circle.
+   Timing is deliberately LINEAR, not eased: an eased (ease-out) curve
+   front-loads almost all of the size gain into the first 20–30% of its
+   duration, which is what previously made the mask visually finish
+   covering the frame within about a second even though the declared
+   animation ran much longer. Linear keeps the growth — and therefore
+   the reveal — visibly gradual across the whole span. */
+.watercolor-droplet {
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
+.watercolor-droplet-1 {
+  animation-name: watercolor-droplet-grow-1;
+}
+
+.watercolor-droplet-2 {
+  animation-name: watercolor-droplet-grow-2;
+}
+
+.watercolor-droplet-3 {
+  animation-name: watercolor-droplet-grow-3;
+}
+
+.watercolor-droplet-4 {
+  animation-name: watercolor-droplet-grow-4;
+}
+
+.watercolor-droplet-5 {
+  animation-name: watercolor-droplet-grow-5;
+}
+
+.watercolor-droplet-6 {
+  animation-name: watercolor-droplet-grow-6;
+}
+
+.watercolor-droplet-7 {
+  animation-name: watercolor-droplet-grow-7;
+}
+
+.watercolor-droplet-8 {
+  animation-name: watercolor-droplet-grow-8;
+}
+
+.watercolor-droplet-9 {
+  animation-name: watercolor-droplet-grow-9;
+}
+
+@keyframes watercolor-droplet-grow-1 {
+  0% {
+    r: 0;
+  }
+
+  100% {
+    r: 195;
+  }
+}
+
+@keyframes watercolor-droplet-grow-2 {
+  0% {
+    r: 0;
+  }
+
+  100% {
+    r: 225;
+  }
+}
+
+@keyframes watercolor-droplet-grow-3 {
+  0% {
+    r: 0;
+  }
+
+  100% {
+    r: 225;
+  }
+}
+
+@keyframes watercolor-droplet-grow-4 {
+  0% {
+    r: 0;
+  }
+
+  100% {
+    r: 225;
+  }
+}
+
+@keyframes watercolor-droplet-grow-5 {
+  0% {
+    r: 0;
+  }
+
+  100% {
+    r: 225;
+  }
+}
+
+@keyframes watercolor-droplet-grow-6 {
+  0% {
+    r: 0;
+  }
+
+  100% {
+    r: 190;
+  }
+}
+
+@keyframes watercolor-droplet-grow-7 {
+  0% {
+    r: 0;
+  }
+
+  100% {
+    r: 190;
+  }
+}
+
+@keyframes watercolor-droplet-grow-8 {
+  0% {
+    r: 0;
+  }
+
+  100% {
+    r: 190;
+  }
+}
+
+@keyframes watercolor-droplet-grow-9 {
+  0% {
+    r: 0;
+  }
+
+  100% {
+    r: 190;
+  }
+}
+
+.watercolor-wash {
+  animation: watercolor-wash-bloom 6000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  background: radial-gradient(
+    circle,
+    rgba(217, 156, 86, 0.46) 0%,
+    rgba(125, 83, 48, 0.3) 35%,
+    transparent 72%
+  );
+  border-radius: 999px;
+  filter: blur(20px);
+  height: 52%;
+  left: 50%;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.1);
+  width: 52%;
+  z-index: 2;
+}
+
+@keyframes watercolor-wash-bloom {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.1);
+  }
+
+  40% {
+    opacity: 0.7;
+  }
+
+  75% {
+    opacity: 0.45;
+    transform: translate(-50%, -50%) scale(0.82);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .concept-bloom-active,
+  .concept-bloom-previous,
+  .concept-liquid-active,
+  .concept-liquid-previous,
+  .concept-flare-active,
+  .concept-flare-previous,
+  .concept-flare-glow,
+  .watercolor-image-active,
+  .watercolor-image-previous,
+  .watercolor-droplet,
+  .watercolor-wash {
+    animation-duration: 1ms !important;
+  }
+}

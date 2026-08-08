@@ -266,4 +266,23 @@ export const diagnosisQuestionTabs = diagnosisQuestions.map(
   })
 );
 
-export const diagnosisGridPreviewOptions = diagnosisQuestions[0].options;
+function getDiagnosisOption(questionId: DiagnosisQuestionId, optionId: string) {
+  const option = diagnosisQuestions
+    .find((question) => question.id === questionId)
+    ?.options.find((item) => item.id === optionId);
+
+  if (!option) {
+    throw new Error(`Missing diagnosis option: ${questionId}/${optionId}`);
+  }
+
+  return option;
+}
+
+export const diagnosisGridPreviewOptions = [
+  getDiagnosisOption("goals", "align-a-team"),
+  getDiagnosisOption("goals", "understand-a-problem"),
+  getDiagnosisOption("context", "focus-priorities"),
+  getDiagnosisOption("goals", "make-decisions"),
+  getDiagnosisOption("goals", "create-an-action-plan"),
+  getDiagnosisOption("context", "context-not-sure")
+];

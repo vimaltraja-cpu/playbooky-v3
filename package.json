@@ -7,6 +7,8 @@
     "build": "next build",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "illustrations:audit": "node scripts/activity-illustrations.cjs",
+    "illustrations:process": "node scripts/activity-illustrations.cjs --process",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -24,6 +26,7 @@
     "eslint": "^9.30.1",
     "eslint-config-next": "^15.3.5",
     "prettier": "^3.6.2",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3"
   }

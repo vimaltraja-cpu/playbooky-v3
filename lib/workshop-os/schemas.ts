@@ -85,6 +85,12 @@ export const workshopOsSchemas = {
         required: true,
         type: "number"
       },
+      displayName: {
+        description:
+          "Optional compact label for constrained Builder UI presentation. Canonical name remains unchanged.",
+        required: false,
+        type: "string"
+      },
       facilitatorNotes: {
         description: "Guidance for the facilitator.",
         required: true,
@@ -96,7 +102,8 @@ export const workshopOsSchemas = {
         type: "string"
       },
       instructions: {
-        description: "Participant-facing or facilitator-facing step instructions.",
+        description:
+          "Participant-facing or facilitator-facing step instructions.",
         required: true,
         type: "string"
       },
@@ -138,7 +145,8 @@ export const workshopOsSchemas = {
         type: "DiagnosisConfidence"
       },
       input: {
-        description: "Original challenge, state, blockers, desired outcome, and constraints.",
+        description:
+          "Original challenge, state, blockers, desired outcome, and constraints.",
         required: true,
         type: "DiagnosisInput"
       },
@@ -148,7 +156,8 @@ export const workshopOsSchemas = {
         type: "WorkshopStageId"
       },
       recommendedFocus: {
-        description: "Plain-language summary of what the workshop should focus on.",
+        description:
+          "Plain-language summary of what the workshop should focus on.",
         required: true,
         type: "string"
       },

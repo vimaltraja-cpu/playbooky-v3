@@ -50,7 +50,7 @@ const productSystemLinks: ProductSystemLink[] = [
   {
     description:
       "Documents the reusable knowledge libraries that power workshop generation.",
-    href: "/design-system/product-system/libraries/activity-library",
+    href: "/design-system/product-system/libraries",
     label: "Libraries"
   },
   {

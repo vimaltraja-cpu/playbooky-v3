@@ -1,0 +1,128 @@
+﻿Name,Block Type,Building Block Steps,Building Block Steps 1,Energy Level,Facilitator Notes,Inputs,Outcomes,Outputs,Preparation Needed,Purpose,Stage,Typical Duration,Workshop Design Logic,Workshop Design Logic 1
+Theme Sort,Technique,,"Theme Sort Objectives (https://app.notion.com/p/Theme-Sort-Objectives-373eb253b7f680a29a6af11711ee47c2?pvs=21), Theme Sort Metrics (https://app.notion.com/p/Theme-Sort-Metrics-373eb253b7f680a9bbf7e7da82073643?pvs=21), Theme Sort Problem Statements (https://app.notion.com/p/Theme-Sort-Problem-Statements-373eb253b7f680fcb6dbe3618febfdf3?pvs=21), Theme Sort Opportunities (https://app.notion.com/p/Theme-Sort-Opportunities-373eb253b7f680eaa68bd6345e1966b2?pvs=21), Review Opportunity Clusters (https://app.notion.com/p/Review-Opportunity-Clusters-373eb253b7f6805b93efe5f70b4eb31a?pvs=21), Review Priority Groups (https://app.notion.com/p/Review-Priority-Groups-373eb253b7f680b59193d5a5c50fa515?pvs=21), Theme Sort Responses (https://app.notion.com/p/Theme-Sort-Responses-373eb253b7f680a09506dff16504131e?pvs=21)",Reflective,"Encourage participants to move notes silently before discussing.
+
+Focus on identifying natural patterns rather than forcing categories.
+
+Avoid naming themes too early.
+
+When clusters begin to emerge, ask participants what connects the items.
+
+Once clusters stabilise, create clear labels that describe the theme.
+
+The goal is not organisation for its own sake. The goal is shared understanding.","Assumptions, Ideas, Insights, Opportunities, Research, Stakeholders, User feedback","Alignment, Opportunity discovery, Problem clarity, Shared understanding","Insights, Themes","Prepare a board or workspace where notes can be moved freely.
+
+Ensure participants have already generated or collected information to sort.
+
+Theme Sort works best after idea generation, research review or information gathering activities.","Group similar ideas, observations or pieces of information into meaningful themes to reveal patterns and support discussion.","Discuss, Evaluate, Frame, Ideas, Understand",15,,
+Blind Vote,Technique,,"Select Objective (https://app.notion.com/p/Select-Objective-373eb253b7f680e3bf04c431c8ce39a4?pvs=21), Select Success Metrics (https://app.notion.com/p/Select-Success-Metrics-373eb253b7f680239a2ddf76a2a4a9f4?pvs=21), Select Problem Statement (https://app.notion.com/p/Select-Problem-Statement-373eb253b7f6809287b8c7c30dd651fe?pvs=21), Select Opportunity Areas (https://app.notion.com/p/Select-Opportunity-Areas-373eb253b7f680c19a3dc89c24a23dd4?pvs=21), Select Priorities (https://app.notion.com/p/Select-Priorities-373eb253b7f680d5af5efa0f75b8c1e8?pvs=21), Select Priorities (https://app.notion.com/p/Select-Priorities-373eb253b7f680b1b7cfcbc54e0e7d21?pvs=21), Select Priorities (https://app.notion.com/p/Select-Priorities-373eb253b7f680dd9efdcbeba4268f7b?pvs=21)",Reflective,"Do not allow participants to discuss their choices before voting.
+
+Ensure everyone understands the options and criteria.
+
+Ask participants to vote independently.
+
+Reveal all votes at the same time.
+
+Use discussion only after votes have been revealed.
+
+If there is no clear outcome, run a second round or use the result to focus the next discussion.
+
+Blind Vote is designed to reduce bias and create a more honest view of group opinion.","Assumptions, Decision needed, Ideas, Objective, Opportunities, Problem statement, Risks","Alignment, Commitment, Consensus, Decision making","Decision, Prioritised list","Clearly define what is being voted on.
+
+Ensure all options are visible and understood by participants.
+
+Decide voting criteria before starting.
+
+Prepare a method for collecting votes simultaneously.","Allow participants to make independent decisions without being influenced by dominant voices, hierarchy or groupthink.","Decide, Discuss, Evaluate, Frame, Goals",5,Need Alignment On Options (https://app.notion.com/p/Need-Alignment-On-Options-373eb253b7f68072af94f366acff2d47?pvs=21),
+Parking Lot,Technique,,,Reflective,"Use the Parking Lot whenever discussions drift away from the workshop objective.
+
+Acknowledge the contribution, capture it visibly and return focus to the current activity.
+
+Review the Parking Lot before the workshop closes and decide whether items require actions, follow-up discussions or can be discarded.","Ideas, Risks","Action planning, Alignment","Next steps, Risks",Create a clearly visible Parking Lot section on the workshop board before the session begins.,"Capture off-topic questions, risks or ideas without derailing the workshop.","Decide, Discuss",5,,
+"Who, What, When",Technique,,"Review and Commit (https://app.notion.com/p/Review-and-Commit-373eb253b7f680c89c53cc5ed21a45a3?pvs=21), Define Next Steps (https://app.notion.com/p/Define-Next-Steps-373eb253b7f68081b712f15bcf8e300b?pvs=21), Confirm Recommendations (https://app.notion.com/p/Confirm-Recommendations-373eb253b7f6809184f0c927bd154c5b?pvs=21), Commit Actions (https://app.notion.com/p/Commit-Actions-373eb253b7f68018beeed74bcf8bc49b?pvs=21), Commit Actions (https://app.notion.com/p/Commit-Actions-373eb253b7f6808ba72bce32c58085bf?pvs=21)",Reflective,"Push for specific actions rather than vague intentions.
+
+Every action should have a named owner and a clear deadline.
+
+Avoid assigning actions to groups or teams.
+
+Focus on commitment and accountability.","Actions, Decision needed, Ideas, Opportunities","Action planning, Commitment, Owernship","Action plan, Next steps, Owership","Prepare a simple structure with three columns:
+
+Who
+What
+When
+
+Ensure decisions or actions have already been identified before running this technique.","Turn decisions, ideas or recommendations into clear actions with ownership and accountability.","Decide, Discuss",15,Need Actions And Ownership (https://app.notion.com/p/Need-Actions-And-Ownership-373eb253b7f68042a00ffab7e6e9195f?pvs=21),Need Alignment On Options (https://app.notion.com/p/Need-Alignment-On-Options-373eb253b7f68072af94f366acff2d47?pvs=21)
+Dot Vote,Technique,,,Reflective,"Dot voting is best used to identify preferences, not make final decisions.
+
+Ask participants to vote silently.
+
+Review results as a group and discuss any surprising outcomes.
+
+If required, use Blind Vote afterwards to make a final decision.","Assumptions, Ideas, Opportunities","Consensus, Prioritisation",Prioritised list,"Display all options clearly and ensure participants understand the voting criteria.
+
+Decide how many votes each participant receives before starting.",Quickly identify group preferences by allowing participants to distribute votes across multiple options.,"Decide, Evaluate",10,,
+Five Whys,Hybrid,"Define the Problem (https://app.notion.com/p/Define-the-Problem-373eb253b7f6806f9bade3e1c431c9ec?pvs=21), Why #1 (https://app.notion.com/p/Why-1-373eb253b7f6802e85e6f36b0293a4b5?pvs=21), Why #2 (https://app.notion.com/p/Why-2-373eb253b7f6807a9fe6cd17a091e14b?pvs=21), Why #3 (https://app.notion.com/p/Why-3-373eb253b7f680ff87bdf12ea74fa1e9?pvs=21), Why #4 (https://app.notion.com/p/Why-4-373eb253b7f6801bbdb8cd1a10a50f3d?pvs=21), Why #5 (https://app.notion.com/p/Why-5-373eb253b7f68070a50bfe7ee66c6097?pvs=21), Review Root Causes (https://app.notion.com/p/Review-Root-Causes-373eb253b7f68082b607fde30b9cf800?pvs=21), Define Next Steps (https://app.notion.com/p/Define-Next-Steps-373eb253b7f68081b712f15bcf8e300b?pvs=21)",,Reflective,"Focus on understanding the system rather than assigning blame.
+
+Do not force exactly five rounds.
+
+Stop when the group reaches a meaningful root cause that they can influence.
+
+If multiple causes emerge, capture them separately rather than forcing a single answer.","Problem, Problem statement","Problem clarity, Root cause discovery, Shared understanding","Insights, Root causes","Start with a clearly defined problem statement.
+
+Prepare space to capture each why and the corresponding answer.",Explore the underlying causes of a problem by repeatedly asking why it is occurring.,"Frame, Understand",45,Root Cause Unknown (https://app.notion.com/p/Root-Cause-Unknown-373eb253b7f6806ca980c6417819de7c?pvs=21),
+Objectives and Key Results (OKRs),Activity,"Introduction (https://app.notion.com/p/Introduction-373eb253b7f680e9a596c4846896b918?pvs=21), Review Objectives (https://app.notion.com/p/Review-Objectives-373eb253b7f68091bcb9ed249a549206?pvs=21), Theme Sort Objectives (https://app.notion.com/p/Theme-Sort-Objectives-373eb253b7f680a29a6af11711ee47c2?pvs=21), Select Objective (https://app.notion.com/p/Select-Objective-373eb253b7f680e3bf04c431c8ce39a4?pvs=21), Generate Success Metrics (https://app.notion.com/p/Generate-Success-Metrics-373eb253b7f680bea5b8df99ba1e8650?pvs=21), Theme Sort Metrics (https://app.notion.com/p/Theme-Sort-Metrics-373eb253b7f680a9bbf7e7da82073643?pvs=21), Select Success Metrics (https://app.notion.com/p/Select-Success-Metrics-373eb253b7f680239a2ddf76a2a4a9f4?pvs=21), Create Key Results (https://app.notion.com/p/Create-Key-Results-373eb253b7f680b6ae6fc47954950021?pvs=21), Review and Commit (https://app.notion.com/p/Review-and-Commit-373eb253b7f680c89c53cc5ed21a45a3?pvs=21)",,Collaborative,"Push the group towards a single objective rather than multiple competing priorities.
+
+Challenge vague objectives and encourage measurable key results.
+
+Focus on outcomes rather than outputs.
+
+Use voting when alignment cannot be reached through discussion.","Goal, Stakeholders, Team context","Alignment, Success measurement, goal setting","Key results, Objective, Success metrics",Create alignment around a shared objective and define measurable indicators of success.,Create alignment around a shared objective and define measurable indicators of success.,Goals,60,No Clear Goal (https://app.notion.com/p/No-Clear-Goal-373eb253b7f680679289e41572ad6c89?pvs=21),
+Problem Statement,Activity,"Review Context & Evidence (https://app.notion.com/p/Review-Context-Evidence-373eb253b7f680b09a49df44ae4f067a?pvs=21), Capture Problem Statements (https://app.notion.com/p/Capture-Problem-Statements-373eb253b7f680058ebfd1fd7fb8860b?pvs=21), Theme Sort Problem Statements (https://app.notion.com/p/Theme-Sort-Problem-Statements-373eb253b7f680fcb6dbe3618febfdf3?pvs=21), Draft Problem Statements (https://app.notion.com/p/Draft-Problem-Statements-373eb253b7f68045a110e69eb3225ab1?pvs=21), Refine & Consolidate (https://app.notion.com/p/Refine-Consolidate-373eb253b7f680cb84b5ea98a3c9bbf8?pvs=21), Select Problem Statement (https://app.notion.com/p/Select-Problem-Statement-373eb253b7f6809287b8c7c30dd651fe?pvs=21)",,Collaborative,"Keep the group focused on the problem rather than solutions.
+
+Challenge assumptions and vague language.
+
+A good problem statement should be specific, evidence-based and understandable by everyone in the room.","Insights, Problem, Research, User feedback","Alignment, Problem clarity, Shared understanding",Problem statement,"Gather research, insights and evidence related to the challenge.
+
+Ensure participants have enough context to discuss the problem before beginning.",Create a clear and shared understanding of the problem that needs to be solved.,Frame,60,Problem Not Clearly Defined (https://app.notion.com/p/Problem-Not-Clearly-Defined-373eb253b7f680019328c3e34797c2e7?pvs=21),Root Cause Unknown (https://app.notion.com/p/Root-Cause-Unknown-373eb253b7f6806ca980c6417819de7c?pvs=21)
+How Might We,Activity,"Review Problem Statement (https://app.notion.com/p/Review-Problem-Statement-373eb253b7f680a4aea5c7befa2ea62f?pvs=21), Generate How Might We Statements (https://app.notion.com/p/Generate-How-Might-We-Statements-373eb253b7f6804e8ebcc09624c491be?pvs=21), Theme Sort Opportunities (https://app.notion.com/p/Theme-Sort-Opportunities-373eb253b7f680eaa68bd6345e1966b2?pvs=21), Refine Opportunity Areas (https://app.notion.com/p/Refine-Opportunity-Areas-373eb253b7f680d2a066dfb19ce54f95?pvs=21), Select Opportunity Areas (https://app.notion.com/p/Select-Opportunity-Areas-373eb253b7f680c19a3dc89c24a23dd4?pvs=21)",,Energetic,"Avoid writing How Might We statements that already contain a solution.
+
+Encourage participants to generate multiple statements before discussing them.
+
+Keep questions broad enough to inspire creativity but focused enough to remain relevant to the challenge.","Ideas, Opportunities","Idea generation, Opportunity discovery","Ideas, Opportunities","Prepare a clear problem statement.
+
+Ensure participants understand the challenge before beginning.
+
+Create space to capture multiple How Might We statements and resulting ideas.",Reframe problems into opportunity-focused questions that encourage solution exploration.,"Frame, Ideas",40,Need More Ideas (https://app.notion.com/p/Need-More-Ideas-373eb253b7f680f6aeadee21868cf25f?pvs=21),"No Clear Goal (https://app.notion.com/p/No-Clear-Goal-373eb253b7f680679289e41572ad6c89?pvs=21), Problem Not Clearly Defined (https://app.notion.com/p/Problem-Not-Clearly-Defined-373eb253b7f680019328c3e34797c2e7?pvs=21)"
+Impact Effort Map,Hybrid,"Review Opportunities (https://app.notion.com/p/Review-Opportunities-373eb253b7f680b9a079f690bccb4c88?pvs=21), Create Impact Effort Matrix (https://app.notion.com/p/Create-Impact-Effort-Matrix-373eb253b7f68096bfa6e41963a6fd5d?pvs=21), Map Opportunities (https://app.notion.com/p/Map-Opportunities-373eb253b7f680679992f6a67e79fda1?pvs=21), Review Opportunity Clusters (https://app.notion.com/p/Review-Opportunity-Clusters-373eb253b7f6805b93efe5f70b4eb31a?pvs=21), Select Priorities (https://app.notion.com/p/Select-Priorities-373eb253b7f680d5af5efa0f75b8c1e8?pvs=21), Confirm Recommendations (https://app.notion.com/p/Confirm-Recommendations-373eb253b7f6809184f0c927bd154c5b?pvs=21)",,Collaborative,"Focus on relative comparison rather than trying to score items perfectly.
+
+Challenge assumptions about effort and impact.
+
+Use discussion to resolve major disagreements but avoid over-analysing individual items.
+
+The goal is to identify which opportunities should be pursued first.","Ideas, Opportunities","Alignment, Decision making, Prioritisation","Decision, Prioritised list","Prepare a matrix with two axes:
+
+Impact
+Effort
+
+Ensure participants understand the evaluation criteria before placing items on the map.","Evaluate opportunities, ideas or actions by comparing their expected impact against the effort required to deliver them.","Decide, Evaluate",45,Too Many Opportunities (https://app.notion.com/p/Too-Many-Opportunities-373eb253b7f6809685a7f2bdd4cde65e?pvs=21),Need More Ideas (https://app.notion.com/p/Need-More-Ideas-373eb253b7f680f6aeadee21868cf25f?pvs=21)
+Priority Map,Hybrid,"Review Opportunities (https://app.notion.com/p/Review-Opportunities-373eb253b7f68073b3dbdc765de950fa?pvs=21), Define Prioritisation Criteria (https://app.notion.com/p/Define-Prioritisation-Criteria-373eb253b7f68051a773f95489322397?pvs=21), Map Priorities (https://app.notion.com/p/Map-Priorities-373eb253b7f680b3bc4be9ccee7867b7?pvs=21), Review Priority Groups (https://app.notion.com/p/Review-Priority-Groups-373eb253b7f680b59193d5a5c50fa515?pvs=21), Select Priorities (https://app.notion.com/p/Select-Priorities-373eb253b7f680b1b7cfcbc54e0e7d21?pvs=21), Commit Actions (https://app.notion.com/p/Commit-Actions-373eb253b7f68018beeed74bcf8bc49b?pvs=21)",,Collaborative,"Make the prioritisation criteria explicit before starting.
+
+Challenge opinions that are not supported by evidence.
+
+Focus on creating agreement around what should happen next rather than creating a perfect ranking.
+
+Use voting techniques if the group becomes stuck.","Decision needed, Ideas, Opportunities","Alignment, Decision making, Prioritisation","Decision, Prioritised list","Prepare a prioritisation framework and agree the decision criteria before the session begins.
+
+Ensure all options are visible and understood by participants.",Help teams compare options and agree what should be prioritised first.,"Decide, Evaluate",45,Need Clear Priorities (https://app.notion.com/p/Need-Clear-Priorities-373eb253b7f680699ca6e1164113ab4a?pvs=21),"No Clear Goal (https://app.notion.com/p/No-Clear-Goal-373eb253b7f680679289e41572ad6c89?pvs=21), Need More Ideas (https://app.notion.com/p/Need-More-Ideas-373eb253b7f680f6aeadee21868cf25f?pvs=21), Too Many Opportunities (https://app.notion.com/p/Too-Many-Opportunities-373eb253b7f6809685a7f2bdd4cde65e?pvs=21)"
+Start Stop Continue,Hybrid,"Review Context (https://app.notion.com/p/Review-Context-373eb253b7f6802b9997e3ca5f9d6d41?pvs=21), Capture Start Stop Continue Items (https://app.notion.com/p/Capture-Start-Stop-Continue-Items-373eb253b7f68011a64cfc0f136ccac6?pvs=21), Theme Sort Responses (https://app.notion.com/p/Theme-Sort-Responses-373eb253b7f680a09506dff16504131e?pvs=21), Review & Refine Themes (https://app.notion.com/p/Review-Refine-Themes-373eb253b7f680e5a1e2d334d54e3bab?pvs=21), Select Priorities (https://app.notion.com/p/Select-Priorities-373eb253b7f680dd9efdcbeba4268f7b?pvs=21), Commit Actions (https://app.notion.com/p/Commit-Actions-373eb253b7f6808ba72bce32c58085bf?pvs=21)",,Collaborative,"Focus on behaviours, processes and ways of working rather than individuals.
+
+Encourage constructive feedback.
+
+Look for recurring themes and patterns.
+
+Finish by agreeing which actions will be taken forward.","Current state, Team context","Action planning, Alignment, Shared understanding, Team alignment","Action plan, Insights, Next steps","Prepare three areas labelled:
+
+Start
+Stop
+Continue
+
+Ensure participants understand the topic being reviewed before beginning the activity.","Reflect on current behaviours, processes or ways of working and identify what should start, stop or continue.","Discuss, Evaluate",65,Need Team Reflection (https://app.notion.com/p/Need-Team-Reflection-373eb253b7f680d0b9cdcaac88de441e?pvs=21),"No Clear Goal (https://app.notion.com/p/No-Clear-Goal-373eb253b7f680679289e41572ad6c89?pvs=21), Need Clear Priorities (https://app.notion.com/p/Need-Clear-Priorities-373eb253b7f680699ca6e1164113ab4a?pvs=21)"

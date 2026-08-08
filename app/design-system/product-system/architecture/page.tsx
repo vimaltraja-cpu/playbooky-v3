@@ -33,7 +33,7 @@ const pipelineNodes: PipelineNode[] = [
   },
   {
     description: "Provide reusable facilitation activities.",
-    href: "/design-system/product-system/libraries/activity-library",
+    href: "/design-system/product-system/libraries",
     label: "Activity Library"
   },
   {

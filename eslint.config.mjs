@@ -10,21 +10,26 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  {
+    ignores: [
+      ".next/**",
+      ".next-*/**",
+      ".next.*",
+      ".next.*/**",
+      ".next-portal/**",
+      "*.tmp.js",
+      "playbooky-v3-diagnosis-review/**",
+      "node_modules/**",
+      "out/**",
+      "dist/**"
+    ]
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     files: ["next-env.d.ts"],
     rules: {
       "@typescript-eslint/triple-slash-reference": "off"
     }
-  },
-  {
-    ignores: [
-      ".next/**",
-      ".next-portal/**",
-      "node_modules/**",
-      "out/**",
-      "dist/**"
-    ]
   }
 ];
 

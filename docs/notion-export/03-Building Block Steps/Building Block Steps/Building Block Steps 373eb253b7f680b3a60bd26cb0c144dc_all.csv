@@ -1,0 +1,444 @@
+﻿Step Name,Duration,Facilitator Notes,Instructions,Parent Block,Purpose,Step Order,Technique Used
+Introduction,5,"Keep the introduction short and focused.
+
+Avoid teaching OKRs in depth.
+
+The goal is to create enough understanding for participants to confidently take part in the activity.","Introduce the purpose of the workshop.
+
+Explain the difference between Objectives and Key Results.
+
+Set expectations for the session and explain that the goal is to align around a single objective and measurable indicators of success.
+
+Review the agenda and answer any questions before beginning.",Objectives and Key Results (OKRs) (https://app.notion.com/p/Objectives-and-Key-Results-OKRs-373eb253b7f68077acd4f9dbe3b761bc?pvs=21),Create a shared understanding of the workshop objective and explain how OKRs will be used during the session.,1,
+Review Objectives,5,"Do not debate which objective is best at this stage.
+
+Focus only on understanding and clarification.","Review each submitted objective one at a time.
+
+Clarify wording where needed.
+
+Ensure participants understand what each objective is trying to achieve before moving on.",Objectives and Key Results (OKRs) (https://app.notion.com/p/Objectives-and-Key-Results-OKRs-373eb253b7f68077acd4f9dbe3b761bc?pvs=21),Review proposed objectives and ensure everyone understands the options being considered.,2,
+Theme Sort Objectives,10,"Avoid naming themes too early.
+
+Focus on patterns and relationships rather than perfect categorisation.","Ask participants to group similar objectives together.
+
+Discuss emerging themes and identify overlaps.
+
+Create labels for each cluster once patterns begin to emerge.",Objectives and Key Results (OKRs) (https://app.notion.com/p/Objectives-and-Key-Results-OKRs-373eb253b7f68077acd4f9dbe3b761bc?pvs=21),Group similar objectives together and identify common themes.,3,Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)
+Select Objective,10,"Avoid debate before voting.
+
+Blind voting helps reduce hierarchy and groupthink.
+
+The objective is alignment, not unanimity.","Review the objective themes.
+
+Allow participants a short period to reflect independently.
+
+Run a blind vote.
+
+Reveal results simultaneously.
+
+If there is no clear outcome, facilitate a short discussion and conduct a second round of voting.",Objectives and Key Results (OKRs) (https://app.notion.com/p/Objectives-and-Key-Results-OKRs-373eb253b7f68077acd4f9dbe3b761bc?pvs=21),Select a single objective that the group believes should be the primary focus.,4,Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)
+Generate Success Metrics,10,"Keep participants focused on measurable signals rather than solutions or outputs.
+
+Push for observable outcomes where possible.","Ask participants:
+
+How would we know we are making progress?
+
+Capture every suggestion.
+
+Encourage quantity over quality.
+
+Avoid evaluating metrics while they are being generated.",Objectives and Key Results (OKRs) (https://app.notion.com/p/Objectives-and-Key-Results-OKRs-373eb253b7f68077acd4f9dbe3b761bc?pvs=21),Generate possible measures that indicate progress towards the selected objective.,5,
+Theme Sort Metrics,5,"Focus on clarity and relevance.
+
+Do not spend time debating exact numbers at this stage.","Group similar metrics into clusters.
+
+Remove duplicates.
+
+Identify common themes and discuss which measures best indicate progress.",Objectives and Key Results (OKRs) (https://app.notion.com/p/Objectives-and-Key-Results-OKRs-373eb253b7f68077acd4f9dbe3b761bc?pvs=21),Group similar metrics together and identify the strongest indicators of success.,6,Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)
+Select Success Metrics,5,"Limit the final selection to a small number of metrics.
+
+Focus on quality and relevance rather than quantity.
+
+The chosen metrics should be understandable and measurable.","Review the grouped metrics.
+
+Ask participants to independently vote for the metrics they believe best represent progress towards the objective.
+
+Reveal votes simultaneously.
+
+Select the highest scoring metrics for the next step.",Objectives and Key Results (OKRs) (https://app.notion.com/p/Objectives-and-Key-Results-OKRs-373eb253b7f68077acd4f9dbe3b761bc?pvs=21),Identify the most meaningful metrics that will become Key Results.,7,Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)
+Create Key Results,5,"Avoid vague targets.
+
+Push for measurable and time-bound outcomes.
+
+Challenge targets that are either unrealistic or too easy to achieve.","Review each selected metric.
+
+Turn each metric into a measurable target.
+
+Capture the baseline if known and define a target outcome.
+
+Ensure each Key Result can be objectively measured.",Objectives and Key Results (OKRs) (https://app.notion.com/p/Objectives-and-Key-Results-OKRs-373eb253b7f68077acd4f9dbe3b761bc?pvs=21),Convert selected metrics into measurable Key Results.,8,
+Review and Commit,5,"Do not end the workshop without clear ownership.
+
+Ensure actions are assigned to individuals rather than teams.
+
+Finish with clarity on what happens next and when progress will be reviewed.","Review the final Objective and Key Results.
+
+Agree who owns each Key Result.
+
+Capture any follow-up actions and review dates.
+
+Confirm commitment from the group before closing the activity.",Objectives and Key Results (OKRs) (https://app.notion.com/p/Objectives-and-Key-Results-OKRs-373eb253b7f68077acd4f9dbe3b761bc?pvs=21),Confirm alignment on the final Objective and Key Results and agree ownership.,9,"Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)"
+Define the Problem,5,"Spend time clarifying the problem if needed.
+
+A poorly defined problem will lead to poor root-cause analysis.
+
+Focus on observable issues rather than assumptions about causes.","Present the problem statement to the group.
+
+Review any relevant evidence, examples or observations.
+
+Ensure everyone agrees on the problem being explored before moving on.
+
+Capture the final wording of the problem so it remains visible throughout the activity.",Five Whys (https://app.notion.com/p/Five-Whys-373eb253b7f68085bcc4f82ab630e055?pvs=21),Create a shared understanding of the problem that will be explored during the activity.,1,
+Why #1,5,"Encourage participants to use evidence and observations where possible.
+
+Avoid jumping to solutions.
+
+Focus on understanding causes rather than assigning blame.","Ask the group:
+
+""Why is this problem happening?""
+
+Capture all responses.
+
+Discuss the responses and agree on the most likely cause.
+
+Record the agreed cause clearly as it will become the input for the next why.",Five Whys (https://app.notion.com/p/Five-Whys-373eb253b7f68085bcc4f82ab630e055?pvs=21),Identify the most immediate cause of the problem.,2,
+Why #2,5,"Keep digging beneath symptoms.
+
+Challenge assumptions and ask for evidence where possible.
+
+Avoid accepting the first answer without discussion.
+
+The objective is to move closer to the root cause.","Take the agreed cause from Why #1.
+
+Ask the group:
+
+""Why is this happening?""
+
+Capture responses.
+
+Discuss the responses and agree on the most likely underlying cause.
+
+Record the agreed cause so it can be explored further in the next step.",Five Whys (https://app.notion.com/p/Five-Whys-373eb253b7f68085bcc4f82ab630e055?pvs=21),Explore the underlying cause of the first identified cause.,3,
+Why #3,5,"Watch for participants repeating previous answers in different words.
+
+Encourage the group to think about systems, processes and behaviours.
+
+If the discussion moves towards solutions, redirect the conversation back to causes.","Take the agreed cause from Why #2.
+
+Ask the group:
+
+""Why is this happening?""
+
+Capture responses.
+
+Discuss the responses and agree on the most likely underlying cause.
+
+Record the agreed cause so it can be explored further in the next step.",Five Whys (https://app.notion.com/p/Five-Whys-373eb253b7f68085bcc4f82ab630e055?pvs=21),Continue exploring deeper causes to move beyond surface-level explanations.,4,
+Why #4,5,"By this stage the group should be moving beyond symptoms and into organisational, process or behavioural causes.
+
+Keep asking for evidence and examples.","Take the agreed cause from Why #3.
+
+Ask the group:
+
+""Why is this happening?""
+
+Capture responses.
+
+Discuss the responses and agree on the most likely underlying cause.
+
+Record the agreed cause so it can be explored further in the next step.",Five Whys (https://app.notion.com/p/Five-Whys-373eb253b7f68085bcc4f82ab630e055?pvs=21),Explore deeper systemic causes and identify factors contributing to the problem.,5,
+Why #5,5,"Do not force the group to stop at exactly five levels if a root cause has already emerged.
+
+Equally, do not stop too early if the group is still discussing symptoms.","Take the agreed cause from Why #4.
+
+Ask the group:
+
+""Why is this happening?""
+
+Capture responses.
+
+Discuss the responses and agree on the most likely root cause.
+
+Record the final root cause clearly and visibly.",Five Whys (https://app.notion.com/p/Five-Whys-373eb253b7f68085bcc4f82ab630e055?pvs=21),Identify the root cause or causes that the group believes are driving the problem.,6,
+Review Root Causes,5,"Look for gaps in logic.
+
+Challenge conclusions that are not supported by evidence.
+
+It is acceptable to identify multiple root causes if they are connected.","Review each why and its corresponding answer.
+
+Walk the group through the full chain of reasoning.
+
+Confirm agreement on the root cause or causes before moving on.",Five Whys (https://app.notion.com/p/Five-Whys-373eb253b7f68085bcc4f82ab630e055?pvs=21),Review the chain of causes and confirm the root cause or causes identified by the group.,7,
+Define Next Steps,10,"Five Whys should rarely end without action.
+
+Ensure the outputs are carried into the next activity, such as Problem Statement, How Might We or Opportunity Mapping.","Review the identified root causes.
+
+Agree any immediate actions, owners and follow-up activities.
+
+Capture next steps and ensure accountability before closing the activity.",Five Whys (https://app.notion.com/p/Five-Whys-373eb253b7f68085bcc4f82ab630e055?pvs=21),Agree how the root causes will be used to inform future activities or decisions.,8,"Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)"
+Review Context & Evidence,10,"Focus on facts and evidence rather than opinions.
+
+Avoid discussing solutions.
+
+The goal is to establish a shared understanding of the situation.","Review the available research, insights, feedback and evidence.
+
+Present key findings and observations.
+
+Allow participants to ask clarifying questions.
+
+Ensure everyone has a common understanding of the challenge before defining the problem.",Problem Statement (https://app.notion.com/p/Problem-Statement-373eb253b7f680faa68af78e68f8ce42?pvs=21),"Create a shared understanding of the evidence, research and observations that led to the workshop.",1,
+Capture Problem Statements,10,"Keep participants focused on the problem.
+
+Do not allow solution statements.
+
+Individual thinking before discussion usually produces better results.","Ask participants to individually write their version of the problem statement.
+
+Encourage concise statements.
+
+Capture all responses before discussing them.",Problem Statement (https://app.notion.com/p/Problem-Statement-373eb253b7f680faa68af78e68f8ce42?pvs=21),Generate multiple perspectives on what the problem actually is.,2,
+Theme Sort Problem Statements,15,"Look for patterns rather than perfect wording.
+
+Avoid jumping to conclusions too early.
+
+The goal is to understand how the group views the challenge.","Group similar problem statements together.
+
+Identify recurring themes.
+
+Discuss similarities and differences.
+
+Create labels for each cluster.",Problem Statement (https://app.notion.com/p/Problem-Statement-373eb253b7f680faa68af78e68f8ce42?pvs=21),Identify common themes and patterns across the submitted problem statements.,3,Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)
+Draft Problem Statements,10,"Challenge vague language.
+
+Ensure statements describe the problem rather than the solution.
+
+Encourage participants to use evidence gathered earlier in the activity.","Using the themes identified, ask participants to draft candidate problem statements.
+
+Aim for clear, concise and evidence-based statements.
+
+Capture all drafts before evaluating them.",Problem Statement (https://app.notion.com/p/Problem-Statement-373eb253b7f680faa68af78e68f8ce42?pvs=21),Create a small number of candidate problem statements based on the themes identified.,4,
+Refine & Consolidate,10,"Review the drafted problem statements.
+
+Discuss strengths and weaknesses.
+
+Combine similar statements and improve wording.
+
+Reduce the list to a small number of strong candidates.","Review the drafted problem statements.
+
+Discuss strengths and weaknesses.
+
+Combine similar statements and improve wording.
+
+Reduce the list to a small number of strong candidates.",Problem Statement (https://app.notion.com/p/Problem-Statement-373eb253b7f680faa68af78e68f8ce42?pvs=21),Refine the strongest candidate statements and consolidate them into a shortlist.,5,
+Select Problem Statement,5,"The goal is alignment, not perfection.
+
+If two statements are very similar, consider merging them before voting.
+
+Capture the final agreed problem statement clearly and visibly.","Review the shortlisted problem statements.
+
+Ask participants to independently vote for the statement they believe best represents the challenge.
+
+Reveal votes simultaneously.
+
+Select the winning statement or run a second round if needed.",Problem Statement (https://app.notion.com/p/Problem-Statement-373eb253b7f680faa68af78e68f8ce42?pvs=21),Align on the problem statement that will guide future activities.,6,Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)
+Review Problem Statement,5,"Keep this step brief.
+
+The goal is alignment, not rewriting the problem statement.","Review the agreed problem statement.
+
+Clarify any questions.
+
+Ensure participants understand the challenge before moving into opportunity generation.",How Might We (https://app.notion.com/p/How-Might-We-373eb253b7f6800ab71de85617ce4030?pvs=21),Ensure everyone understands the problem statement that will be used to generate opportunities.,1,
+Generate How Might We Statements,10,"Ask participants to rewrite the problem statement as a series of How Might We questions.
+
+Encourage quantity over quality.
+
+Capture all suggestions before discussing them.","Ask participants to rewrite the problem statement as a series of How Might We questions.
+
+Encourage quantity over quality.
+
+Capture all suggestions before discussing them.",How Might We (https://app.notion.com/p/How-Might-We-373eb253b7f6800ab71de85617ce4030?pvs=21),Generate multiple opportunity-focused questions from the problem statement.,2,
+Theme Sort Opportunities,10,"Focus on opportunities rather than solutions.
+
+Avoid debating feasibility at this stage.","Group similar How Might We questions together.
+
+Identify common themes and opportunity areas.
+
+Label each cluster.",How Might We (https://app.notion.com/p/How-Might-We-373eb253b7f6800ab71de85617ce4030?pvs=21),Identify patterns and common opportunity areas across the generated questions.,3,Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)
+Refine Opportunity Areas,10,"Focus on opportunity quality rather than quantity.
+
+Avoid moving into solution discussions.
+
+Ensure the opportunities remain connected to the original problem statement.","Review each opportunity cluster.
+
+Discuss overlaps and similarities.
+
+Merge related opportunities where appropriate.
+
+Create a shortlist of the strongest opportunity areas.",How Might We (https://app.notion.com/p/How-Might-We-373eb253b7f6800ab71de85617ce4030?pvs=21),Refine the strongest opportunity areas and remove duplicates or overlapping themes.,4,
+Select Opportunity Areas,5,"The objective is prioritisation, not perfection.
+
+If there is no clear winner, facilitate a short discussion and vote again.","Review the shortlisted opportunity areas.
+
+Ask participants to vote independently.
+
+Reveal votes simultaneously.
+
+Select the highest scoring opportunities for future exploration.",How Might We (https://app.notion.com/p/How-Might-We-373eb253b7f6800ab71de85617ce4030?pvs=21),Align on the opportunity areas that should be explored further.,5,Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)
+Review Opportunities,5,"Keep discussion focused on understanding.
+
+Do not begin evaluating opportunities yet.","Review the list of opportunities.
+
+Clarify any questions.
+
+Ensure participants understand what each opportunity is before evaluation begins.",Impact Effort Map (https://app.notion.com/p/Impact-Effort-Map-373eb253b7f680129bb0fbbd614dbd2e?pvs=21),"Review the opportunities, ideas or initiatives that will be evaluated during the activity.",1,
+Create Impact Effort Matrix,5,"Agree the criteria before evaluating opportunities.
+
+Different interpretations of impact or effort can create unnecessary debate later.","Introduce the Impact Effort matrix.
+
+Explain the two axes:
+
+Impact
+Effort
+
+Review the criteria that will be used to assess opportunities.",Impact Effort Map (https://app.notion.com/p/Impact-Effort-Map-373eb253b7f680129bb0fbbd614dbd2e?pvs=21),Establish a shared understanding of the evaluation framework.,2,
+Map Opportunities,15,"Focus on relative comparison rather than perfect scoring.
+
+Encourage evidence-based discussion where possible.
+
+Avoid spending too much time on individual opportunities.","Review each opportunity one at a time.
+
+Discuss expected impact.
+
+Discuss expected effort.
+
+Place the opportunity on the matrix.
+
+Repeat until all opportunities have been mapped.",Impact Effort Map (https://app.notion.com/p/Impact-Effort-Map-373eb253b7f680129bb0fbbd614dbd2e?pvs=21),Evaluate and position opportunities based on their expected impact and effort.,3,
+Review Opportunity Clusters,5,"Focus on patterns rather than individual opportunities.
+
+Encourage discussion around what the map is telling the team.","Review the completed matrix.
+
+Identify opportunities that naturally group together.
+
+Discuss patterns emerging across the map.
+
+Highlight quick wins, strategic bets and low-value opportunities.",Impact Effort Map (https://app.notion.com/p/Impact-Effort-Map-373eb253b7f680129bb0fbbd614dbd2e?pvs=21),Identify patterns and discuss what the completed matrix is revealing.,4,Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)
+Select Priorities,5,"Use voting to reduce bias and avoid dominant voices driving the decision.
+
+Focus on commitment rather than perfection.","Review the opportunities identified as strong candidates.
+
+Ask participants to vote independently.
+
+Reveal votes simultaneously.
+
+Identify the highest-priority opportunities.",Impact Effort Map (https://app.notion.com/p/Impact-Effort-Map-373eb253b7f680129bb0fbbd614dbd2e?pvs=21),Align on which opportunities should move forward.,5,Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)
+Confirm Recommendations,10,"Ensure the workshop ends with clear ownership and agreed follow-up actions.
+
+Avoid leaving priorities without accountability.","Review the selected priorities.
+
+Agree actions, owners and timelines.
+
+Capture next steps and confirm accountability.",Impact Effort Map (https://app.notion.com/p/Impact-Effort-Map-373eb253b7f680129bb0fbbd614dbd2e?pvs=21),Agree the final recommendations and capture next steps.,6,"Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)"
+Review Opportunities,5,"Focus on understanding rather than debating.
+
+Keep the group aligned on what is being prioritised.","Review all opportunities that have been brought into the workshop.
+
+Clarify any questions.
+
+Ensure everyone understands the options before prioritisation begins.",Priority Map (https://app.notion.com/p/Priority-Map-373eb253b7f6802eb4fae1026a89a2c8?pvs=21),"Review the opportunities, ideas or initiatives that need to be prioritised.",1,
+Define Prioritisation Criteria,5,"Misaligned criteria create poor prioritisation.
+
+Invest time here to create a shared understanding.","Discuss what makes an opportunity important.
+
+Agree the prioritisation criteria.
+
+Capture the criteria where everyone can see them before continuing.",Priority Map (https://app.notion.com/p/Priority-Map-373eb253b7f6802eb4fae1026a89a2c8?pvs=21),Agree the criteria that will be used to evaluate and prioritise opportunities.,2,
+Map Priorities,15,"Encourage evidence-based discussion.
+
+Focus on relative comparison rather than absolute scoring.
+
+Avoid spending too much time debating a single opportunity.",Evaluate opportunities against the agreed criteria and identify relative priorities.,Priority Map (https://app.notion.com/p/Priority-Map-373eb253b7f6802eb4fae1026a89a2c8?pvs=21),Evaluate opportunities against the agreed criteria and identify relative priorities.,3,
+Review Priority Groups,5,"Look for clusters and themes rather than focusing on individual items.
+
+Encourage the team to discuss what the prioritisation is revealing.","Review the prioritised opportunities.
+
+Group similar priorities together where appropriate.
+
+Discuss patterns, dependencies and strategic themes.
+
+Identify which opportunities appear most important.",Priority Map (https://app.notion.com/p/Priority-Map-373eb253b7f6802eb4fae1026a89a2c8?pvs=21),Review the emerging priority groups and identify patterns in the prioritisation.,4,Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)
+Select Priorities,5,"Use voting to reduce bias and create transparency.
+
+Focus on reaching alignment rather than achieving a perfect ranking.","Review the prioritised opportunities.
+
+Ask participants to vote independently.
+
+Reveal votes simultaneously.
+
+Select the highest-priority opportunities.",Priority Map (https://app.notion.com/p/Priority-Map-373eb253b7f6802eb4fae1026a89a2c8?pvs=21),Align on the opportunities that should move forward.,5,Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)
+Commit Actions,10,"Do not end the activity without clear ownership.
+
+Ensure actions are assigned to individuals and have realistic deadlines.","Review the selected priorities.
+
+Agree actions, owners and timelines.
+
+Capture next steps and confirm accountability.",Priority Map (https://app.notion.com/p/Priority-Map-373eb253b7f6802eb4fae1026a89a2c8?pvs=21),"Capture actions, ownership and next steps for the selected priorities.",6,"Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)"
+Review Context,10,"Keep the discussion focused on the agreed topic.
+
+Avoid moving into solutions at this stage.","Introduce the focus area being reviewed.
+
+Explain the purpose of the activity.
+
+Review any relevant context, evidence or observations.
+
+Ensure everyone understands the scope before beginning.",Start Stop Continue (https://app.notion.com/p/Start-Stop-Continue-373eb253b7f680b08fb3da2d5df49b4e?pvs=21),"Create a shared understanding of the topic, process or team behaviour being reviewed.",1,
+Capture Start Stop Continue Items,15,"Encourage participants to think independently before discussing ideas.
+
+Focus on behaviours, processes and ways of working.","Ask participants to individually generate items for:
+
+Start
+Stop
+Continue
+
+Capture all contributions before discussion begins.",Start Stop Continue (https://app.notion.com/p/Start-Stop-Continue-373eb253b7f680b08fb3da2d5df49b4e?pvs=21),"Generate ideas for what should start, stop and continue.",2,
+Theme Sort Responses,15,"Look for repeated issues and opportunities.
+
+Avoid debating individual contributions.","Group similar responses together.
+
+Identify recurring themes.
+
+Label clusters and discuss common patterns.",Start Stop Continue (https://app.notion.com/p/Start-Stop-Continue-373eb253b7f680b08fb3da2d5df49b4e?pvs=21),Identify common themes and patterns across participant responses.,3,Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)
+Review & Refine Themes,10,"Focus on clarity and actionability.
+
+Avoid introducing new ideas at this stage.","Review each theme.
+
+Discuss overlaps and clarify wording.
+
+Consolidate themes where appropriate.
+
+Prepare a shortlist for prioritisation.",Start Stop Continue (https://app.notion.com/p/Start-Stop-Continue-373eb253b7f680b08fb3da2d5df49b4e?pvs=21),Refine the themes and identify the most important areas for action.,4,
+Select Priorities,5,"Keep voting focused on impact and importance.
+
+Use a second round if results are unclear.","Review the shortlisted themes.
+
+Ask participants to vote independently.
+
+Reveal votes simultaneously.
+
+Identify the themes that should move forward.",Start Stop Continue (https://app.notion.com/p/Start-Stop-Continue-373eb253b7f680b08fb3da2d5df49b4e?pvs=21),Align on the most important themes that should be acted upon.,5,Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)
+Commit Actions,10,"Do not finish the activity without clear ownership.
+
+Focus on realistic actions that can be followed through.","Review the selected themes.
+
+Agree actions, owners and timelines.
+
+Capture next steps and confirm accountability.",Start Stop Continue (https://app.notion.com/p/Start-Stop-Continue-373eb253b7f680b08fb3da2d5df49b4e?pvs=21),Turn the selected themes into actions with ownership and accountability.,6,"Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)"

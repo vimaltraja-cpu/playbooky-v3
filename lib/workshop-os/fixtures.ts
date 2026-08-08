@@ -212,9 +212,11 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
   },
   {
     durationMinutes: 5,
-    facilitatorNotes: "Capture the most immediate cause without debating solutions.",
+    facilitatorNotes:
+      "Capture the most immediate cause without debating solutions.",
     id: "five-whys-why-1",
-    instructions: "Ask why the problem is happening and capture the first cause.",
+    instructions:
+      "Ask why the problem is happening and capture the first cause.",
     name: "Why #1",
     order: 2,
     parentBlockId: "five-whys",
@@ -222,7 +224,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
   },
   {
     durationMinutes: 5,
-    facilitatorNotes: "Push beyond the first answer if it sounds like a symptom.",
+    facilitatorNotes:
+      "Push beyond the first answer if it sounds like a symptom.",
     id: "five-whys-why-2",
     instructions:
       "Ask why the first cause is happening and capture the next layer.",
@@ -268,7 +271,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     durationMinutes: 5,
     facilitatorNotes: "Confirm the causal chain with the room.",
     id: "five-whys-review-root-causes",
-    instructions: "Review the chain of causes and agree which root causes matter most.",
+    instructions:
+      "Review the chain of causes and agree which root causes matter most.",
     name: "Review Root Causes",
     order: 7,
     parentBlockId: "five-whys",
@@ -287,8 +291,10 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
       "Agree how the root causes will be used to inform future activities or decisions."
   },
   {
+    displayName: "Review Evidence",
     durationMinutes: 10,
-    facilitatorNotes: "Anchor the discussion in evidence before writing statements.",
+    facilitatorNotes:
+      "Anchor the discussion in evidence before writing statements.",
     id: "problem-statement-review-context-evidence",
     instructions:
       "Review the evidence, research, and observations that led to the workshop.",
@@ -299,6 +305,7 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
       "Create a shared understanding of the evidence, research and observations that led to the workshop."
   },
   {
+    displayName: "Capture Problems",
     durationMinutes: 10,
     facilitatorNotes: "Encourage multiple interpretations before converging.",
     id: "problem-statement-capture-problem-statements",
@@ -309,6 +316,7 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     purpose: "Generate multiple perspectives on what the problem actually is."
   },
   {
+    displayName: "Cluster Problems",
     durationMinutes: 15,
     facilitatorNotes: "Cluster similar statements without editing too early.",
     id: "problem-statement-theme-sort",
@@ -322,8 +330,10 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     techniqueUsed: "Theme Sort"
   },
   {
+    displayName: "Draft Statements",
     durationMinutes: 10,
-    facilitatorNotes: "Draft statements that are specific enough to guide work.",
+    facilitatorNotes:
+      "Draft statements that are specific enough to guide work.",
     id: "problem-statement-draft",
     instructions:
       "Create a small number of candidate problem statements from the strongest themes.",
@@ -334,6 +344,7 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
       "Create a small number of candidate problem statements based on the themes identified."
   },
   {
+    displayName: "Refine Statements",
     durationMinutes: 10,
     facilitatorNotes: "Remove vague wording and merge overlap.",
     id: "problem-statement-refine-consolidate",
@@ -345,6 +356,7 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
       "Refine the strongest candidate statements and consolidate them into a shortlist."
   },
   {
+    displayName: "Select Statement",
     durationMinutes: 5,
     facilitatorNotes: "Make the final choice explicit.",
     id: "problem-statement-select",
@@ -353,8 +365,7 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     name: "Select Problem Statement",
     order: 6,
     parentBlockId: "problem-statement",
-    purpose:
-      "Align on the problem statement that will guide future activities."
+    purpose: "Align on the problem statement that will guide future activities."
   }
 ];
 
@@ -469,7 +480,11 @@ const discoveryInput: DiagnosisInput = {
     durationMinutes: 90,
     participantCount: 8
   },
-  currentState: ["No formal research", "Several assumptions", "Little evidence"],
+  currentState: [
+    "No formal research",
+    "Several assumptions",
+    "Little evidence"
+  ],
   desiredOutcome:
     "Understand what is happening, identify potential causes, and create a clear problem statement."
 };

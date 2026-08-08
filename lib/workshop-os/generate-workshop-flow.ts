@@ -16,7 +16,9 @@ function getBlock(blockId: string) {
   const block = buildingBlocks.find((item) => item.id === blockId);
 
   if (!block) {
-    throw new Error(`Workshop OS fixture is missing building block: ${blockId}`);
+    throw new Error(
+      `Workshop OS fixture is missing building block: ${blockId}`
+    );
   }
 
   return block;
@@ -26,7 +28,9 @@ function getRule(ruleId: string) {
   const rule = workshopDesignLogicRules.find((item) => item.id === ruleId);
 
   if (!rule) {
-    throw new Error(`Workshop OS fixture is missing design logic rule: ${ruleId}`);
+    throw new Error(
+      `Workshop OS fixture is missing design logic rule: ${ruleId}`
+    );
   }
 
   return rule;
@@ -56,6 +60,7 @@ function createFlowBlock(
     reason: rule.reason,
     stage: block.stages[0],
     steps: steps.map((step, index) => ({
+      displayName: step.displayName,
       durationMinutes: step.durationMinutes,
       facilitatorNotes: step.facilitatorNotes,
       instructions: step.instructions,

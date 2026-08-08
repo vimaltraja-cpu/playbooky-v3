@@ -1,3 +1,7 @@
+"use client";
+
+import { type FormEvent, type KeyboardEvent } from "react";
+
 type AIComposerState =
   | "empty"
   | "focused"
@@ -9,7 +13,13 @@ type AIComposerState =
 type AIComposerViewport = "desktop" | "mobile";
 
 type AIComposerProps = {
+  disabled?: boolean;
+  isSubmitting?: boolean;
+  onChange?: (value: string) => void;
+  onSubmit?: (value: string) => void | Promise<void>;
+  placeholder?: string;
   state?: AIComposerState;
+  value?: string;
   viewport?: AIComposerViewport;
 };
 
@@ -65,22 +75,69 @@ function ArrowUpIcon() {
 }
 
 export function AIComposer({
+  disabled,
+  isSubmitting = false,
+  onChange,
+  onSubmit,
+  placeholder,
   state = "empty",
+  value,
   viewport = "desktop"
 }: AIComposerProps) {
   const isMobile = viewport === "mobile";
-  const isDisabled = state === "disabled";
-  const isLoading = state === "loading";
+  const isInteractive = typeof value === "string" && Boolean(onChange);
+  const currentValue = value ?? "";
+  const canSubmit = currentValue.trim().length > 0;
+  const isDisabled = disabled ?? state === "disabled";
+  const isLoading = isSubmitting || state === "loading";
+  const displayState = isInteractive
+    ? isLoading
+      ? "loading"
+      : isDisabled
+        ? "disabled"
+        : canSubmit
+          ? "typing"
+          : "empty"
+    : state;
+  const resolvedPlaceholder =
+    placeholder ??
+    (isMobile ? mobilePlaceholder : desktopPlaceholder);
   const text =
     isMobile && state !== "typing" && state !== "error" && state !== "loading"
       ? mobilePlaceholder
       : stateCopy[state];
+  const actionDisabled = isDisabled || isLoading || (isInteractive && !canSubmit);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!isInteractive || actionDisabled) {
+      return;
+    }
+
+    void onSubmit?.(currentValue.trim());
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key !== "Enter" || (!event.metaKey && !event.ctrlKey)) {
+      return;
+    }
+
+    if (actionDisabled) {
+      return;
+    }
+
+    event.preventDefault();
+    void onSubmit?.(currentValue.trim());
+  }
 
   return (
-    <div
+    <form
       aria-disabled={isDisabled}
       aria-label="AI Composer"
-      data-state={state}
+      className="ai-composer"
+      data-state={displayState}
+      onSubmit={handleSubmit}
       role="group"
       style={{
         background: "linear-gradient(45deg, #7D5330 0%, #D99C56 100%)",
@@ -105,19 +162,49 @@ export function AIComposer({
           width: "100%"
         }}
       >
-        <p
-          style={{
-            color: isMobile ? "#45413C" : "#5E5A53",
-            fontFamily:
-              "Geist, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-            fontSize: isMobile ? "14px" : "16px",
-            fontWeight: 400,
-            lineHeight: isMobile ? "20px" : "24px",
-            margin: 0
-          }}
-        >
-          {text}
-        </p>
+        {isInteractive ? (
+          <textarea
+            aria-label="Describe your workshop challenge"
+            className="ai-composer__input"
+            disabled={isDisabled || isLoading}
+            onChange={(event) => onChange?.(event.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={resolvedPlaceholder}
+            rows={2}
+            style={{
+              background: "transparent",
+              border: 0,
+              color: isMobile ? "#45413C" : "#5E5A53",
+              flex: "1 1 auto",
+              fontFamily:
+                "Geist, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: isMobile ? "14px" : "16px",
+              fontWeight: 400,
+              lineHeight: isMobile ? "20px" : "24px",
+              margin: 0,
+              minHeight: isMobile ? "44px" : "52px",
+              outline: 0,
+              padding: 0,
+              resize: "none",
+              width: "100%"
+            }}
+            value={currentValue}
+          />
+        ) : (
+          <p
+            style={{
+              color: isMobile ? "#45413C" : "#5E5A53",
+              fontFamily:
+                "Geist, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: isMobile ? "14px" : "16px",
+              fontWeight: 400,
+              lineHeight: isMobile ? "20px" : "24px",
+              margin: 0
+            }}
+          >
+            {text}
+          </p>
+        )}
 
         <div
           style={{
@@ -133,24 +220,26 @@ export function AIComposer({
           <MicIcon />
           <button
             aria-label={isLoading ? "Sending" : "Send prompt"}
-            disabled={isDisabled || isLoading}
+            disabled={actionDisabled}
             style={{
               alignItems: "center",
               background: "linear-gradient(45deg, #7D5330 0%, #D99C56 100%)",
               border: 0,
               borderRadius: "20px",
+              cursor: actionDisabled ? "not-allowed" : "pointer",
               display: "inline-flex",
               height: "40px",
               justifyContent: "center",
+              opacity: actionDisabled ? 0.45 : 1,
               padding: 0,
               width: "40px"
             }}
-            type="button"
+            type="submit"
           >
             <ArrowUpIcon />
           </button>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
