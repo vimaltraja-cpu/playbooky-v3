@@ -148,6 +148,23 @@ export function getRecommendationWatercolorTotalCycleMs(
 export const recommendationWatercolorTotalCycleMs =
   getRecommendationWatercolorTotalCycleMs();
 
+/**
+ * First illustration (goals) is static until a previous stage exists.
+ * Hold it briefly so the first-in can settle, then start the first bleed
+ * — do not wait a full watercolor cycle with no motion.
+ */
+export const recommendationWatercolorFirstStageHoldMs = 1600;
+
+/**
+ * Keep the shimmer label on the outgoing stage until the bleed is underway.
+ * Defaults to Layer 1 fade start — illustration leads, copy follows.
+ */
+export function getRecommendationWatercolorLabelHandoffMs(
+  motion: RecommendationWatercolorMotion = recommendationWatercolorMotion
+) {
+  return motion.layer1.fadeStartMs;
+}
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
