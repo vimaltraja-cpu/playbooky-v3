@@ -13,11 +13,17 @@ const ENTER_MS = 900;
 const HOLD_AT_BLUR_MS = 220;
 
 /**
- * Continuous post-diagnosis journey:
+ * Green-lit recommendation segment:
  * watercolor loading → blur handoff → recommendation reveal.
  * Isolated reveal review remains at /recommendation-reveal-template.
  */
-export function RecommendationLoadingRevealJourney() {
+export function RecommendationLoadingRevealJourney({
+  continueLabel,
+  onRevealComplete
+}: {
+  continueLabel?: string;
+  onRevealComplete?: () => void;
+} = {}) {
   const [phase, setPhase] = useState<JourneyPhase>("loading");
 
   const handleLoadingComplete = useCallback(() => {
@@ -69,7 +75,10 @@ export function RecommendationLoadingRevealJourney() {
             onComplete={handleLoadingComplete}
           />
         ) : (
-          <RecommendationRevealTemplateExperience />
+          <RecommendationRevealTemplateExperience
+            continueLabel={continueLabel}
+            onContinue={onRevealComplete}
+          />
         )}
       </div>
     </div>

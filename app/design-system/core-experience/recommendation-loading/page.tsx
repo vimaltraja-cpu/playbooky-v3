@@ -25,49 +25,49 @@ type ShowroomState = RecommendationLoadingStageId;
 
 const componentMetadata = {
   category: "Core Experience",
-  confidence: "2 Prototype review",
-  lastUpdated: "2026-07-08",
+  confidence: "4 Product-ready",
+  lastUpdated: "2026-08-08",
   owner: "Design System",
-  status: "Exploring",
+  status: "Approved",
   title: "Recommendation Loading"
 };
 
 const overviewCopy = {
   statusNote:
-    "This is the first visual-approval implementation for the analysing state after Diagnosis. It does not transition into the final recommendation deck.",
+    "Green-lit. Product loading consumes the shared watercolor motion contract and continues into Recommendation Reveal. Tuners stay in playground for refinement only.",
   summary:
-    "Recommendation Loading is the calm analysing experience that appears after Diagnosis is complete while PlayBooky turns user answers into a recommended workshop structure.",
+    "Recommendation Loading is the calm analysing experience that appears after Diagnosis while PlayBooky turns answers into a recommended workshop structure, then hands off into reveal.",
   whatItIs:
-    "A full-page loading state with a central illustration, current analysis label, supporting copy, and subtle stage progress.",
+    "A full-page loading state with a central illustration, shimmering analysis label, supporting copy, and Layer 1/2 watercolor stage transitions.",
   whenNotToUse:
-    "Do not use it as a generic loading screen, spinner replacement, or final recommendation result.",
+    "Do not use it as a generic loading screen, spinner replacement, or a forked motion experiment outside the shared green-lit config.",
   whenToUse:
-    "Use it after Diagnosis completion while PlayBooky is preparing the recommendation.",
+    "Use it after Diagnosis completion while PlayBooky is preparing the recommendation, including the linked reveal journey.",
   whereItAppears:
-    "In the product preview route at /recommendation-loading and in this Design Portal review page.",
+    "Product routes /recommendation-loading and /journey (recommendation stage), plus this Design Portal review page.",
   whyItExists:
     "To make analysis feel intentional, calm, and premium before the recommended workshop appears."
 };
 
 const specs = [
+  ["Status", "Green-lit / Approved"],
   ["Product route", "/recommendation-loading"],
+  ["Stitched journey", "/journey"],
   ["Portal route", "/design-system/core-experience/recommendation-loading"],
+  ["Motion source", "lib/design-system/recommendation-watercolor-motion.ts"],
   ["Sequence", "Goals -> Challenges -> Context -> Participants -> Outcome"],
-  ["Visible stage duration", "Approximately 1200-1600ms"],
-  ["Transition duration", "Approximately 900-1200ms"],
-  ["Loop duration", "Approximately 11 seconds"],
+  ["Stage cycle", "6750ms (computed from Layer 2 timeline + stick)"],
+  ["First-stage hold", "1600ms before first bleed"],
+  ["Label handoff", "Leads with illustration; label updates at Layer 1 fade start"],
+  ["Reveal handoff", "Blur exit into Recommendation Reveal"],
   [
     "Primary visual",
-    "Transparent PNG illustration with watercolour bloom transition"
+    "Transparent PNG illustration with watercolour droplet mask bleed"
   ],
   ["Primary visual rule", "No generic spinner as the primary visual"],
   [
-    "Supporting line",
-    "PlayBooky is turning your answers into the right workshop structure."
-  ],
-  [
     "Reduced motion",
-    "Simple opacity crossfade; no bloom expansion or breathing motion"
+    "Animation durations collapse; no bloom expansion or breathing motion"
   ]
 ];
 
@@ -186,8 +186,8 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   unresolvedIssues: [
     {
       description:
-        "Final PNG artwork, exact illustration scale, and final transition tokens require design approval.",
-      title: "Visual approval"
+        "Motion values are green-lit via the shared watercolor contract. Token promotion from hardcoded values remains open.",
+      title: "Token promotion"
     }
   ]
 };

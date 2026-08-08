@@ -96,9 +96,13 @@ const recommendationRevealWorkshop = {
 
 export function RecommendationRevealTemplateExperience({
   className = "",
+  continueLabel = "Continue to activities",
+  onContinue,
   viewport
 }: {
   className?: string;
+  continueLabel?: string;
+  onContinue?: () => void;
   viewport?: RecommendationLoadingViewport;
 }) {
   const [responsiveViewport, setResponsiveViewport] =
@@ -202,6 +206,17 @@ export function RecommendationRevealTemplateExperience({
           />
         </div>
       </div>
+      {onContinue && revealPhase === "complete" ? (
+        <div className="recommendation-reveal-continue">
+          <button
+            className="recommendation-reveal-continue-button"
+            onClick={onContinue}
+            type="button"
+          >
+            {continueLabel}
+          </button>
+        </div>
+      ) : null}
     </RecommendationExperienceShell>
   );
 }

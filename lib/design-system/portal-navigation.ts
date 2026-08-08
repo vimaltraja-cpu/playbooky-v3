@@ -166,11 +166,34 @@ export const portalNavigation: PortalNavSection[] = [
       {
         category: "Core Experience",
         description:
-          "The analysing state between diagnosis and recommendations, including its loading sequence.",
+          "Green-lit analysing state and linked recommendation reveal after diagnosis.",
         href: "/design-system/core-experience/recommendation-loading",
         icon: "target",
-        keywords: ["recommendations", "loading", "analysis", "sequence"],
+        keywords: [
+          "recommendations",
+          "loading",
+          "analysis",
+          "sequence",
+          "greenlit",
+          "reveal"
+        ],
         label: "Recommendation Loading"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Stitched product journey from challenge through diagnosis into green-lit recommendation and activities.",
+        href: "/journey",
+        icon: "git-merge",
+        keywords: [
+          "journey",
+          "challenge",
+          "diagnosis",
+          "recommendation",
+          "activities",
+          "greenlit"
+        ],
+        label: "Product Journey"
       },
       {
         category: "Core Experience",

@@ -31,6 +31,28 @@
     both;
 }
 
+.recommendationScreen :global(.recommendation-reveal-continue) {
+  bottom: 28px;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 30;
+}
+
+.recommendationScreen :global(.recommendation-reveal-continue-button) {
+  background: linear-gradient(45deg, #7d5330 0%, #d99c56 100%);
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0 22px;
+}
+
 @keyframes recommendation-journey-enter {
   from {
     filter: blur(18px);
