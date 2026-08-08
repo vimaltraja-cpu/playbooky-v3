@@ -8,12 +8,24 @@ import {
 export type DiagnosisCardState =
   "default" | "hover" | "selected" | "maxSelected";
 
+type DiagnosisCardOption = {
+  description: string;
+  iconKey: DiagnosisIconKey;
+  id: string;
+  label: string;
+};
+
 type DiagnosisCardProps = {
   description?: string;
   iconKey?: DiagnosisIconKey;
   label?: string;
   onClick?: () => void;
+  /** Product diagnosis-screen API */
+  option?: DiagnosisCardOption;
+  selected?: boolean;
+  selectionLimitReached?: boolean;
   state?: DiagnosisCardState;
+  viewport?: string;
 };
 
 const diagnosisIconAspectRatio = 72 / 70;
@@ -111,24 +123,40 @@ function SelectedAnimationLayer() {
 }
 
 export function DiagnosisCard({
-  description = "Bring people into alignment around a shared goal or direction.",
-  iconKey = "align-a-team",
-  label = "Align a team",
+  description,
+  iconKey,
+  label,
   onClick,
-  state = "default"
+  option,
+  selected = false,
+  selectionLimitReached = false,
+  state,
+  viewport
 }: DiagnosisCardProps) {
-  const isSelected = state === "selected";
-  const isMaxSelected = state === "maxSelected";
-  const isLifted = state === "hover" || isSelected;
-  const topBarHeight = state === "default" ? "70px" : "58.5px";
+  void viewport;
+
+  const resolvedLabel = option?.label ?? label ?? "Align a team";
+  const resolvedDescription =
+    option?.description ??
+    description ??
+    "Bring people into alignment around a shared goal or direction.";
+  const resolvedIconKey = option?.iconKey ?? iconKey ?? "align-a-team";
+  const resolvedState: DiagnosisCardState =
+    state ??
+    (selectionLimitReached ? "maxSelected" : selected ? "selected" : "default");
+
+  const isSelected = resolvedState === "selected";
+  const isMaxSelected = resolvedState === "maxSelected";
+  const isLifted = resolvedState === "hover" || isSelected;
+  const topBarHeight = resolvedState === "default" ? "70px" : "58.5px";
 
   return (
     <button
       aria-disabled={isMaxSelected}
-      aria-label={`Diagnosis card: ${label}`}
+      aria-label={`Diagnosis card: ${resolvedLabel}`}
       aria-pressed={isSelected}
       className="diagnosis-card-prototype"
-      data-state={state}
+      data-state={resolvedState}
       onClick={onClick}
       style={{
         alignItems: "flex-start",
@@ -137,7 +165,9 @@ export function DiagnosisCard({
           : isLifted
             ? "#FCFBF9"
             : "rgba(252, 251, 249, 0.5)",
-        border: `1px solid ${state === "default" ? "#E6E2DC" : "#D8C08A"}`,
+        border: `1px solid ${
+          resolvedState === "default" ? "#E6E2DC" : "#D8C08A"
+        }`,
         borderRadius: "8px",
         boxShadow: isLifted
           ? "0px 4px 8px -2px rgba(0,0,0,0.1), 0px 2px 4px -2px rgba(0,0,0,0.06)"
@@ -177,8 +207,11 @@ export function DiagnosisCard({
             width: "100%"
           }}
         >
-          <DiagnosisLeftIcon iconKey={iconKey} state={state} />
-          <StateIcon state={state} />
+          <DiagnosisLeftIcon
+            iconKey={resolvedIconKey}
+            state={resolvedState}
+          />
+          <StateIcon state={resolvedState} />
         </div>
 
         <div
@@ -201,7 +234,7 @@ export function DiagnosisCard({
               margin: 0
             }}
           >
-            {label}
+            {resolvedLabel}
           </h3>
           <p
             style={{
@@ -215,7 +248,7 @@ export function DiagnosisCard({
               margin: 0
             }}
           >
-            {description}
+            {resolvedDescription}
           </p>
         </div>
       </div>

@@ -158,18 +158,17 @@ export const journeyManifest: JourneyStage[] = [
     componentSourcePaths: [
       "components/product/RecommendationLoadingExperience.tsx"
     ],
-    sourceStatus: "needs-review",
-    responsiveStatus: "needs-review",
-    handoffStatus: "needs-review",
-    integrationStatus: "not-started",
+    sourceStatus: "approved",
+    responsiveStatus: "approved",
+    handoffStatus: "approved",
+    integrationStatus: "integrated",
     input: ["challenge", "diagnosisAnswers"],
     output: ["recommendations"],
     notes: [
-      "The full-page route renders the existing RecommendationLoadingExperience directly.",
-      "The route runs the approved loading sequence with its normal page background and layout.",
-      "Illustration motion: Approved watercolour Layer 1 / Layer 2 implementation.",
-      "Source: Playground Motion Recommendation Loading Watercolours/Showcase.",
-      "Cycle: 6350ms."
+      "Green-lit. /internal/journey/loading renders RecommendationLoadingRevealJourney.",
+      "Watercolour Layer 1 / Layer 2 comes from lib/design-system/recommendation-watercolor-motion.ts.",
+      "Diagnosis continue routes here; loading continues into reveal via blur handoff.",
+      "Cycle: 6750ms (shared motion contract)."
     ],
     audit: {
       candidateOlderVersions: [
@@ -179,14 +178,17 @@ export const journeyManifest: JourneyStage[] = [
       existingPrototypeRoute:
         "/design-system/core-experience/recommendation-loading",
       knownIssues: [
-        "Loading still uses internal fixture behaviour and does not receive real diagnosis payloads.",
-        "The transition from loading to reveal is not connected yet."
+        "Loading still uses fixture recommendation content rather than live diagnosis payloads."
       ],
       reasonThisIsLatestVersion:
-        "RecommendationLoadingExperience is the product-level implementation used by /recommendation-loading and contains the locked watercolor loading sequence.",
+        "RecommendationLoadingRevealJourney is the green-lit product segment: loading sequence plus blur handoff into reveal.",
       recommendedProductionSource:
+        "components/product/RecommendationLoadingRevealJourney.tsx",
+      supportingComponentSources: [
         "components/product/RecommendationLoadingExperience.tsx",
-      supportingComponentSources: []
+        "components/product/RecommendationRevealTemplateExperience.tsx",
+        "lib/design-system/recommendation-watercolor-motion.ts"
+      ]
     }
   },
   {

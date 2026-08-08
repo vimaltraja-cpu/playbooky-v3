@@ -1,12 +1,8 @@
 /**
  * Green-lit product surfaces — approved for product use.
  *
- * IMPORTANT:
- * - Composer + Diagnosis were green-lit on `/internal/journey` on the Mac
- *   workspace. That work was never committed/pushed to GitHub.
- * - Do not invent substitute screens at `/journey`.
- * - When `/internal/journey` lands on this branch, wire Recommendation Loading
- *   into that spine — do not rebuild Composer/Diagnosis.
+ * Signed-off Composer + Diagnosis live at `/internal/journey`.
+ * Recommendation Loading is green-lit and stitched as the loading stage.
  */
 
 export type GreenlitSurface = {
@@ -19,12 +15,24 @@ export type GreenlitSurface = {
 
 export const greenlitSurfaces: GreenlitSurface[] = [
   {
+    id: "composer",
+    label: "Homepage Composer",
+    productHref: "/internal/journey/composer",
+    summary: "Signed-off homepage composer stage in the internal journey."
+  },
+  {
+    id: "diagnosis",
+    label: "Diagnosis Questions",
+    productHref: "/internal/journey/diagnosis",
+    summary: "Signed-off diagnosis stage with Dynamic Diagnosis handoff."
+  },
+  {
     id: "recommendation-loading",
     label: "Recommendation Loading",
     portalHref: "/design-system/core-experience/recommendation-loading",
-    productHref: "/recommendation-loading",
+    productHref: "/internal/journey/loading",
     summary:
-      "Watercolour analysing sequence with shared Layer 1/2 motion config and label handoff."
+      "Green-lit watercolour analysing sequence with blur handoff into reveal."
   },
   {
     id: "recommendation-reveal",
@@ -32,9 +40,8 @@ export const greenlitSurfaces: GreenlitSurface[] = [
     portalHref: "/design-system/core-experience/recommendation-loading",
     productHref: "/recommendation-reveal-template",
     summary:
-      "Centre-card elastic enter, then fan into the recommended workshop deck. Linked from loading."
+      "Centre-card elastic enter, then fan into the recommended workshop deck."
   }
 ];
 
-/** Signed-off Composer → Diagnosis spine (must come from Mac push). */
 export const internalJourneyHref = "/internal/journey";

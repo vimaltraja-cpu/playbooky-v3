@@ -11,8 +11,10 @@ type AIComposerState =
 type AIComposerViewport = "desktop" | "mobile";
 
 type AIComposerProps = {
+  isSubmitting?: boolean;
   onChange?: (value: string) => void;
-  onSubmit?: () => void;
+  onSubmit?: ((value: string) => void) | (() => void);
+  placeholder?: string;
   state?: AIComposerState;
   value?: string;
   viewport?: AIComposerViewport;
@@ -70,31 +72,51 @@ function ArrowUpIcon() {
 }
 
 export function AIComposer({
+  isSubmitting = false,
   onChange,
   onSubmit,
+  placeholder,
   state = "empty",
   value,
   viewport = "desktop"
 }: AIComposerProps) {
   const isInteractive = typeof onChange === "function";
   const isMobile = viewport === "mobile";
-  const isDisabled = state === "disabled";
-  const isLoading = state === "loading";
-  const placeholder = isMobile ? mobilePlaceholder : desktopPlaceholder;
+  const resolvedState: AIComposerState = isSubmitting ? "loading" : state;
+  const isDisabled = resolvedState === "disabled";
+  const isLoading = resolvedState === "loading";
+  const resolvedPlaceholder =
+    placeholder ?? (isMobile ? mobilePlaceholder : desktopPlaceholder);
   const staticText =
-    isMobile && state !== "typing" && state !== "error" && state !== "loading"
+    isMobile &&
+    resolvedState !== "typing" &&
+    resolvedState !== "error" &&
+    resolvedState !== "loading"
       ? mobilePlaceholder
-      : stateCopy[state];
+      : stateCopy[resolvedState];
   const canSubmit =
     !isDisabled &&
     !isLoading &&
     (isInteractive ? Boolean(value?.trim()) : true);
 
+  const submit = () => {
+    if (!canSubmit || !onSubmit) {
+      return;
+    }
+
+    if (onSubmit.length > 0) {
+      (onSubmit as (nextValue: string) => void)(value ?? "");
+      return;
+    }
+
+    (onSubmit as () => void)();
+  };
+
   return (
     <div
       aria-disabled={isDisabled}
       aria-label="AI Composer"
-      data-state={state}
+      data-state={resolvedState}
       role="group"
       style={{
         background: "linear-gradient(45deg, #7D5330 0%, #D99C56 100%)",
@@ -127,12 +149,10 @@ export function AIComposer({
             onKeyDown={(event) => {
               if (event.key === "Enter" && !event.shiftKey) {
                 event.preventDefault();
-                if (canSubmit) {
-                  onSubmit?.();
-                }
+                submit();
               }
             }}
-            placeholder={placeholder}
+            placeholder={resolvedPlaceholder}
             style={{
               background: "transparent",
               border: 0,
@@ -181,7 +201,7 @@ export function AIComposer({
           <button
             aria-label={isLoading ? "Sending" : "Send prompt"}
             disabled={!canSubmit}
-            onClick={() => onSubmit?.()}
+            onClick={submit}
             style={{
               alignItems: "center",
               background: "linear-gradient(45deg, #7D5330 0%, #D99C56 100%)",
