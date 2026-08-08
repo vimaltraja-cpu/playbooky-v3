@@ -1,15 +1,23 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import playBookyHorizontalLogo from "@/assets/logos/Horizontal Logo.svg";
+import type { ActivityGridViewportMode } from "@/components/product/ActivityGridVisualLayer";
 import { DiagnosisQuestionScreen } from "@/components/product/DiagnosisQuestionScreen";
 import {
   type DiagnosisScreenViewport
 } from "@/components/product/DiagnosisQuestionScreen";
 import { HomepageComposerLayout } from "@/components/product/HomepageTextLayout";
-import { RecommendationLoadingRevealJourney } from "@/components/product/RecommendationLoadingRevealJourney";
+import {
+  recommendationRevealCards
+} from "@/components/product/RecommendationCardReveal";
+import { RecommendationCardRevealExperience } from "@/components/product/RecommendationCardRevealExperience";
+import { RecommendationLoadingExperience } from "@/components/product/RecommendationLoadingExperience";
+import { ActivityGridInteractiveLayer } from "@/components/product/recommendation-reveal-to-grid/ActivityGridInteractiveLayer";
 import { SiteBackgroundWash } from "@/components/ui/SiteBackgroundWash";
 import { diagnosisQuestions } from "@/lib/design-system/diagnosis-options";
 import {
@@ -48,6 +56,22 @@ function getDiagnosisViewport(): DiagnosisScreenViewport {
   return "desktop";
 }
 
+function getActivityGridViewport(): ActivityGridViewportMode {
+  if (typeof window === "undefined") {
+    return "desktop";
+  }
+
+  if (window.innerWidth < 768) {
+    return "mobile";
+  }
+
+  if (window.innerWidth < 1200) {
+    return "tablet";
+  }
+
+  return "desktop";
+}
+
 function useResponsiveMode<Mode extends string>(
   getMode: () => Mode,
   initialMode: Mode
@@ -66,26 +90,52 @@ function useResponsiveMode<Mode extends string>(
   return mode;
 }
 
-function LaterStagePlaceholder({ title }: { title: string }) {
+function InternalJourneyHeader() {
   return (
-    <main className="grid min-h-screen place-items-center bg-[#F6F1E8] px-6 text-[#171614]">
-      <div className="max-w-md text-center">
-        <p className="text-sm font-semibold uppercase tracking-[0.08em] text-[#7D5330]">
-          Internal journey
-        </p>
-        <h1 className="mt-3 text-3xl font-medium tracking-tight">{title}</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-[#5E5A53]">
-          Later stage — not part of the current Composer → Diagnosis → Loading
-          stitch. Supporting files for this stage still need to be pushed from
-          the Mac workspace.
-        </p>
-        <Link
-          className="mt-6 inline-flex rounded-full bg-[#171614] px-5 py-2.5 text-sm font-semibold text-white"
-          href="/internal/journey/loading"
-        >
-          Open green-lit loading
-        </Link>
-      </div>
+    <header className="relative z-10 flex h-[72px] shrink-0 items-center px-6 md:px-10">
+      <Link aria-label="PlayBooky home" href="/">
+        <Image
+          alt=""
+          aria-hidden="true"
+          height={35}
+          priority
+          src={playBookyHorizontalLogo}
+          width={142}
+        />
+      </Link>
+    </header>
+  );
+}
+
+function ActiveGridFullPage({
+  initialOpenCardId
+}: {
+  initialOpenCardId?: string;
+}) {
+  const viewport = useResponsiveMode(
+    getActivityGridViewport,
+    "desktop" satisfies ActivityGridViewportMode
+  );
+  const cards = useMemo(
+    () =>
+      recommendationRevealCards.map((card) => ({
+        activity: card.activity,
+        id: card.id,
+        label: card.activity.title
+      })),
+    []
+  );
+
+  return (
+    <main className="min-h-screen overflow-x-hidden bg-[#F6F1E8] text-[#171614]">
+      <InternalJourneyHeader />
+      <section className="px-4 pb-12 pt-4 md:px-8">
+        <ActivityGridInteractiveLayer
+          cards={cards}
+          initialOpenCardId={initialOpenCardId}
+          viewport={viewport}
+        />
+      </section>
     </main>
   );
 }
@@ -127,7 +177,7 @@ function DiagnosisFullPage() {
     return (
       <main className="diagnosis-question-screen" data-viewport={viewport}>
         <SiteBackgroundWash />
-        <div className="diagnosis-main-region" />
+        <div className="diagnosis-content-shell" />
       </main>
     );
   }
@@ -136,7 +186,7 @@ function DiagnosisFullPage() {
     return (
       <main className="diagnosis-question-screen" data-viewport={viewport}>
         <SiteBackgroundWash />
-        <div className="diagnosis-main-region" />
+        <div className="diagnosis-content-shell" />
       </main>
     );
   }
@@ -169,19 +219,18 @@ function renderStage(stageId: JourneyStageId) {
   }
 
   if (stageId === "loading") {
-    // Green-lit segment: watercolor loading → blur handoff → reveal.
-    return <RecommendationLoadingRevealJourney />;
+    return <RecommendationLoadingExperience />;
   }
 
   if (stageId === "reveal") {
-    return <LaterStagePlaceholder title="Recommendation Reveal" />;
+    return <RecommendationCardRevealExperience />;
   }
 
   if (stageId === "active-grid") {
-    return <LaterStagePlaceholder title="Active Workshop Grid" />;
+    return <ActiveGridFullPage />;
   }
 
-  return <LaterStagePlaceholder title="Active Activity Modal" />;
+  return <ActiveGridFullPage initialOpenCardId="commitment-check" />;
 }
 
 export function JourneyFullPage({ stage }: { stage: JourneyStage }) {

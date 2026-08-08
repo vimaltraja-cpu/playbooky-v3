@@ -76,6 +76,42 @@ a {
   background: rgba(125, 83, 48, 0.28);
 }
 
+.activity-card__meta {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+  min-width: 0;
+  overflow: hidden;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.activity-card__metaText {
+  background: linear-gradient(45deg, #7d5330 0%, #d99c56 100%);
+  background-clip: text;
+  color: transparent;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 16px;
+}
+
+.activity-card__metaText:last-child {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-card__divider {
+  background: #d99c56;
+  flex: 0 0 auto;
+  height: 16px;
+  width: 1px;
+}
+
 .composer-responsive-preview [aria-label="AI Composer"],
 .composer-responsive-preview [aria-label="AI Composer"] p {
   transition-duration: 300ms;
@@ -281,6 +317,7 @@ a {
   background: rgba(54, 92, 85, 0.12);
 }
 
+
 .recommendation-loading-image {
   position: absolute;
   z-index: 1;
@@ -431,10 +468,7 @@ a {
   }
 }
 
-/* ==========================================================================
- * Signed-off homepage / diagnosis / header journey styles
- * Recovered from .next-stale-before-recommendation-result-check build CSS
- * ========================================================================== */
+/* Detail rules recovered from same-era compiled CSS (NOT diagnosis screen shell) */
 
 .site-header {
   --focus-ring:#d99c56;
@@ -707,34 +741,41 @@ a {
     grid-template-rows:611px 64px 245px;
     min-height:calc(100svh - 72px);
   }
+
   .homepage-text-layout__hero-region {
     grid-row:1;
     justify-content:flex-end;
     align-items:center;
   }
+
   .homepage-text-layout__hero-group {
     width:100%;
     max-width:none;
     height:330px;
   }
+
   .homepage-text-layout__logo-container {
     width:150px;
     height:150px;
   }
+
   .homepage-text-layout__logo-artwork {
     width:100%;
     max-width:100%;
     height:auto;
     max-height:100%;
   }
+
   .homepage-text-layout__heading {
     width:auto;
     font-size:64px;
     line-height:74px;
   }
+
   .homepage-hero-title {
     max-width:none;
   }
+
   .homepage-text-layout__composer-region {
     grid-row:3;
     padding:0 12px 32px;
@@ -745,6 +786,7 @@ a {
   .homepage-text-layout__main {
     grid-template-rows:32px minmax(0,1fr) 64px 245px;
   }
+
   .homepage-text-layout__composer-shell {
     width:736px;
   }
@@ -755,15 +797,19 @@ a {
     height:80px;
     padding:0 32px 0 80px;
   }
+
   .site-header__content {
     height:44px;
   }
+
   .site-header__navigation {
     margin-top:var(--header-navigation-baseline-offset);
   }
+
   .site-header--landing .site-header__actions,.site-header--landing .site-header__navigation {
     display:flex;
   }
+
   .site-header__menu-button {
     display:none;
   }
@@ -777,24 +823,30 @@ a {
     min-height:calc(100svh - 80px);
     display:flex;
   }
+
   .homepage-text-layout--framed .homepage-text-layout__main {
     min-height:calc(100% - 80px);
   }
+
   .homepage-text-layout__hero-region {
     display:block;
   }
+
   .homepage-text-layout__hero-group {
     height:330px;
   }
+
   .homepage-text-layout__guidance {
     margin-top:32px;
     display:block;
   }
+
   .homepage-text-layout__composer-region {
     margin-top:32px;
     padding:0;
     display:block;
   }
+
   .homepage-text-layout__composer-shell {
     width:736px;
   }
@@ -1050,13 +1102,16 @@ a {
     height:245px;
     padding:0 16px 32px;
   }
+
   .homepage-composer-guidance {
     font-size:16px;
     line-height:24px;
   }
+
   .homepage-composer-guidance__link {
     font-size:16px;
   }
+
   .homepage-composer-layout__composer-shell {
     width:736px;
   }
@@ -1069,9 +1124,11 @@ a {
     padding:0;
     display:block;
   }
+
   .homepage-composer-layout__composer-stack {
     gap:32px;
   }
+
   .homepage-composer-guidance {
     width:259px;
     height:48px;
@@ -1149,6 +1206,7 @@ a {
     padding:clamp(32px,8svh,72px) 12px 32px;
     display:flex;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-text-layout__hero-region {
     flex:none;
     grid-row:auto;
@@ -1159,16 +1217,19 @@ a {
     position:relative;
     transform:none;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-text-layout__hero-group {
     gap:32px;
     width:min(374px,100vw - 20px);
     max-width:calc(100vw - 20px);
     height:195px;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-text-layout__logo-container {
     width:75px;
     height:75px;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-text-layout__heading {
     text-align:center;
     place-self:center;
@@ -1178,12 +1239,14 @@ a {
     font-size:38px;
     line-height:44px;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-hero-title__line {
     text-align:center;
     white-space:nowrap;
     width:100%;
     display:block;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-composer-layout__composer-region {
     flex-direction:column;
     flex:none;
@@ -1199,17 +1262,21 @@ a {
     position:relative;
     transform:none;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-composer-layout__composer-stack {
     gap:24px;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-composer-guidance {
     width:auto;
     font-size:14px;
     line-height:20px;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-composer-guidance__link {
     font-size:14px;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-composer-layout__composer-shell {
     width:min(736px,100%);
   }
@@ -1219,6 +1286,7 @@ a {
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-composer-layout__composer-shell [aria-label=AI\ Composer] {
     width:min(370px,100%)!important;
   }
+
   .homepage-composer-layout:not(.homepage-composer-layout--framed) .homepage-composer-layout__composer-shell [aria-label=AI\ Composer] p {
     color:#45413c!important;
     font-size:14px!important;
@@ -1339,90 +1407,6 @@ a {
 
 .diagnosis-card-review-surface[data-viewport=tablet-landscape],.diagnosis-card-review-surface[data-viewport=tablet-portrait] {
   padding:24px;
-}
-
-.diagnosis-question-screen {
-  box-sizing:border-box;
-  color:#020f0d;
-  grid-template-rows:var(--diagnosis-main-height) var(--diagnosis-bottom-height);
-  height:100%;
-  min-height:100%;
-  padding:0 var(--diagnosis-page-x);
-  row-gap:var(--diagnosis-screen-gap);
-  --diagnosis-bottom-height:98px;
-  --diagnosis-grid-gap:20px;
-  --diagnosis-grid-height:524px;
-  --diagnosis-main-gap:16px;
-  --diagnosis-main-height:754px;
-  --diagnosis-options-height:556px;
-  --diagnosis-page-x:32px;
-  --diagnosis-screen-gap:16px;
-  background:#fcfbf9;
-  width:100%;
-  padding-bottom:32px;
-  font-family:Geist,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;
-  display:grid;
-  overflow:hidden;
-}
-
-.diagnosis-question-screen[data-viewport=mobile] {
-  --diagnosis-bottom-height:86px;
-  --diagnosis-grid-gap:12px;
-  --diagnosis-grid-height:624px;
-  --diagnosis-main-gap:0px;
-  --diagnosis-main-height:718px;
-  --diagnosis-options-height:624px;
-  --diagnosis-page-x:12px;
-  --diagnosis-screen-gap:0px;
-  grid-template-rows:718px 86px;
-  padding-top:32px;
-  padding-bottom:16px;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-portrait] {
-  --diagnosis-bottom-height:94px;
-  --diagnosis-grid-gap:12px;
-  --diagnosis-grid-height:828px;
-  --diagnosis-main-gap:0px;
-  --diagnosis-main-height:874px;
-  --diagnosis-options-height:828px;
-  --diagnosis-page-x:12px;
-  --diagnosis-screen-gap:8px;
-  grid-template-rows:874px 94px;
-  padding-top:32px;
-  padding-bottom:16px;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-landscape] {
-  --diagnosis-bottom-height:86px;
-  --diagnosis-grid-gap:12px;
-  --diagnosis-grid-height:477px;
-  --diagnosis-main-gap:0px;
-  --diagnosis-main-height:618px;
-  --diagnosis-options-height:477px;
-  --diagnosis-page-x:12px;
-  --diagnosis-screen-gap:0px;
-  grid-template-rows:618px 86px;
-  padding-top:32px;
-  padding-bottom:32px;
-}
-
-.diagnosis-question-screen[data-viewport=large-desktop] {
-  --diagnosis-main-height:971px;
-}
-
-.diagnosis-question-screen[data-viewport=xl-desktop] {
-  --diagnosis-main-height:934px;
-}
-
-.diagnosis-main-region {
-  align-items:center;
-  gap:var(--diagnosis-main-gap);
-  height:var(--diagnosis-main-height);
-  flex-direction:column;
-  justify-content:center;
-  min-width:0;
-  display:flex;
 }
 
 .diagnosis-question-header {
@@ -1691,127 +1675,6 @@ a {
   display:inline-block;
 }
 
-.diagnosis-question-screen[data-viewport=mobile] .diagnosis-main-region,.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-main-region,.diagnosis-question-screen[data-viewport=tablet-portrait] .diagnosis-main-region {
-  justify-content:flex-start;
-}
-
-.diagnosis-question-screen[data-viewport=mobile] .diagnosis-question-header {
-  box-sizing:border-box;
-  height:76px;
-  margin-left:calc(var(--diagnosis-page-x) * -1);
-  margin-right:calc(var(--diagnosis-page-x) * -1);
-  text-align:left;
-  max-width:none;
-  width:calc(100% + (var(--diagnosis-page-x) * 2));
-  padding-top:0;
-  padding-left:32px;
-  padding-right:12px;
-}
-
-.diagnosis-question-screen[data-viewport=mobile] .diagnosis-question-heading {
-  letter-spacing:-.04em;
-  font-size:26px;
-  font-weight:400;
-  line-height:30px;
-}
-
-.diagnosis-question-screen[data-viewport=mobile] .diagnosis-question-instruction {
-  margin:0;
-  font-size:13px;
-  font-weight:300;
-  line-height:16px;
-}
-
-.diagnosis-question-screen[data-viewport=mobile] .diagnosis-options-region {
-  max-width:370px;
-  margin-top:0;
-}
-
-.diagnosis-question-screen[data-viewport=mobile] .diagnosis-question-grid {
-  grid-template-rows:none;
-  grid-template-columns:1fr;
-  grid-auto-rows:auto;
-}
-
-.diagnosis-question-screen[data-viewport=mobile] .diagnosis-progress-navigation,.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-progress-navigation {
-  gap:12px;
-}
-
-.diagnosis-question-screen[data-viewport=mobile] .diagnosis-progress-navigation__progress-info,.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-progress-navigation__progress-info {
-  gap:6px;
-  height:34px;
-}
-
-.diagnosis-question-screen[data-viewport=mobile] .diagnosis-bottom-region {
-  max-width:370px;
-  margin-inline:auto;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-portrait] .diagnosis-bottom-region {
-  max-width:736px;
-  margin-inline:auto;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-bottom-region {
-  max-width:963px;
-  margin-inline:auto;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-question-header,.diagnosis-question-screen[data-viewport=tablet-portrait] .diagnosis-question-header {
-  text-align:left;
-  height:46px;
-  padding-top:0;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-portrait] .diagnosis-question-header {
-  max-width:736px;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-question-header {
-  max-width:963px;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-question-heading,.diagnosis-question-screen[data-viewport=tablet-portrait] .diagnosis-question-heading {
-  letter-spacing:-.04em;
-  font-size:26px;
-  font-weight:400;
-  line-height:30px;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-question-instruction,.diagnosis-question-screen[data-viewport=tablet-portrait] .diagnosis-question-instruction {
-  margin-top:0;
-  font-size:13px;
-  font-weight:300;
-  line-height:16px;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-portrait] .diagnosis-question-grid {
-  grid-template-rows:repeat(3,220px);
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  max-width:736px;
-  margin-inline:auto;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-question-grid {
-  grid-template-rows:repeat(2,220px);
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  max-width:963px;
-  margin-inline:auto;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-main-region {
-  grid-template-rows:46px minmax(0,1fr);
-  align-items:stretch;
-  gap:0;
-  display:grid;
-}
-
-.diagnosis-question-screen[data-viewport=tablet-landscape] .diagnosis-options-region {
-  align-items:center;
-  height:100%;
-  display:flex;
-}
-
 .diagnosis-card-prototype {
   border-style:solid;
   border-width:var(--diagnosis-card-stroke-width);
@@ -2008,43 +1871,6 @@ a {
   fill-rule:nonzero;
 }
 
-@keyframes diagnosis-card-selected-border-draw {
-  0% {
-    stroke-dashoffset:1px;
-  }
-  to {
-    stroke-dashoffset:0;
-  }
-}
-
-@keyframes diagnosis-card-selected-stroke-fade-out {
-  0% {
-    opacity:1;
-  }
-  to {
-    opacity:0;
-  }
-}
-
-@keyframes diagnosis-card-circle-enter {
-  0% {
-    opacity:0;
-    transform:translate(-5px,4px)scale(.65);
-  }
-  62% {
-    opacity:1;
-    transform:translate(1px,-1px)scale(1.12);
-  }
-  84% {
-    opacity:1;
-    transform:translate(0)scale(.96);
-  }
-  to {
-    opacity:1;
-    transform:scale(1);
-  }
-}
-
 .diagnosis-card-prototype[data-motion=reduced],.diagnosis-card-prototype[data-motion=reduced] .diagnosis-card-state-indicator-core,.diagnosis-card-prototype[data-motion=reduced][data-state=selected] .diagnosis-card-state-indicator-hover {
   opacity:1;
   animation:none;
@@ -2064,42 +1890,34 @@ a {
     transition:none!important;
     transform:scale(1)!important;
   }
+
   .diagnosis-card-selected-stroke {
     opacity:0;
     animation:none;
   }
-  .recommendation-loading-image-first-in {
-    filter:none;
-    animation-name:recommendation-reduced-crossfade;
-    animation-duration:.5s;
-    transform:none;
-  }
-  .recommendation-loading-watercolor-droplet,.recommendation-loading-watercolor-image-active,.recommendation-loading-watercolor-image-previous,.recommendation-loading-watercolor-wash {
-    animation-duration:1ms!important;
-  }
-  .recommendation-loading-label {
-    background-image:linear-gradient(45deg,#7d5330,#d99c56);
-    background-position:50%;
-    background-size:100% 100%;
-    animation:none;
-  }
-  .recommendation-reveal-stage[data-phase=revealing] .recommendation-reveal-card,.recommendation-reveal-stage[data-phase=revealing] .recommendation-reveal-card-centre,.recommendation-reveal-stage[data-phase=revealing] .recommendation-reveal-fan {
-    filter:none;
-    animation-name:recommendation-reduced-reveal-fade;
-    animation-duration:.22s;
-    animation-delay:0s;
-  }
 }
 
-/* Journey shell bridges: wash stacking + challenge context (post signed-off markup) */
+/* ==========================================================================
+ * GREEN-LIT diagnosis/composer shell (2026-08-07 session)
+ * Class model: diagnosis-content-shell + diagnosis-main-content
+ * Wash + challenge-context from msgs 252/275
+ * Full Mac globals.css (~3578 lines) still must be restored from Local History.
+ * Homepage/header/progress detail rules below come from the same-era Next build
+ * CSS for matching class names; diagnosis SCREEN SHELL does not.
+ * ========================================================================== */
+
 :root {
   --brand-gradient: linear-gradient(45deg, #7d5330, #d99c56);
 }
 
 .homepage-composer-layout {
   background: transparent;
+  color: #094d40;
   isolation: isolate;
+  min-height: 100svh;
+  overflow: hidden;
   position: relative;
+  width: 100%;
 }
 
 .homepage-composer-layout > .site-background-wash {
@@ -2115,9 +1933,36 @@ a {
 }
 
 .diagnosis-question-screen {
+  --diagnosis-bottom-height: 98px;
+  --diagnosis-columns: 3;
+  --diagnosis-content-gap: 32px;
+  --diagnosis-content-width: 100%;
+  --diagnosis-grid-gap: 20px;
+  --diagnosis-grid-row-height: 252px;
+  --diagnosis-header-height: 94px;
+  --diagnosis-page-bottom: 32px;
+  --diagnosis-page-inline: 32px;
+  --diagnosis-page-top: 0px;
   background: transparent;
+  box-sizing: border-box;
+  color: #020f0d;
+  display: flex;
+  font-family:
+    Geist,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  height: 100dvh;
   isolation: isolate;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: var(--diagnosis-page-top) var(--diagnosis-page-inline)
+    var(--diagnosis-page-bottom);
   position: relative;
+  width: 100%;
 }
 
 .diagnosis-question-screen > .site-background-wash {
@@ -2126,9 +1971,22 @@ a {
   z-index: 0;
 }
 
-.diagnosis-question-screen > .diagnosis-main-region,
-.diagnosis-question-screen > .diagnosis-bottom-region {
+.diagnosis-question-screen--framed {
+  height: 100%;
+}
+
+.diagnosis-content-shell {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  margin-inline: auto;
+  max-width: var(--diagnosis-content-width);
+  min-height: 0;
+  min-width: 0;
   position: relative;
+  width: 100%;
   z-index: 1;
 }
 
@@ -2161,6 +2019,59 @@ a {
   overflow: hidden;
 }
 
+.diagnosis-main-content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--diagnosis-content-gap);
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+}
+
 .diagnosis-question-heading__compact-line {
   display: block;
+}
+
+/* Green-lit viewport tokens (msg 1684+ / post-275 challenge text) */
+.diagnosis-question-screen[data-viewport="mobile"] {
+  --diagnosis-bottom-height: 86px;
+  --diagnosis-columns: 1;
+  --diagnosis-content-gap: 32px;
+  --diagnosis-content-width: 100%;
+  --diagnosis-grid-gap: 12px;
+  --diagnosis-header-height: 76px;
+  --diagnosis-page-bottom: 16px;
+  --diagnosis-page-inline: 12px;
+  --diagnosis-page-top: 32px;
+}
+
+.diagnosis-question-screen[data-viewport="tablet-portrait"] {
+  --diagnosis-bottom-height: 94px;
+  --diagnosis-columns: 2;
+  --diagnosis-content-gap: 36px;
+  --diagnosis-content-width: 100%;
+  --diagnosis-grid-gap: 12px;
+  --diagnosis-header-height: 46px;
+  --diagnosis-page-bottom: 32px;
+  --diagnosis-page-inline: 12px;
+  --diagnosis-page-top: 32px;
+}
+
+.diagnosis-question-screen[data-viewport="tablet-landscape"] {
+  --diagnosis-bottom-height: 86px;
+  --diagnosis-columns: 3;
+  --diagnosis-content-gap: 32px;
+  --diagnosis-content-width: 100%;
+  --diagnosis-grid-gap: 12px;
+  --diagnosis-header-height: 46px;
+  --diagnosis-page-bottom: 32px;
+  --diagnosis-page-inline: 12px;
+  --diagnosis-page-top: 32px;
+}
+
+.diagnosis-question-screen[data-viewport="mobile"] .diagnosis-challenge-context__text,
+.diagnosis-question-screen[data-viewport="tablet-portrait"] .diagnosis-challenge-context__text {
+  font-size: 13px;
+  line-height: 18px;
 }

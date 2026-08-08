@@ -403,32 +403,34 @@ export function DiagnosisQuestionScreen({
       data-viewport={viewport}
     >
       <SiteBackgroundWash />
-      <section
-        className="diagnosis-main-region"
-        aria-label="Diagnosis question and answer options"
-      >
-        {trimmedChallenge ? (
-          <DiagnosisChallengeContext challenge={trimmedChallenge} />
-        ) : null}
-        <DiagnosisQuestionHeader question={activeQuestion} viewport={viewport} />
-        <DiagnosisOptionsRegion
-          onToggleOption={handleToggleOption}
-          question={activeQuestion}
-          selectedOptionIds={selectedIds}
-          viewport={viewport}
+      <div className="diagnosis-content-shell">
+        <section
+          className="diagnosis-main-content"
+          aria-label="Diagnosis question and answer options"
+        >
+          {trimmedChallenge ? (
+            <DiagnosisChallengeContext challenge={trimmedChallenge} />
+          ) : null}
+          <DiagnosisQuestionHeader question={activeQuestion} viewport={viewport} />
+          <DiagnosisOptionsRegion
+            onToggleOption={handleToggleOption}
+            question={activeQuestion}
+            selectedOptionIds={selectedIds}
+            viewport={viewport}
+          />
+        </section>
+        <DiagnosisBottomRegion
+          canContinue={selectedIds.length >= 1}
+          currentStep={activeStepNumber}
+          isLoading={isLoading}
+          onBack={handleBack}
+          onContinue={handleContinue}
+          progressPercentage={progressPercentage}
+          showBack={activeStepIndex > 0 || showBack}
+          stepLabel={activeStepLabel}
+          totalSteps={activeTotalSteps}
         />
-      </section>
-      <DiagnosisBottomRegion
-        canContinue={selectedIds.length >= 1}
-        currentStep={activeStepNumber}
-        isLoading={isLoading}
-        onBack={handleBack}
-        onContinue={handleContinue}
-        progressPercentage={progressPercentage}
-        showBack={activeStepIndex > 0 || showBack}
-        stepLabel={activeStepLabel}
-        totalSteps={activeTotalSteps}
-      />
+      </div>
     </main>
   );
 }
