@@ -1,5 +1,5 @@
 /**
- * Green-lit product surfaces — approved for the stitched Core Experience journey.
+ * Green-lit product surfaces — approved for product use.
  * Playground tuners may still exist for refinement, but product screens must
  * consume these green-lit implementations (not forked exploration copies).
  */
@@ -27,20 +27,6 @@ export const greenlitSurfaces: GreenlitSurface[] = [
     portalHref: "/design-system/core-experience/recommendation-loading",
     productHref: "/recommendation-reveal-template",
     summary:
-      "Centre-card elastic enter, then fan into the recommended workshop deck."
+      "Centre-card elastic enter, then fan into the recommended workshop deck. Linked from loading."
   }
 ];
-
-/** Continuous product preview that stitches green-lit recommendation into the wider journey. */
-export const productJourneyHref = "/journey";
-
-export const productJourneyStages = [
-  { id: "challenge", label: "Challenge", href: "/journey?stage=challenge" },
-  { id: "diagnosis", label: "Diagnosis", href: "/journey?stage=diagnosis" },
-  {
-    id: "recommendation",
-    label: "Recommendation",
-    href: "/journey?stage=recommendation"
-  },
-  { id: "activities", label: "Activities", href: "/journey?stage=activities" }
-] as const;

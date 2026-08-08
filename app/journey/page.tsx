@@ -1,11 +1,6 @@
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
-import { ProductJourney } from "@/components/product/ProductJourney";
-
+/** Legacy path — green-lit recommendation segment lives at /recommendation-loading. */
 export default function ProductJourneyPage() {
-  return (
-    <Suspense fallback={null}>
-      <ProductJourney />
-    </Suspense>
-  );
+  redirect("/recommendation-loading");
 }

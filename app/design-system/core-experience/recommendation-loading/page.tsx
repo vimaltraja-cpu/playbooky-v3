@@ -44,7 +44,7 @@ const overviewCopy = {
   whenToUse:
     "Use it after Diagnosis completion while PlayBooky is preparing the recommendation, including the linked reveal journey.",
   whereItAppears:
-    "Product routes /recommendation-loading and /journey (recommendation stage), plus this Design Portal review page.",
+    "Product route /recommendation-loading (loading → reveal) and this Design Portal review page.",
   whyItExists:
     "To make analysis feel intentional, calm, and premium before the recommended workshop appears."
 };
@@ -52,7 +52,6 @@ const overviewCopy = {
 const specs = [
   ["Status", "Green-lit / Approved"],
   ["Product route", "/recommendation-loading"],
-  ["Stitched journey", "/journey"],
   ["Portal route", "/design-system/core-experience/recommendation-loading"],
   ["Motion source", "lib/design-system/recommendation-watercolor-motion.ts"],
   ["Sequence", "Goals -> Challenges -> Context -> Participants -> Outcome"],
