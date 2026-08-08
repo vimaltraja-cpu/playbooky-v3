@@ -2,9 +2,12 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
+import { ViewportReviewLayout } from "@/components/portal/ViewportReviewLayout";
+
+const SYSTEM_ICON_PATH = "/assets/icons/system Icons";
 
 export type ComponentSectionId =
-  "overview" | "specs" | "viewports" | "states" | "tokens" | "accessibility";
+  "overview" | "viewports" | "states" | "specs" | "tokens" | "accessibility";
 
 export type ComponentSectionNavItem = {
   id: ComponentSectionId | string;
@@ -28,6 +31,60 @@ const defaultSectionItems: ComponentSectionNavItem[] = [
   { id: "tokens", label: "Tokens" },
   { id: "accessibility", label: "Accessibility" }
 ];
+
+const sectionIcons: Record<string, string> = {
+  accessibility: "shield",
+  overview: "book-open",
+  specs: "file-text",
+  states: "sliders",
+  tokens: "tag",
+  viewports: "monitor"
+};
+
+function SystemIcon({ name }: { name: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="block h-4 w-4 shrink-0 bg-current [mask-position:center] [mask-repeat:no-repeat] [mask-size:16px_16px]"
+      style={{
+        WebkitMaskImage: `url("${SYSTEM_ICON_PATH}/${name}.svg")`,
+        maskImage: `url("${SYSTEM_ICON_PATH}/${name}.svg")`
+      }}
+    />
+  );
+}
+
+function SectionHeading({
+  children,
+  description,
+  title
+}: {
+  children?: ReactNode;
+  description?: string;
+  title: string;
+}) {
+  return (
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="max-w-3xl">
+        <h3 className="text-[15px] font-semibold leading-6 text-[#ededed]">
+          {title}
+        </h3>
+        {description ? (
+          <p className="mt-2 text-sm leading-6 text-[#a1a1a1]">
+            {description}
+          </p>
+        ) : null}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+const panelClassName =
+  "rounded-[10px] border border-white/[0.14] bg-[#0a0a0a]";
+
+const previewPanelClassName =
+  "rounded-[10px] border border-white/[0.14] bg-[#111214]";
 
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -71,6 +128,22 @@ export function ComponentSectionNav({
 }: {
   items?: ComponentSectionNavItem[];
 }) {
+  const orderedItems = [...items].sort((a, b) => {
+    const order: Record<string, number> = {
+      accessibility: 5,
+      overview: 0,
+      specs: 1,
+      states: 3,
+      tokens: 4,
+      viewports: 2
+    };
+    const aIndex = items.findIndex((item) => item.id === a.id);
+    const bIndex = items.findIndex((item) => item.id === b.id);
+    return (
+      (order[a.id] ?? 2.5 + aIndex / 100) -
+      (order[b.id] ?? 2.5 + bIndex / 100)
+    );
+  });
   const [activeSection, setActiveSection] = useState(
     items[0]?.id ?? "overview"
   );
@@ -155,29 +228,30 @@ export function ComponentSectionNav({
   return (
     <nav
       aria-label="Component page sections"
-      className="sticky top-0 z-20 -mx-5 mt-8 flex justify-center border-y border-[color:var(--line)] bg-[color:var(--background)]/88 px-5 py-3 backdrop-blur sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12"
+      className="sticky top-0 z-20 -mx-5 mt-7 border-y border-white/[0.1] bg-black/90 px-5 backdrop-blur sm:-mx-8 sm:px-8"
     >
-      <div className="relative mx-auto inline-flex max-w-full gap-2 overflow-x-auto rounded-full border border-[color:var(--line)] bg-white/60 p-1 shadow-[0_12px_34px_rgba(36,31,24,0.06)]">
+      <div className="relative flex max-w-full gap-1 overflow-x-auto">
         <span
           aria-hidden="true"
-          className="absolute bottom-1 top-1 rounded-full bg-[#7D5330] shadow-[0_12px_28px_rgba(125,83,48,0.24)] transition-[transform,width] duration-[320ms] ease-[cubic-bezier(0.2,0,0,1)] will-change-[transform,width] motion-reduce:transition-none"
+          className="absolute bottom-0 h-px bg-sky-300 transition-[transform,width] duration-[280ms] ease-[cubic-bezier(0.2,0,0,1)] will-change-[transform,width] motion-reduce:transition-none"
           style={{
-            transform: `translateX(${indicator.left - 4}px)`,
+            transform: `translateX(${indicator.left}px)`,
             width: indicator.width
           }}
         />
-        {items.map((item) => {
+        {orderedItems.map((item) => {
           const isActive = activeSection === item.id;
           const href = item.id === "overview" ? "#" : `#${item.id}`;
+          const label = item.id === "viewports" ? "Viewports" : item.label;
 
           return (
             <a
               aria-current={isActive ? "location" : undefined}
               className={[
-                "relative z-10 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-[320ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+                "relative z-10 inline-flex h-11 items-center gap-2 whitespace-nowrap px-3 text-[13px] font-medium leading-5 transition-colors duration-[180ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
                 isActive
-                  ? "!text-[#FCFBF9]"
-                  : "!text-[#171614] hover:bg-[#EFE3D2]/60"
+                  ? "text-[#ededed]"
+                  : "text-[#8f8f8f] hover:text-[#d4d4d4] focus-visible:text-[#d4d4d4]"
               ].join(" ")}
               href={href}
               key={item.id}
@@ -197,7 +271,8 @@ export function ComponentSectionNav({
                 itemRefs.current[item.id] = element;
               }}
             >
-              {item.label}
+              <SystemIcon name={sectionIcons[item.id] ?? "circle"} />
+              {label}
             </a>
           );
         })}
@@ -218,30 +293,32 @@ export function ComponentPageShell({
   sections?: ComponentSectionNavItem[];
 }) {
   return (
-    <section className="min-w-0 px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
+    <section
+      className="min-w-0 bg-black px-5 py-7 pb-16 text-[#ededed] [--accent:#8ec5ff] [--accent-strong:#bae6fd] [--background:#000] [--foreground:#ededed] [--gold:#8f8f8f] [--line:rgba(255,255,255,0.14)] [--muted:#a1a1a1] [--panel:#0a0a0a] [--panel-soft:#111214] [--rose:#fda4af] sm:px-8"
+    >
       <div className="mx-auto max-w-6xl">
-        <header className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--gold)]">
+        <header className="border-b border-white/[0.1] pb-7">
+          <p className="text-[12px] font-medium leading-5 text-[#737373]">
             {metadata.category}
           </p>
-          <h2 className="mt-4 text-4xl font-semibold tracking-normal sm:text-5xl">
+          <h2 className="mt-2 text-[22px] font-semibold leading-8 text-[#f5f5f5]">
             {metadata.title}
           </h2>
-          <p className="mt-5 text-base leading-8 text-[color:var(--muted)] sm:text-lg">
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-[#a1a1a1]">
             {description}
           </p>
-          <dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-[12px] leading-5">
             {[
               ["Status", metadata.status],
               ["Confidence", metadata.confidence],
               ["Owner", metadata.owner],
               ["Last updated", metadata.lastUpdated]
             ].map(([term, detail]) => (
-              <div key={term}>
-                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
-                  {term}
+              <div className="flex items-center gap-2" key={term}>
+                <dt className="font-medium text-[#737373]">
+                  {term}:
                 </dt>
-                <dd className="mt-1 font-medium text-[color:var(--foreground)]">
+                <dd className="font-medium text-[#d4d4d4]">
                   {detail}
                 </dd>
               </div>
@@ -283,20 +360,20 @@ export function ComponentOverviewSection({
   ];
 
   return (
-    <section id="overview" className="scroll-mt-40 py-14">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <section id="overview" className="scroll-mt-28 py-8">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div>
-          <h3 className="text-3xl font-semibold">Overview</h3>
-          <p className="mt-5 max-w-3xl text-base leading-8 text-[color:var(--muted)]">
+          <SectionHeading title="Overview" />
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-[#a1a1a1]">
             {summary}
           </p>
-          <dl className="mt-8 grid gap-6 sm:grid-cols-2">
+          <dl className="mt-5 grid gap-3 sm:grid-cols-2">
             {overviewItems.map(([term, description]) => (
-              <div key={term}>
-                <dt className="text-sm font-semibold text-[color:var(--foreground)]">
+              <div className={`${panelClassName} p-4`} key={term}>
+                <dt className="text-[13px] font-medium leading-5 text-[#ededed]">
                   {term}
                 </dt>
-                <dd className="mt-2 text-sm leading-7 text-[color:var(--muted)]">
+                <dd className="mt-2 text-sm leading-6 text-[#a1a1a1]">
                   {description}
                 </dd>
               </div>
@@ -304,11 +381,11 @@ export function ComponentOverviewSection({
           </dl>
         </div>
         {statusNote ? (
-          <aside className="h-fit border-l-4 border-[#D99C56] py-2 pl-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--gold)]">
+          <aside className={`${panelClassName} h-fit p-4`}>
+            <p className="text-[12px] font-medium leading-5 text-[#737373]">
               Status
             </p>
-            <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
+            <p className="mt-2 text-sm leading-6 text-[#a1a1a1]">
               {statusNote}
             </p>
           </aside>
@@ -326,121 +403,25 @@ export type ViewportShowroomItem<Viewport extends string> = {
 
 export function ComponentViewportShowroom<Viewport extends string>({
   description,
+  preservePanelOnViewportChange,
   renderPreview,
-  title = "Viewports",
+  title = "Viewport",
   viewports
 }: {
   description: string;
+  preservePanelOnViewportChange?: boolean;
   renderPreview: (viewport: Viewport) => ReactNode;
   title?: string;
   viewports: Array<ViewportShowroomItem<Viewport>>;
 }) {
-  const [activeViewport, setActiveViewport] = useState(viewports[0].id);
-  const [indicator, setIndicator] = useState({ left: 4, width: 0 });
-  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-  const activeItem =
-    viewports.find((viewport) => viewport.id === activeViewport) ??
-    viewports[0];
-
-  useEffect(() => {
-    const updateIndicator = () => {
-      const activeElement = triggerRefs.current[activeViewport];
-
-      if (!activeElement) {
-        return;
-      }
-
-      setIndicator({
-        left: activeElement.offsetLeft,
-        width: activeElement.offsetWidth
-      });
-    };
-
-    updateIndicator();
-    window.addEventListener("resize", updateIndicator);
-
-    return () => {
-      window.removeEventListener("resize", updateIndicator);
-    };
-  }, [activeViewport]);
-
   return (
-    <section id="viewports" className="scroll-mt-40 py-10">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h3 className="text-2xl font-semibold">{title}</h3>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[color:var(--muted)]">
-            {description}
-          </p>
-        </div>
-        <div
-          aria-label="Viewport preview"
-          className="relative flex w-fit rounded-full border border-[color:var(--line)] bg-white/65 p-1"
-          role="tablist"
-        >
-          <span
-            aria-hidden="true"
-            className="absolute bottom-1 top-1 rounded-full bg-[#7D5330] shadow-[0_10px_24px_rgba(125,83,48,0.18)] transition-[transform,width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none"
-            style={{
-              transform: `translateX(${indicator.left - 4}px)`,
-              width: indicator.width
-            }}
-          />
-          {viewports.map((viewport) => (
-            <button
-              aria-controls={`viewport-panel-${viewport.id}`}
-              aria-selected={activeViewport === viewport.id}
-              className={[
-                "relative z-10 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
-                activeViewport === viewport.id
-                  ? "!text-[#FCFBF9]"
-                  : "!text-[#171614] hover:bg-[#EFE3D2]/60"
-              ].join(" ")}
-              id={`viewport-tab-${viewport.id}`}
-              key={viewport.id}
-              onClick={() => setActiveViewport(viewport.id)}
-              ref={(element) => {
-                triggerRefs.current[viewport.id] = element;
-              }}
-              role="tab"
-              type="button"
-            >
-              {viewport.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-6 grid gap-5 min-[1500px]:grid-cols-[minmax(820px,1fr)_320px]">
-        <div
-          aria-labelledby={`viewport-tab-${activeItem.id}`}
-          className="min-w-0 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none"
-          id={`viewport-panel-${activeItem.id}`}
-          key={activeItem.id}
-          role="tabpanel"
-        >
-          {renderPreview(activeItem.id)}
-        </div>
-        <div className="rounded-[24px] border border-[color:var(--line)] bg-white/55 p-5">
-          <h4 className="text-sm font-semibold">
-            {activeItem.label} measurement notes
-          </h4>
-          <dl className="mt-5 space-y-4">
-            {activeItem.notes.map(([term, description]) => (
-              <div key={term}>
-                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
-                  {term}
-                </dt>
-                <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
-                  {description}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
-    </section>
+    <ViewportReviewLayout
+      description={description}
+      preservePanelOnViewportChange={preservePanelOnViewportChange}
+      renderPreview={renderPreview}
+      title={title}
+      viewports={viewports}
+    />
   );
 }
 
@@ -526,31 +507,25 @@ export function ComponentStateShowroom<State extends string>({
   };
 
   return (
-    <section id="states" className="scroll-mt-40 py-10">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="max-w-3xl">
-          <h3 className="text-2xl font-semibold">{title}</h3>
-          <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
-            {description}
-          </p>
-        </div>
+    <section id="states" className="scroll-mt-28 py-8">
+      <SectionHeading description={description} title={title}>
         {autoplayEnabled ? (
           <p
             aria-live="polite"
-            className="text-sm font-medium text-[color:var(--muted)]"
+            className="text-[12px] font-medium leading-5 text-[#737373]"
           >
             {autoplay ? "Auto-playing showroom" : "Autoplay paused"}
           </p>
         ) : (
-          <p className="text-sm font-medium text-[color:var(--muted)]">
+          <p className="text-[12px] font-medium leading-5 text-[#737373]">
             Manual review
           </p>
         )}
-      </div>
+      </SectionHeading>
 
       <div
         aria-label="Component states"
-        className="mt-6 flex w-fit max-w-full rounded-full border border-[color:var(--line)] bg-white/65 p-1"
+        className="mt-5 flex w-fit max-w-full overflow-x-auto rounded-md border border-white/[0.14] bg-[#0a0a0a] p-1"
         role="tablist"
       >
         {states.map((state) => (
@@ -558,10 +533,10 @@ export function ComponentStateShowroom<State extends string>({
             aria-controls={`state-panel-${state.id}`}
             aria-selected={activeState === state.id}
             className={[
-              "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+              "rounded px-3 py-1.5 text-[13px] font-medium leading-5 transition-colors duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
               activeState === state.id
-                ? "bg-[#7D5330] !text-[#FCFBF9] shadow-[0_10px_24px_rgba(125,83,48,0.18)]"
-                : "!text-[#171614] hover:bg-[#EFE3D2]/60"
+                ? "bg-white/[0.08] text-[#ededed]"
+                : "text-[#8f8f8f] hover:bg-white/[0.055] hover:text-[#d4d4d4]"
             ].join(" ")}
             id={`state-tab-${state.id}`}
             key={state.id}
@@ -574,10 +549,10 @@ export function ComponentStateShowroom<State extends string>({
         ))}
       </div>
 
-      <div className="mt-6 grid gap-5 min-[1500px]:grid-cols-[minmax(820px,1fr)_320px]">
+      <div className="mt-5 grid gap-4 min-[1500px]:grid-cols-[minmax(820px,1fr)_320px]">
         <div
           aria-labelledby={`state-tab-${activeItem.id}`}
-          className="flex min-h-[430px] min-w-0 items-center justify-center rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-6 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none"
+          className={`${previewPanelClassName} flex min-h-[430px] min-w-0 items-center justify-center p-5 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none`}
           id={`state-panel-${activeItem.id}`}
           key={activeItem.id}
           role="tabpanel"
@@ -586,15 +561,17 @@ export function ComponentStateShowroom<State extends string>({
             {renderPreview(activeItem.id, prefersReducedMotion)}
           </div>
         </div>
-        <div className="rounded-[24px] border border-[color:var(--line)] bg-white/55 p-5">
-          <h4 className="text-sm font-semibold">{activeItem.label} notes</h4>
-          <dl className="mt-5 space-y-4">
+        <div className={`${panelClassName} p-4`}>
+          <h4 className="text-[13px] font-medium leading-5 text-[#ededed]">
+            {activeItem.label} notes
+          </h4>
+          <dl className="mt-4 space-y-4">
             {activeItem.notes.map(([term, description]) => (
               <div key={term}>
-                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
+                <dt className="text-[12px] font-medium leading-5 text-[#737373]">
                   {term}
                 </dt>
-                <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+                <dd className="mt-1 text-sm leading-6 text-[#a1a1a1]">
                   {description}
                 </dd>
               </div>
@@ -628,32 +605,29 @@ export function ComponentTokensSection({
   tokens: ComponentTokenRow[];
 }) {
   return (
-    <section id="tokens" className="scroll-mt-40 py-10">
-      <h3 className="text-2xl font-semibold">Tokens</h3>
-      <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
-        {description}
-      </p>
-      <div className="mt-5 overflow-hidden rounded-[24px] border border-[color:var(--line)] bg-white/55">
+    <section id="tokens" className="scroll-mt-28 py-8">
+      <SectionHeading description={description} title="Tokens" />
+      <div className={`${panelClassName} mt-5 overflow-hidden`}>
         {tokens.map((token) => (
           <div
-            className="grid gap-3 border-b border-[color:var(--line)] p-4 last:border-b-0 lg:grid-cols-[180px_150px_minmax(0,1fr)_minmax(0,1fr)]"
+            className="grid gap-3 border-b border-white/[0.1] p-4 last:border-b-0 lg:grid-cols-[180px_150px_minmax(0,1fr)_minmax(0,1fr)]"
             key={`${token.label}-${token.implementationValue}`}
           >
             <div>
-              <p className="text-sm font-semibold text-[color:var(--foreground)]">
+              <p className="text-[13px] font-medium leading-5 text-[#ededed]">
                 {token.label}
               </p>
-              <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--gold)]">
+              <p className="mt-1 text-[12px] font-medium leading-5 text-[#737373]">
                 {tokenStatusLabels[token.status]}
               </p>
             </div>
-            <p className="font-mono text-sm text-[color:var(--muted)]">
+            <p className="font-mono text-[13px] leading-6 text-[#a1a1a1]">
               {token.implementationValue}
             </p>
-            <p className="text-sm leading-6 text-[color:var(--muted)]">
+            <p className="text-sm leading-6 text-[#a1a1a1]">
               {token.futureToken ?? "Token name pending approval."}
             </p>
-            <p className="text-sm leading-6 text-[color:var(--muted)]">
+            <p className="text-sm leading-6 text-[#a1a1a1]">
               {token.status === "approved"
                 ? "Ready for implementation use."
                 : "Map this implementation value to an approved token before product use."}
@@ -695,21 +669,21 @@ export function ComponentAccessibilitySection({
   ] as const;
 
   return (
-    <section id="accessibility" className="scroll-mt-40 py-10">
-      <h3 className="text-2xl font-semibold">Accessibility</h3>
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+    <section id="accessibility" className="scroll-mt-28 py-8">
+      <SectionHeading title="Accessibility" />
+      <div className="mt-5 grid gap-4 lg:grid-cols-2">
         {groups.map(([groupTitle, items]) => (
-          <div key={groupTitle}>
-            <h4 className="text-sm font-semibold text-[color:var(--foreground)]">
+          <div className={`${panelClassName} p-4`} key={groupTitle}>
+            <h4 className="text-[13px] font-medium leading-5 text-[#ededed]">
               {groupTitle}
             </h4>
             <dl className="mt-3 space-y-4">
               {items.map((item) => (
                 <div key={item.title}>
-                  <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
+                  <dt className="text-[12px] font-medium leading-5 text-[#737373]">
                     {item.title}
                   </dt>
-                  <dd className="mt-1 text-sm leading-7 text-[color:var(--muted)]">
+                  <dd className="mt-1 text-sm leading-6 text-[#a1a1a1]">
                     {item.description}
                   </dd>
                 </div>

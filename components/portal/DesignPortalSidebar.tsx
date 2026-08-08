@@ -1,351 +1,357 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+import {
+  portalNavigation,
+  type PortalNavGroup,
+  type PortalNavItem,
+  type PortalNavSection
+} from "@/lib/design-system/portal-navigation";
 
-type SidebarItem = {
-  href: string;
-  label: string;
-};
+const SIDEBAR_EXPANDED_WIDTH = "304px";
+const SIDEBAR_COLLAPSED_WIDTH = "76px";
+const SIDEBAR_STORAGE_KEY = "playbooky.portal.sidebar.collapsed";
+const SIDEBAR_TRANSITION = "duration-300 ease-[cubic-bezier(0.2,0,0,1)]";
+const SYSTEM_ICON_PATH = "/assets/icons/system Icons";
+const NAVIGATION_LOGO_PATH = "/assets/navigation-icons";
 
-type SidebarGroup = {
-  children: SidebarItem[];
-  id: string;
-  label: string;
-};
+type OpenSection = "design-system" | "product-system" | "core-experience" | null;
 
-type SidebarFolder = {
-  children?: SidebarItem[];
-  groups?: SidebarGroup[];
-  id: string;
-  label: string;
-};
+const logoIconSrc = `${NAVIGATION_LOGO_PATH}/logo-Icon.svg`;
+const logoWordmarkSrc = `${NAVIGATION_LOGO_PATH}/logo-word.svg`;
 
-const sidebarFolders: SidebarFolder[] = [
-  {
-    children: [
-      { href: "#", label: "Overview" },
-      { href: "#", label: "Primitive tokens" },
-      { href: "#", label: "Semantic tokens" }
-    ],
-    id: "foundations",
-    label: "Foundations"
-  },
-  {
-    children: [
-      { href: "#", label: "Colour tokens" },
-      { href: "#", label: "Accessibility" },
-      { href: "#", label: "Usage" }
-    ],
-    id: "colours",
-    label: "Colours"
-  },
-  {
-    children: [
-      { href: "#", label: "Type scale" },
-      { href: "#", label: "Weights" },
-      { href: "#", label: "Line height" }
-    ],
-    id: "typography",
-    label: "Typography"
-  },
-  {
-    groups: [
-      {
-        children: [
-          {
-            href: "/design-system/components/ai-composer",
-            label: "AI Composer"
-          },
-          {
-            href: "/design-system/core-experience/diagnosis-card",
-            label: "Diagnosis Card"
-          },
-          {
-            href: "/design-system/core-experience/diagnosis-grid",
-            label: "Diagnosis Grid"
-          },
-          {
-            href: "/design-system/core-experience/recommendation-deck",
-            label: "Recommendation Deck"
-          },
-          {
-            href: "/design-system/core-experience/recommendation-loading",
-            label: "Recommendation Loading"
-          },
-          {
-            href: "/design-system/core-experience/activity-card",
-            label: "Activity Card"
-          },
-          {
-            href: "/design-system/core-experience/activity-modal",
-            label: "Activity Modal"
-          }
-        ],
-        id: "core-experience",
-        label: "Core Experience"
-      },
-      {
-        children: [
-          {
-            href: "/design-system/workspace/builder-grid",
-            label: "Builder Grid"
-          },
-          {
-            href: "/design-system/workspace/drag-handle",
-            label: "Drag Handle"
-          },
-          { href: "/design-system/workspace/drop-zone", label: "Drop Zone" },
-          { href: "/design-system/workspace/toolbar", label: "Toolbar" },
-          { href: "/design-system/workspace/selection", label: "Selection" }
-        ],
-        id: "workspace",
-        label: "Workspace"
-      },
-      {
-        children: [
-          { href: "/design-system/navigation/header", label: "Header" },
-          { href: "/design-system/navigation/sidebar", label: "Sidebar" },
-          { href: "/design-system/navigation/tabs", label: "Tabs" },
-          {
-            href: "/design-system/navigation/breadcrumbs",
-            label: "Breadcrumbs"
-          },
-          { href: "/design-system/navigation/menu", label: "Menu" }
-        ],
-        id: "navigation",
-        label: "Navigation"
-      },
-      {
-        children: [
-          { href: "/design-system/feedback/loading", label: "Loading" },
-          { href: "/design-system/feedback/progress", label: "Progress" },
-          { href: "/design-system/feedback/empty-state", label: "Empty State" },
-          { href: "/design-system/feedback/alert", label: "Alert" },
-          { href: "/design-system/feedback/toast", label: "Toast" }
-        ],
-        id: "feedback",
-        label: "Feedback"
-      },
-      {
-        children: [
-          { href: "/design-system/overlays/modal", label: "Modal" },
-          { href: "/design-system/overlays/drawer", label: "Drawer" },
-          { href: "/design-system/overlays/popover", label: "Popover" },
-          { href: "/design-system/overlays/tooltip", label: "Tooltip" },
-          {
-            href: "/design-system/overlays/bottom-sheet",
-            label: "Bottom Sheet"
-          }
-        ],
-        id: "overlays",
-        label: "Overlays"
-      },
-      {
-        children: [
-          { href: "/design-system/components/inputs", label: "Search Input" },
-          { href: "/design-system/components/inputs", label: "Text Input" },
-          { href: "/design-system/components/inputs", label: "Textarea" },
-          { href: "/design-system/utilities/select", label: "Select" },
-          { href: "/design-system/utilities/checkbox", label: "Checkbox" },
-          { href: "/design-system/utilities/radio", label: "Radio" },
-          { href: "/design-system/utilities/switch", label: "Switch" }
-        ],
-        id: "utilities",
-        label: "Utilities"
-      }
-    ],
-    id: "components",
-    label: "Components"
-  },
-  {
-    children: [
-      { href: "#", label: "Recommendation" },
-      { href: "#", label: "Diagnosis" },
-      { href: "#", label: "Builder" }
-    ],
-    id: "patterns",
-    label: "Patterns"
-  },
-  {
-    children: [
-      { href: "#", label: "Icons" },
-      { href: "#", label: "Illustrations" },
-      { href: "#", label: "Logos" }
-    ],
-    id: "assets",
-    label: "Assets"
-  }
-];
-
-function itemIsActive(item: SidebarItem, activeHref: string) {
+function itemIsActive(item: PortalNavItem, activeHref: string) {
   return item.href === activeHref;
 }
 
-function sidebarGroupHasActiveChild(group: SidebarGroup, activeHref: string) {
+function groupHasActiveChild(group: PortalNavGroup, activeHref: string) {
   return group.children.some((child) => itemIsActive(child, activeHref));
 }
 
-function sidebarFolderHasActiveChild(
-  folder: SidebarFolder,
-  activeHref: string
-) {
+function sectionHasActiveChild(section: PortalNavSection, activeHref: string) {
   return Boolean(
-    folder.children?.some((child) => itemIsActive(child, activeHref)) ||
-    folder.groups?.some((group) =>
-      sidebarGroupHasActiveChild(group, activeHref)
+    section.children?.some((child) => itemIsActive(child, activeHref)) ||
+    section.groups?.some((group) => groupHasActiveChild(group, activeHref))
+  );
+}
+
+function getActiveSection(activeHref: string): OpenSection {
+  const activeSection = portalNavigation.find((section) =>
+    sectionHasActiveChild(section, activeHref)
+  );
+
+  return (activeSection?.id as OpenSection | undefined) ?? null;
+}
+
+function getActiveGroupExpansion(activeHref: string): Record<string, boolean> {
+  return Object.fromEntries(
+    portalNavigation.flatMap(
+      (section) =>
+        section.groups?.map((group) => [
+          group.id,
+          groupHasActiveChild(group, activeHref)
+        ]) ?? []
     )
+  ) as Record<string, boolean>;
+}
+
+function SidebarTooltip({
+  children,
+  label
+}: {
+  children: ReactNode;
+  label: string;
+}) {
+  return (
+    <span className="group relative grid place-items-center">
+      {children}
+      <span
+        className="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-md border border-white/[0.08] bg-[#1d1f23] px-2.5 py-1.5 text-xs font-medium text-zinc-100 opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.32)] transition-opacity delay-300 duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+        role="tooltip"
+      >
+        {label}
+      </span>
+    </span>
+  );
+}
+
+function SystemIcon({ name }: { name: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="block h-[18px] w-[18px] shrink-0 bg-current [mask-position:center] [mask-repeat:no-repeat] [mask-size:18px_18px]"
+      style={{
+        WebkitMaskImage: `url("${SYSTEM_ICON_PATH}/${name}.svg")`,
+        maskImage: `url("${SYSTEM_ICON_PATH}/${name}.svg")`
+      }}
+    />
+  );
+}
+
+function SidebarToggleIcon({ direction }: { direction: "left" | "right" }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-4 w-4"
+      fill="none"
+      viewBox="0 0 20 20"
+    >
+      <path
+        d={
+          direction === "right"
+            ? "M7.25 4.75 12.5 10l-5.25 5.25"
+            : "M12.75 4.75 7.5 10l5.25 5.25"
+        }
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.6"
+      />
+    </svg>
+  );
+}
+
+function LogoMark({ collapsed }: { collapsed: boolean }) {
+  return (
+    <Image
+      alt=""
+      aria-hidden="true"
+      className={collapsed ? "h-9 w-9" : "h-14 w-auto"}
+      height={70}
+      src={collapsed ? logoIconSrc : logoWordmarkSrc}
+      width={72}
+    />
+  );
+}
+
+function Wordmark() {
+  return (
+    <div
+      aria-label="PlayBooky Design Portal"
+      className="grid min-w-0 place-items-start"
+    >
+      <LogoMark collapsed={false} />
+    </div>
+  );
+}
+
+function SidebarEdgeHandle({
+  collapsed,
+  onToggle
+}: {
+  collapsed: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <SidebarTooltip label={collapsed ? "Open sidebar" : "Close sidebar"}>
+      <button
+        aria-label={collapsed ? "Open sidebar" : "Close sidebar"}
+        className="grid h-8 w-8 place-items-center rounded-full border border-white/[0.1] bg-[#17191d] text-zinc-300 shadow-[0_12px_28px_rgba(0,0,0,0.34)] transition-[background-color,border-color,color,transform] duration-200 ease-[cubic-bezier(0.2,0,0,1)] hover:border-white/[0.18] hover:bg-[#202328] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300/70 motion-reduce:transition-none"
+        onClick={onToggle}
+        type="button"
+      >
+        <SidebarToggleIcon direction={collapsed ? "right" : "left"} />
+      </button>
+    </SidebarTooltip>
   );
 }
 
 function SidebarLink({
   active,
-  href = "#",
-  label
+  item
 }: {
   active?: boolean;
-  href?: string;
-  label: string;
+  item: PortalNavItem;
 }) {
   return (
     <a
       aria-current={active ? "page" : undefined}
       className={[
-        "relative block rounded-[18px] px-3 py-[5px] text-[13px] font-medium leading-5 transition",
+        "group relative flex min-h-8 items-center gap-2.5 rounded-md px-2 py-1.5 text-[13px] font-medium leading-5 transition-colors",
         active
-          ? "bg-white/45 pl-3.5 font-semibold text-[#7D5330] shadow-[inset_2px_0_0_#7D5330]"
-          : "text-[#686156] hover:bg-white/65 hover:text-[#171614]"
+          ? "bg-white/[0.08] text-white before:absolute before:left-0 before:top-1.5 before:h-5 before:w-px before:bg-sky-300"
+          : "text-zinc-400 hover:bg-white/[0.055] hover:text-zinc-100"
       ].join(" ")}
-      href={href}
+      href={item.href}
     >
-      {label}
+      <span className="grid w-5 shrink-0 place-items-center text-zinc-500 transition-colors group-hover:text-zinc-300 group-aria-[current=page]:text-zinc-200">
+        <SystemIcon name={item.icon} />
+      </span>
+      <span className="truncate">{item.label}</span>
     </a>
   );
 }
 
-function SidebarFolderView({
-  activeHref,
-  expandedFolders,
-  folder,
-  isOpen,
-  onGroupToggle,
-  onToggle
-}: {
-  activeHref: string;
-  expandedFolders: Record<string, boolean>;
-  folder: SidebarFolder;
-  isOpen: boolean;
-  onGroupToggle: (id: string) => void;
-  onToggle: () => void;
-}) {
-  const hasActiveChild = sidebarFolderHasActiveChild(folder, activeHref);
-
+function CollapseChevron({ hidden, open }: { hidden?: boolean; open: boolean }) {
   return (
-    <section
+    <span
+      aria-hidden="true"
       className={[
-        "rounded-2xl transition-colors",
-        hasActiveChild
-          ? "bg-[#FBF6ED] p-1 shadow-[inset_0_0_0_1px_rgba(125,83,48,0.08)]"
-          : ""
+        "text-zinc-500 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
+        open ? "rotate-90" : "rotate-0",
+        hidden ? "opacity-0" : "opacity-100"
       ].join(" ")}
     >
+      &gt;
+    </span>
+  );
+}
+
+function SidebarSection({
+  activeHref,
+  collapsed,
+  expanded,
+  expandedGroups,
+  onCollapsedOpen,
+  onGroupToggle,
+  onToggle,
+  section
+}: {
+  activeHref: string;
+  collapsed: boolean;
+  expanded: boolean;
+  expandedGroups: Record<string, boolean>;
+  onCollapsedOpen: (id: OpenSection) => void;
+  onGroupToggle: (id: string) => void;
+  onToggle: () => void;
+  section: PortalNavSection;
+}) {
+  const active = sectionHasActiveChild(section, activeHref);
+
+  if (collapsed) {
+    return (
+      <SidebarTooltip label={section.label}>
+        <button
+          aria-label={section.label}
+          aria-expanded={expanded}
+          className={[
+            "relative mx-auto grid h-11 w-11 place-items-center rounded-lg transition-colors",
+            active
+              ? "bg-white/[0.08]"
+              : "hover:bg-white/[0.055] focus-visible:bg-white/[0.055]",
+            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300/70"
+          ].join(" ")}
+          onClick={() => onCollapsedOpen(section.id as OpenSection)}
+          type="button"
+        >
+          <span
+            className={[
+              "grid h-5 w-5 place-items-center",
+              active ? "text-zinc-100" : "text-zinc-400"
+            ].join(" ")}
+          >
+            <SystemIcon name={section.icon} />
+          </span>
+          {active ? (
+            <span className="absolute left-0 top-2.5 h-6 w-px bg-sky-300" />
+          ) : null}
+        </button>
+      </SidebarTooltip>
+    );
+  }
+
+  const sectionPanelId = `portal-section-${section.id}`;
+
+  return (
+    <section>
       <button
-        aria-expanded={isOpen}
+        aria-controls={sectionPanelId}
+        aria-expanded={expanded}
         className={[
-          "flex w-full items-center justify-between gap-3 rounded-xl px-2.5 py-1.5 text-left transition hover:bg-white/55",
-          hasActiveChild ? "text-[#7D5330]" : ""
+          "flex w-full items-center justify-between gap-3 rounded-md px-2 py-2 text-left text-[12px] font-medium transition-colors",
+          active
+            ? "text-zinc-100"
+            : "text-zinc-500 hover:bg-white/[0.045] hover:text-zinc-300"
         ].join(" ")}
         onClick={onToggle}
         type="button"
       >
-        <span
-          className={[
-            "text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--gold)]",
-            hasActiveChild ? "!text-[#7D5330]" : ""
-          ].join(" ")}
-        >
-          {folder.label}
+        <span className="flex min-w-0 items-center gap-2.5">
+          <span className="grid w-5 shrink-0 place-items-center text-zinc-500">
+            <SystemIcon name={section.icon} />
+          </span>
+          <span className="truncate">{section.label}</span>
         </span>
-        <span
-          aria-hidden="true"
-          className={[
-            "grid h-5 w-5 place-items-center rounded-full text-[#9A9287] transition duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
-            isOpen ? "rotate-90 text-[#7D5330]" : "rotate-0"
-          ].join(" ")}
-        >
-          ›
-        </span>
+        <CollapseChevron open={expanded} />
       </button>
+
       <div
+        id={sectionPanelId}
         className={[
-          "grid transition-[grid-template-rows,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
-          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          "grid transition-[grid-template-rows,opacity,transform] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+          expanded
+            ? "translate-y-0 grid-rows-[1fr] opacity-100"
+            : "-translate-y-1 grid-rows-[0fr] opacity-0"
         ].join(" ")}
       >
         <div className="overflow-hidden">
           <div
             className={[
-              "mt-1 pb-1.5",
-              folder.groups
-                ? "ml-2 space-y-1 border-l border-[#E6D8C4] pl-2"
-                : "space-y-0.5 pl-2"
+              "mt-1 space-y-1 pl-1 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+              expanded ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
             ].join(" ")}
           >
-            {folder.children?.map((item) => (
+            {section.children?.map((item) => (
               <SidebarLink
                 active={itemIsActive(item, activeHref)}
-                href={item.href}
-                key={item.label}
-                label={item.label}
+                item={item}
+                key={item.href}
               />
             ))}
-            {folder.groups?.map((group) => {
-              const groupIsOpen = expandedFolders[group.id];
-              const groupIsActive = sidebarGroupHasActiveChild(
-                group,
-                activeHref
-              );
+
+            {section.groups?.map((group) => {
+              const groupOpen = expandedGroups[group.id];
+              const groupActive = groupHasActiveChild(group, activeHref);
+              const groupPanelId = `portal-group-${group.id}`;
 
               return (
-                <div key={group.id}>
+                <div className="pt-1" key={group.id}>
                   <button
-                    aria-expanded={groupIsOpen}
+                    aria-controls={groupPanelId}
+                    aria-expanded={groupOpen}
                     className={[
-                      "flex w-full items-center justify-between gap-3 rounded-xl px-2.5 py-[5px] text-left text-[13.5px] font-semibold leading-5 transition hover:bg-white/55",
-                      groupIsActive
-                        ? "bg-white/45 text-[#7D5330]"
-                        : "text-[#2C2924]"
+                      "flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-[12px] font-medium transition-colors",
+                      groupActive
+                        ? "text-zinc-100"
+                        : "text-zinc-500 hover:bg-white/[0.045] hover:text-zinc-300"
                     ].join(" ")}
                     onClick={() => onGroupToggle(group.id)}
                     type="button"
                   >
-                    <span>{group.label}</span>
-                    <span
-                      aria-hidden="true"
-                      className={[
-                        "grid h-5 w-5 place-items-center rounded-full text-[#9A9287] transition duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
-                        groupIsOpen ? "rotate-90 text-[#7D5330]" : "rotate-0"
-                      ].join(" ")}
-                    >
-                      ›
+                    <span className="flex min-w-0 items-center gap-2.5">
+                      <span className="grid w-5 shrink-0 place-items-center text-zinc-500">
+                        <SystemIcon name={group.icon} />
+                      </span>
+                      <span className="truncate">{group.label}</span>
                     </span>
+                    <CollapseChevron open={groupOpen} />
                   </button>
                   <div
+                    id={groupPanelId}
                     className={[
-                      "grid transition-[grid-template-rows,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
-                      groupIsOpen
-                        ? "grid-rows-[1fr] opacity-100"
-                        : "grid-rows-[0fr] opacity-0"
+                      "grid transition-[grid-template-rows,opacity,transform] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+                      groupOpen
+                        ? "translate-y-0 grid-rows-[1fr] opacity-100"
+                        : "-translate-y-1 grid-rows-[0fr] opacity-0"
                     ].join(" ")}
                   >
                     <div className="overflow-hidden">
-                      <div className="ml-2 space-y-[2px] border-l border-[#E9DDCB] pb-1 pl-2.5">
+                      <div
+                        className={[
+                          "ml-3 space-y-1 border-l border-white/[0.07] py-1 pl-2 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+                          groupOpen
+                            ? "translate-y-0 opacity-100"
+                            : "-translate-y-1 opacity-0"
+                        ].join(" ")}
+                      >
                         {group.children.map((item) => (
                           <SidebarLink
                             active={itemIsActive(item, activeHref)}
-                            href={item.href}
-                            key={item.label}
-                            label={item.label}
+                            item={item}
+                            key={item.href}
                           />
                         ))}
                       </div>
@@ -361,85 +367,127 @@ function SidebarFolderView({
   );
 }
 
-function getActiveExpansion(activeHref: string): Record<string, boolean> {
-  return Object.fromEntries(
-    sidebarFolders.flatMap((folder) => [
-      [folder.id, sidebarFolderHasActiveChild(folder, activeHref)],
-      ...(folder.groups?.map((group) => [
-        group.id,
-        sidebarGroupHasActiveChild(group, activeHref)
-      ]) ?? [])
-    ])
-  ) as Record<string, boolean>;
-}
-
 export function DesignPortalSidebar({ activeHref }: { activeHref?: string }) {
   const pathname = usePathname();
   const currentHref = activeHref ?? pathname;
-  const [expandedFolders, setExpandedFolders] = useState<
-    Record<string, boolean>
-  >(() => getActiveExpansion(currentHref));
+  const [collapsed, setCollapsed] = useState(false);
+  const [openSection, setOpenSection] = useState<OpenSection>(() =>
+    getActiveSection(currentHref)
+  );
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
+    () => getActiveGroupExpansion(currentHref)
+  );
 
   useEffect(() => {
-    const activeExpansion = getActiveExpansion(currentHref);
+    const stored = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
 
-    setExpandedFolders((current) => ({
+    if (stored) {
+      setCollapsed(stored === "true");
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(collapsed));
+    document.documentElement.style.setProperty(
+      "--portal-sidebar-width",
+      collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH
+    );
+  }, [collapsed]);
+
+  useEffect(() => {
+    const activeSection = getActiveSection(currentHref);
+    const activeGroupExpansion = getActiveGroupExpansion(currentHref);
+
+    setOpenSection(activeSection);
+    setExpandedGroups((current) => ({
       ...current,
       ...Object.fromEntries(
-        Object.entries(activeExpansion).filter(([, isActive]) => isActive)
+        Object.entries(activeGroupExpansion).filter(([, isActive]) => isActive)
       )
     }));
   }, [currentHref]);
 
   return (
-    <aside className="portal-sidebar-scrollbar z-30 border-b border-[#E4DCCE] bg-[#FFFCF7]/96 px-5 py-5 font-sans backdrop-blur lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:border-b-0 lg:border-r lg:px-6 lg:py-6">
-      <a
-        href="/design-system"
-        className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--accent)]"
+    <>
+      <style>{`
+        :root{--portal-sidebar-width:${SIDEBAR_EXPANDED_WIDTH};}
+        @media (min-width:1024px){
+          main > div{
+            transition:grid-template-columns 280ms cubic-bezier(0.2,0,0,1);
+          }
+        }
+        @media (prefers-reduced-motion:reduce){
+          main > div{transition:none;}
+        }
+      `}</style>
+      <div aria-hidden="true" className="hidden lg:block" />
+      <aside
+        className={[
+          "portal-sidebar-scrollbar z-30 border-b border-white/[0.08] bg-[#111214] text-zinc-100 transition-[width] motion-reduce:transition-none lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:overflow-y-auto lg:border-b-0 lg:border-r",
+          SIDEBAR_TRANSITION,
+          collapsed ? "lg:w-[76px]" : "lg:w-[304px]"
+        ].join(" ")}
       >
-        PlayBooky V3
-      </a>
-      <h1 className="mt-2 text-xl font-semibold">Design Portal</h1>
-
-      <nav
-        aria-label="Design system component library"
-        className="mt-7 flex gap-3 overflow-x-auto pb-2 lg:block lg:space-y-2.5 lg:overflow-visible lg:pb-0"
-      >
-        {sidebarFolders.map((folder) => (
-          <div className="min-w-[220px] lg:min-w-0" key={folder.id}>
-            <SidebarFolderView
-              activeHref={currentHref}
-              expandedFolders={expandedFolders}
-              folder={folder}
-              isOpen={expandedFolders[folder.id]}
-              onGroupToggle={(id) => {
-                const group = folder.groups?.find(
-                  (candidate) => candidate.id === id
-                );
-
-                if (group && sidebarGroupHasActiveChild(group, currentHref)) {
-                  return;
-                }
-
-                setExpandedFolders((current) => ({
-                  ...current,
-                  [id]: !current[id]
-                }));
-              }}
-              onToggle={() => {
-                if (sidebarFolderHasActiveChild(folder, currentHref)) {
-                  return;
-                }
-
-                setExpandedFolders((current) => ({
-                  ...current,
-                  [folder.id]: !current[folder.id]
-                }));
-              }}
+        <div className="pointer-events-none fixed left-[var(--portal-sidebar-width)] top-1/2 z-50 hidden -translate-x-1/2 -translate-y-1/2 transition-[left] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none lg:block">
+          <div className="pointer-events-auto">
+            <SidebarEdgeHandle
+              collapsed={collapsed}
+              onToggle={() => setCollapsed((current) => !current)}
             />
           </div>
-        ))}
-      </nav>
-    </aside>
+        </div>
+        <div className="flex min-h-full flex-col px-3 py-4">
+          <div
+            className={[
+              "grid min-h-14 items-center transition-[grid-template-columns] motion-reduce:transition-none",
+              SIDEBAR_TRANSITION,
+              collapsed ? "grid-cols-[1fr]" : "grid-cols-[minmax(0,1fr)]"
+            ].join(" ")}
+          >
+            {collapsed ? (
+              <div className="grid h-11 w-11 place-items-center">
+                <LogoMark collapsed />
+              </div>
+            ) : (
+              <Wordmark />
+            )}
+          </div>
+
+          <nav
+            aria-label="Design Portal navigation"
+            className={[
+              "mt-6 flex-1",
+              collapsed ? "space-y-2" : "space-y-4"
+            ].join(" ")}
+          >
+            {portalNavigation.map((section) => (
+              <SidebarSection
+                activeHref={currentHref}
+                collapsed={collapsed}
+                expanded={openSection === section.id}
+                expandedGroups={expandedGroups}
+                key={section.id}
+                onCollapsedOpen={(id) => {
+                  setOpenSection(id);
+                  setCollapsed(false);
+                }}
+                onGroupToggle={(id) =>
+                  setExpandedGroups((current) => ({
+                    ...current,
+                    [id]: !current[id]
+                  }))
+                }
+                onToggle={() =>
+                  setOpenSection((current) =>
+                    current === section.id ? null : (section.id as OpenSection)
+                  )
+                }
+                section={section}
+              />
+            ))}
+          </nav>
+        </div>
+      </aside>
+    </>
   );
 }

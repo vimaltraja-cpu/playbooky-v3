@@ -1,3 +1,10 @@
+import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
+import {
+  ComponentPageShell,
+  type ComponentPageMetadata,
+  type ComponentSectionNavItem
+} from "@/components/portal/ComponentPage";
+
 const inputStates = [
   {
     name: "Default",
@@ -47,8 +54,7 @@ const sharedInputClass =
   "w-full rounded-2xl border bg-[color:var(--panel)] px-4 py-3 text-sm leading-6 text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)]";
 
 const toneClasses: Record<string, string> = {
-  default:
-    "border-[color:var(--line)] shadow-[0_8px_24px_rgba(36,31,24,0.04)]",
+  default: "border-[color:var(--line)] shadow-[0_8px_24px_rgba(36,31,24,0.04)]",
   hover:
     "border-[color:var(--accent)] bg-white shadow-[0_14px_34px_rgba(36,31,24,0.08)]",
   focus:
@@ -121,7 +127,7 @@ function FieldFrame({
   children: React.ReactNode;
 }) {
   return (
-    <article className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-5 shadow-[0_18px_45px_rgba(36,31,24,0.05)]">
+    <article className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-5 shadow-[0_18px_45px_rgba(36,31,24,0.05)]">
       <h4 className="text-sm font-semibold text-[color:var(--foreground)]">
         {title}
       </h4>
@@ -181,7 +187,9 @@ function TextInputPreview({
         {(isError || isSuccess) && (
           <span
             className={`pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 ${
-              isError ? "text-[color:var(--rose)]" : "text-[color:var(--accent)]"
+              isError
+                ? "text-[color:var(--rose)]"
+                : "text-[color:var(--accent)]"
             }`}
           >
             {isError ? <AlertIcon /> : <CheckIcon />}
@@ -281,13 +289,17 @@ function SearchInputPreview({
           disabled={isDisabled}
           aria-invalid={isError}
           placeholder="Search playbooks"
-          defaultValue={state.value || (state.tone === "filled" ? "Workshop" : "")}
+          defaultValue={
+            state.value || (state.tone === "filled" ? "Workshop" : "")
+          }
           className={`${sharedInputClass} ${toneClasses[state.tone]} pl-11 pr-11`}
         />
         {(isError || isSuccess) && (
           <span
             className={`pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 ${
-              isError ? "text-[color:var(--rose)]" : "text-[color:var(--accent)]"
+              isError
+                ? "text-[color:var(--rose)]"
+                : "text-[color:var(--accent)]"
             }`}
           >
             {isError ? <AlertIcon /> : <CheckIcon />}
@@ -311,212 +323,212 @@ const anatomyItems = [
 ];
 
 const tokenRows = [
-  ["Colour", "Uses existing CSS colour tokens: foreground, muted, panel, panel-soft, line, accent, accent-strong, rose."],
-  ["Typography", "Uses the portal type stack with Geist-first fallback and small, readable labels."],
-  ["Spacing", "TODO: replace prototype spacing utilities with approved semantic spacing tokens when code tokens exist."],
-  ["Radius", "TODO: replace prototype rounded-2xl radius with approved input/control radius token."],
-  ["Elevation", "TODO: replace prototype shadows with approved elevation tokens."]
+  [
+    "Colour",
+    "Uses existing CSS colour tokens: foreground, muted, panel, panel-soft, line, accent, accent-strong, rose."
+  ],
+  [
+    "Typography",
+    "Uses the portal type stack with Geist-first fallback and small, readable labels."
+  ],
+  [
+    "Spacing",
+    "TODO: replace prototype spacing utilities with approved semantic spacing tokens when code tokens exist."
+  ],
+  [
+    "Radius",
+    "TODO: replace prototype rounded-2xl radius with approved input/control radius token."
+  ],
+  [
+    "Elevation",
+    "TODO: replace prototype shadows with approved elevation tokens."
+  ]
+];
+
+const componentMetadata: ComponentPageMetadata = {
+  category: "Components / Forms",
+  confidence: "Prototype",
+  lastUpdated: "2026-07-23",
+  owner: "Design System",
+  status: "In review",
+  title: "Inputs"
+};
+
+const sectionItems: ComponentSectionNavItem[] = [
+  { id: "overview", label: "Overview" },
+  { id: "specs", label: "Specs" },
+  { id: "viewports", label: "Viewports" },
+  { id: "states", label: "States" },
+  { id: "tokens", label: "Tokens" },
+  { id: "accessibility", label: "Accessibility" }
 ];
 
 export default function InputsPage() {
   return (
-    <main className="min-h-screen px-4 py-4 text-[color:var(--foreground)] sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-7xl grid-cols-1 overflow-hidden rounded-[28px] border border-[color:var(--line)] bg-[color:var(--panel)] shadow-[0_30px_90px_rgba(36,31,24,0.12)] lg:grid-cols-[280px_1fr]">
-        <aside className="border-b border-[color:var(--line)] bg-[color:var(--panel-soft)]/70 p-5 lg:border-b-0 lg:border-r lg:p-7">
-          <a
-            href="/design-system"
-            className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--accent)]"
-          >
-            PlayBooky V3
-          </a>
-          <h1 className="mt-2 text-xl font-semibold">Design Portal</h1>
-          <nav
-            className="mt-8 flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0"
-            aria-label="Input component navigation"
-          >
-            {[
-              "Purpose",
-              "Anatomy",
-              "Variants",
-              "States",
-              "Responsive",
-              "Accessibility",
-              "Tokens",
-              "Previews"
-            ].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--panel)] hover:text-[color:var(--foreground)] lg:rounded-xl"
+    <main className="min-h-screen bg-black text-[#ededed]">
+      <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
+        <DesignPortalSidebar activeHref="/design-system/components/inputs" />
+
+        <ComponentPageShell
+          description="A calm, accessible input family for collecting short text, longer notes, and search queries inside future PlayBooky flows."
+          metadata={componentMetadata}
+          sections={sectionItems}
+        >
+          <div id="overview" className="scroll-mt-28 py-8">
+            <div className="grid gap-4 lg:grid-cols-3">
+              <section
+                id="purpose"
+                className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-6"
               >
-                {item}
-              </a>
-            ))}
-          </nav>
-        </aside>
-
-        <section className="p-6 sm:p-8 lg:p-12">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--gold)]">
-              Components / Forms
-            </p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-normal sm:text-5xl">
-              Inputs
-            </h2>
-            <p className="mt-5 text-base leading-8 text-[color:var(--muted)] sm:text-lg">
-              A calm, accessible input family for collecting short text, longer
-              notes, and search queries inside future PlayBooky flows.
-            </p>
+                <h3 className="text-lg font-semibold">Purpose</h3>
+                <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
+                  Inputs help users provide concise, structured information
+                  without breaking the calm rhythm of the page.
+                </p>
+              </section>
+              <section className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-6">
+                <h3 className="text-lg font-semibold">When to use</h3>
+                <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
+                  Use Text Input for short answers, Textarea for longer context,
+                  and Search Input when the user is narrowing a known
+                  collection.
+                </p>
+              </section>
+              <section className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-6">
+                <h3 className="text-lg font-semibold">Quality bar</h3>
+                <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
+                  Labels, helper text, clear focus, and state-specific feedback
+                  are required before product use.
+                </p>
+              </section>
+            </div>
           </div>
 
-          <div className="mt-10 grid gap-4 lg:grid-cols-3">
-            <section
-              id="purpose"
-              className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-6"
-            >
-              <h3 className="text-lg font-semibold">Purpose</h3>
-              <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
-                Inputs help users provide concise, structured information
-                without breaking the calm rhythm of the page.
+            <section id="specs" className="scroll-mt-28 py-8">
+              <h3 className="text-2xl font-semibold">Anatomy</h3>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {anatomyItems.map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] px-4 py-3 text-sm font-medium"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section id="viewports" className="scroll-mt-28 py-8">
+              <h3 className="text-2xl font-semibold">Variants</h3>
+              <div className="mt-5 grid gap-5 lg:grid-cols-3">
+                <TextInputPreview state={inputStates[0]} index={100} />
+                <TextareaPreview state={inputStates[0]} index={100} />
+                <SearchInputPreview state={inputStates[0]} index={100} />
+              </div>
+            </section>
+
+            <section id="states" className="scroll-mt-28 py-8">
+              <h3 className="text-2xl font-semibold">States</h3>
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
+                Every input variant must define default, hover, focus, filled,
+                disabled, error, success, helper text, label, and optional icon
+                behaviour before product use.
               </p>
             </section>
-            <section className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-6">
-              <h3 className="text-lg font-semibold">When to use</h3>
-              <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
-                Use Text Input for short answers, Textarea for longer context,
-                and Search Input when the user is narrowing a known collection.
-              </p>
+
+            <section id="responsive" className="scroll-mt-28 py-8">
+              <h3 className="text-2xl font-semibold">Responsive behaviour</h3>
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+                {["Desktop", "Tablet", "Mobile"].map((viewport) => (
+                  <div
+                    key={viewport}
+                    className="rounded-[10px] border border-white/[0.14] bg-[#0a0a0a] p-5"
+                  >
+                    <h4 className="text-sm font-semibold">{viewport}</h4>
+                    <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
+                      Inputs keep labels above fields, preserve readable helper
+                      text, and use full available width inside their container.
+                    </p>
+                  </div>
+                ))}
+              </div>
             </section>
-            <section className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-6">
-              <h3 className="text-lg font-semibold">Quality bar</h3>
-              <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
-                Labels, helper text, clear focus, and state-specific feedback
-                are required before product use.
-              </p>
+
+            <section id="accessibility" className="scroll-mt-28 py-8">
+              <h3 className="text-2xl font-semibold">Accessibility notes</h3>
+              <ul className="mt-4 grid gap-3 text-sm leading-7 text-[color:var(--muted)] lg:grid-cols-2">
+                <li>Labels are visible and connected to each field.</li>
+                <li>Focus state uses border and ring, not colour alone.</li>
+                <li>
+                  Error and success states include text and icon treatment.
+                </li>
+                <li>
+                  Disabled fields remain legible but visually unavailable.
+                </li>
+              </ul>
             </section>
-          </div>
 
-          <section id="anatomy" className="mt-12">
-            <h3 className="text-2xl font-semibold">Anatomy</h3>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {anatomyItems.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-2xl border border-[color:var(--line)] bg-white/55 px-4 py-3 text-sm font-medium"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-          </section>
+            <section id="tokens" className="scroll-mt-28 py-8">
+              <h3 className="text-2xl font-semibold">Token usage</h3>
+              <div className="mt-5 overflow-hidden rounded-[10px] border border-white/[0.14] bg-[#0a0a0a]">
+                {tokenRows.map(([category, usage]) => (
+                  <div
+                    key={category}
+                    className="grid gap-2 border-b border-[color:var(--line)] p-4 last:border-b-0 sm:grid-cols-[160px_1fr]"
+                  >
+                    <div className="text-sm font-semibold">{category}</div>
+                    <div className="text-sm leading-7 text-[color:var(--muted)]">
+                      {usage}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-          <section id="variants" className="mt-12">
-            <h3 className="text-2xl font-semibold">Variants</h3>
-            <div className="mt-5 grid gap-5 lg:grid-cols-3">
-              <TextInputPreview state={inputStates[0]} index={100} />
-              <TextareaPreview state={inputStates[0]} index={100} />
-              <SearchInputPreview state={inputStates[0]} index={100} />
-            </div>
-          </section>
-
-          <section id="states" className="mt-12">
-            <h3 className="text-2xl font-semibold">States</h3>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--muted)]">
-              Every input variant must define default, hover, focus, filled,
-              disabled, error, success, helper text, label, and optional icon
-              behaviour before product use.
-            </p>
-          </section>
-
-          <section id="responsive" className="mt-12">
-            <h3 className="text-2xl font-semibold">Responsive behaviour</h3>
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
-              {["Desktop", "Tablet", "Mobile"].map((viewport) => (
-                <div
-                  key={viewport}
-                  className="rounded-2xl border border-[color:var(--line)] bg-white/55 p-5"
-                >
-                  <h4 className="text-sm font-semibold">{viewport}</h4>
-                  <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
-                    Inputs keep labels above fields, preserve readable helper
-                    text, and use full available width inside their container.
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section id="accessibility" className="mt-12">
-            <h3 className="text-2xl font-semibold">Accessibility notes</h3>
-            <ul className="mt-4 grid gap-3 text-sm leading-7 text-[color:var(--muted)] lg:grid-cols-2">
-              <li>Labels are visible and connected to each field.</li>
-              <li>Focus state uses border and ring, not colour alone.</li>
-              <li>Error and success states include text and icon treatment.</li>
-              <li>Disabled fields remain legible but visually unavailable.</li>
-            </ul>
-          </section>
-
-          <section id="tokens" className="mt-12">
-            <h3 className="text-2xl font-semibold">Token usage</h3>
-            <div className="mt-5 overflow-hidden rounded-2xl border border-[color:var(--line)] bg-white/55">
-              {tokenRows.map(([category, usage]) => (
-                <div
-                  key={category}
-                  className="grid gap-2 border-b border-[color:var(--line)] p-4 last:border-b-0 sm:grid-cols-[160px_1fr]"
-                >
-                  <div className="text-sm font-semibold">{category}</div>
-                  <div className="text-sm leading-7 text-[color:var(--muted)]">
-                    {usage}
+          <section id="previews" className="scroll-mt-28 py-8">
+              <h3 className="text-2xl font-semibold">Preview examples</h3>
+              <div className="mt-6 space-y-10">
+                <div>
+                  <h4 className="text-lg font-semibold">Text Input</h4>
+                  <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    {inputStates.map((state, index) => (
+                      <TextInputPreview
+                        key={`text-${state.name}`}
+                        state={state}
+                        index={index}
+                      />
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
+
+                <div>
+                  <h4 className="text-lg font-semibold">Textarea</h4>
+                  <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    {inputStates.map((state, index) => (
+                      <TextareaPreview
+                        key={`textarea-${state.name}`}
+                        state={state}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-semibold">Search Input</h4>
+                  <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    {inputStates.map((state, index) => (
+                      <SearchInputPreview
+                        key={`search-${state.name}`}
+                        state={state}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
           </section>
-
-          <section id="previews" className="mt-12">
-            <h3 className="text-2xl font-semibold">Preview examples</h3>
-            <div className="mt-6 space-y-10">
-              <div>
-                <h4 className="text-lg font-semibold">Text Input</h4>
-                <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                  {inputStates.map((state, index) => (
-                    <TextInputPreview
-                      key={`text-${state.name}`}
-                      state={state}
-                      index={index}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold">Textarea</h4>
-                <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                  {inputStates.map((state, index) => (
-                    <TextareaPreview
-                      key={`textarea-${state.name}`}
-                      state={state}
-                      index={index}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold">Search Input</h4>
-                <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                  {inputStates.map((state, index) => (
-                    <SearchInputPreview
-                      key={`search-${state.name}`}
-                      state={state}
-                      index={index}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        </section>
+        </ComponentPageShell>
       </div>
     </main>
   );

@@ -276,16 +276,7 @@ function ViewportPreview({ viewport }: { viewport: ViewportId }) {
   const isTablet = viewport === "tablet";
 
   return (
-    <div
-      className={[
-        "composer-responsive-preview flex justify-center overflow-visible rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-4 transition-[min-height,padding] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none sm:p-6",
-        isMobile
-          ? "min-h-[430px]"
-          : isTablet
-            ? "min-h-[400px]"
-            : "min-h-[430px]"
-      ].join(" ")}
-    >
+    <div className="composer-responsive-preview flex justify-center overflow-visible transition-[min-height,padding] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none">
       <div
         className={[
           "relative flex border border-[color:var(--line)] bg-[color:var(--panel)] transition-[width,height,border-radius,padding] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
@@ -536,8 +527,8 @@ function AIComposerStatePreview({
 
 export default function AIComposerPage() {
   return (
-    <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+    <main className="min-h-screen bg-black text-[#ededed]">
+      <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/components/ai-composer" />
 
         <ComponentPageShell
@@ -545,8 +536,6 @@ export default function AIComposerPage() {
           metadata={componentMetadata}
         >
           <ComponentOverviewSection {...overviewCopy} />
-
-          <SpecsSection />
 
           <ComponentViewportShowroom
             description="Use the viewport control to review how the same component is positioned inside desktop, tablet, and mobile preview frames."
@@ -566,6 +555,8 @@ export default function AIComposerPage() {
             )}
             states={showroomStates}
           />
+
+          <SpecsSection />
 
           <ComponentTokensSection
             description="Token TODOs remain in place until the component is visually approved. No final token names are being invented yet."

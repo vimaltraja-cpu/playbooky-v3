@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
 import {
   ComponentAccessibilitySection,
   ComponentOverviewSection,
@@ -11,6 +9,9 @@ import {
   type ComponentTokenRow
 } from "@/components/portal/ComponentPage";
 import { DesignPortalSidebar } from "@/components/portal/DesignPortalSidebar";
+import { ViewportReviewLayout } from "@/components/portal/ViewportReviewLayout";
+import { DiagnosisCard } from "@/components/ui/DiagnosisCard";
+import { diagnosisGridPreviewOptions } from "@/lib/design-system/diagnosis-options";
 
 type ViewportId = "desktop" | "tablet" | "mobile";
 
@@ -26,8 +27,6 @@ type PrototypeFrame = {
   label: string;
   rows: number;
 };
-
-const cards = [1, 2, 3, 4, 5, 6];
 
 const frames: Record<ViewportId, PrototypeFrame> = {
   desktop: {
@@ -86,15 +85,14 @@ const overviewCopy = {
     "Do not use this page to approve content, typography, icons, selection visuals, or a final diagnosis screen.",
   whenToUse:
     "Use it to review the reference layout morph from 3 columns by 2 rows, to 2 columns by 3 rows, to 1 column by 6 rows.",
-  whereItAppears:
-    "Inside the Design Portal documentation framework only.",
+  whereItAppears: "Inside the Design Portal documentation framework only.",
   whyItExists:
     "To make the grid behaviour reviewable inside the standard component documentation page without inventing final UI design."
 };
 
 const specs = [
-  ["Purpose", "Responsive grid behaviour prototype only"],
-  ["Content", "Six blank diagnosis option surfaces"],
+  ["Purpose", "Responsive diagnosis card grid behaviour"],
+  ["Content", "Six real diagnosis option cards"],
   ["Desktop frame", "1400px x 900px"],
   ["Desktop grid", "3 columns x 2 rows"],
   ["Desktop gap", "20px"],
@@ -106,7 +104,10 @@ const specs = [
   ["Mobile row height", "78px"],
   ["Mobile gap", "12px"],
   ["Mobile side inset", "12px"],
-  ["Mobile alignment", "Six rows vertically centred inside the 567px grid zone"],
+  [
+    "Mobile alignment",
+    "Six rows vertically centred inside the 567px grid zone"
+  ],
   ["Overflow", "No internal scroll, no horizontal overflow, no clipping"],
   ["Motion", "Smooth card position and size transition between viewports"]
 ];
@@ -153,15 +154,15 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   contrastNotes: [
     {
       description:
-        "The surfaces are structural placeholders only and do not communicate meaning through colour.",
-      title: "Structural placeholder"
+        "Cards use the same prototype text and selected-state colour treatment documented in Diagnosis Card.",
+      title: "Card contrast"
     }
   ],
   focusBehaviour: [
     {
       description:
-        "The prototype surfaces are non-interactive. Future interactive cards must define focus behaviour in Diagnosis Card.",
-      title: "No interactive cards"
+        "The viewport preview reuses Diagnosis Card visuals. Final product focus behaviour still belongs to the production diagnosis flow.",
+      title: "Preview focus"
     }
   ],
   keyboardBehaviour: [
@@ -181,22 +182,22 @@ const accessibilityNotes: Record<string, ComponentAccessibilityItem[]> = {
   screenReaderNotes: [
     {
       description:
-        "The preview is labelled as a layout prototype. Individual blank surfaces are hidden from assistive technology.",
+        "The preview is labelled as a layout prototype. Card content is present so reviewers can inspect real labels and descriptions.",
       title: "Preview labelling"
     }
   ],
   unresolvedIssues: [
     {
       description:
-        "Final Diagnosis Card content, selection states, icons, typography, and production interactions are intentionally out of scope.",
-      title: "Out of scope"
+        "Final production interactions remain out of scope for this design-system grid page.",
+      title: "Production behaviour"
     }
   ]
 };
 
 function getScale(frame: PrototypeFrame) {
   if (frame.frameWidth === 1400) {
-    return 0.7;
+    return 0.82;
   }
 
   if (frame.frameWidth === 900) {
@@ -252,14 +253,35 @@ function DiagnosisGridPrototype({ viewport }: { viewport: ViewportId }) {
         width: frame.frameWidth
       }}
     >
-      {cards.map((card, index) => (
-        <div
-          aria-hidden="true"
-          className="absolute rounded-lg border border-[#E8DFD3] bg-[#FCFBF9]/72 shadow-[0_10px_26px_rgba(36,31,24,0.055)] transition-[left,top,width,height] duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-          key={card}
-          style={getCardPosition(index, frame)}
-        />
-      ))}
+      {diagnosisGridPreviewOptions.map((card, index) => {
+        const position = getCardPosition(index, frame);
+        const cardScale = Math.min(
+          position.width / 445.33,
+          position.height / 252
+        );
+
+        return (
+          <div
+            className="absolute overflow-hidden rounded-lg transition-[left,top,width,height] duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+            key={card.id}
+            style={position}
+          >
+            <div
+              style={{
+                transform: `scale(${cardScale})`,
+                transformOrigin: "top left"
+              }}
+            >
+              <DiagnosisCard
+                description={card.description}
+                iconKey={card.iconKey}
+                label={card.label}
+                state={index === 0 ? "selected" : "default"}
+              />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -286,80 +308,39 @@ function SpecsSection() {
 }
 
 function ViewportsSection() {
-  const [viewport, setViewport] = useState<ViewportId>("desktop");
-  const [indicator, setIndicator] = useState({ left: 4, width: 0 });
-  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const frame = frames[viewport];
-  const scale = getScale(frame);
+  const viewportItems = (Object.keys(frames) as ViewportId[]).map((id) => {
+    const frame = frames[id];
 
-  useEffect(() => {
-    const activeElement = triggerRefs.current[viewport];
-
-    if (!activeElement) {
-      return;
-    }
-
-    setIndicator({
-      left: activeElement.offsetLeft,
-      width: activeElement.offsetWidth
-    });
-  }, [viewport]);
+    return {
+      id,
+      label: frame.label,
+      notes: [
+        ["Frame", `${frame.frameWidth}px x ${frame.frameHeight}px`],
+        ["Grid", `${frame.columns} columns x ${frame.rows} rows`],
+        ["Gap", `${frame.gap}px`],
+        [
+          "Card height",
+          `${frame.cardHeight}px${id === "mobile" ? " rows" : ""}`
+        ],
+        [
+          "Mobile rule",
+          id === "mobile"
+            ? "Rows are vertically centred inside the 567px grid zone."
+            : "Not applicable."
+        ]
+      ] satisfies Array<[string, string]>
+    };
+  });
 
   return (
-    <section id="viewports" className="scroll-mt-40 py-10">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h3 className="text-2xl font-semibold">Viewports</h3>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[color:var(--muted)]">
-            Switch viewports to review the reference grid morph inside the
-            standard Design Portal page.
-          </p>
-        </div>
-        <div
-          aria-label="Viewport preview"
-          className="relative flex w-fit rounded-full border border-[color:var(--line)] bg-white/65 p-1"
-          role="tablist"
-        >
-          <span
-            aria-hidden="true"
-            className="absolute bottom-1 top-1 rounded-full bg-[#7D5330] shadow-[0_10px_24px_rgba(125,83,48,0.18)] transition-[transform,width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none"
-            style={{
-              transform: `translateX(${indicator.left - 4}px)`,
-              width: indicator.width
-            }}
-          />
-          {(Object.keys(frames) as ViewportId[]).map((id) => (
-            <button
-              aria-controls="diagnosis-grid-viewport-panel"
-              aria-selected={viewport === id}
-              className={[
-                "relative z-10 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
-                viewport === id
-                  ? "!text-[#FCFBF9]"
-                  : "!text-[#171614] hover:bg-[#EFE3D2]/60"
-              ].join(" ")}
-              id={`diagnosis-grid-viewport-${id}`}
-              key={id}
-              onClick={() => setViewport(id)}
-              ref={(element) => {
-                triggerRefs.current[id] = element;
-              }}
-              role="tab"
-              type="button"
-            >
-              {frames[id].label}
-            </button>
-          ))}
-        </div>
-      </div>
+    <ViewportReviewLayout
+      canvasClassName="flex min-h-[760px] items-center justify-start overflow-x-auto overflow-y-hidden p-3 sm:justify-center sm:p-3"
+      description="Switch viewports to review the restored responsive grid morph inside the standard Design Portal presentation canvas."
+      renderPreview={(viewport) => {
+        const frame = frames[viewport];
+        const scale = getScale(frame);
 
-      <div className="mt-6 grid gap-5 min-[1500px]:grid-cols-[minmax(820px,1fr)_320px]">
-        <div
-          aria-labelledby={`diagnosis-grid-viewport-${viewport}`}
-          className="flex min-h-[700px] min-w-0 items-center justify-center overflow-hidden rounded-[28px] border border-[color:var(--line)] bg-[#F4F0EA] p-5"
-          id="diagnosis-grid-viewport-panel"
-          role="tabpanel"
-        >
+        return (
           <div
             className="flex items-center justify-center transition-[width,height] duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
             style={{
@@ -369,37 +350,10 @@ function ViewportsSection() {
           >
             <DiagnosisGridPrototype viewport={viewport} />
           </div>
-        </div>
-        <div className="rounded-[24px] border border-[color:var(--line)] bg-white/55 p-5">
-          <h4 className="text-sm font-semibold">
-            {frame.label} measurement notes
-          </h4>
-          <dl className="mt-5 space-y-4">
-            {[
-              ["Frame", `${frame.frameWidth}px x ${frame.frameHeight}px`],
-              ["Grid", `${frame.columns} columns x ${frame.rows} rows`],
-              ["Gap", `${frame.gap}px`],
-              ["Card height", `${frame.cardHeight}px`],
-              [
-                "Mobile rule",
-                viewport === "mobile"
-                  ? "Rows are vertically centred inside the 567px grid zone."
-                  : "Not applicable."
-              ]
-            ].map(([term, description]) => (
-              <div key={term}>
-                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--gold)]">
-                  {term}
-                </dt>
-                <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
-                  {description}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
-    </section>
+        );
+      }}
+      viewports={viewportItems}
+    />
   );
 }
 
@@ -409,9 +363,9 @@ function StatesSection() {
       <h3 className="text-2xl font-semibold">States</h3>
       <div className="mt-6 rounded-[24px] border border-[color:var(--line)] bg-white/55 p-5">
         <p className="text-sm leading-7 text-[color:var(--muted)]">
-          Diagnosis Grid currently documents responsive layout behaviour only.
-          Selection, hover, reorder, radio, and card content states belong to
-          Diagnosis Card or future product-flow documentation.
+          Diagnosis Grid documents responsive layout using real Diagnosis Card
+          content and selected styling. Production selection behaviour,
+          persistence, validation, and recommendation logic remain out of scope.
         </p>
       </div>
     </section>
@@ -420,8 +374,8 @@ function StatesSection() {
 
 export default function DiagnosisGridPage() {
   return (
-    <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <div className="mx-auto grid w-full max-w-[1680px] grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)]">
+    <main className="min-h-screen bg-black text-[#ededed]">
+      <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[var(--portal-sidebar-width)_minmax(0,1fr)]">
         <DesignPortalSidebar activeHref="/design-system/core-experience/diagnosis-grid" />
 
         <ComponentPageShell
@@ -430,11 +384,11 @@ export default function DiagnosisGridPage() {
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <SpecsSection />
-
           <ViewportsSection />
 
           <StatesSection />
+
+          <SpecsSection />
 
           <ComponentTokensSection
             description="These values document prototype grid behaviour only. They should become approved layout tokens before product implementation."

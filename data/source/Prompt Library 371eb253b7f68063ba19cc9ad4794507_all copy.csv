@@ -1,0 +1,7 @@
+﻿Prompt Name,Generates,Purpose,Required Data,Trigger Stage
+Workshop Recommendation,"Expected outputs, Framework Recommendations, Reasioning, Risks, Workshop recommendations",Recommend the most appropriate workshop and framework based on the problem being described.,"Desired outcomes, Participants, Problem signals, Problem statement",Recommendation
+Workshop Plan Generator,"Activity instructions, Expected outputs, Success criteria, Workshop agenda, Workshop objectives","Generate a complete workshop plan using the selected workshop, framework and activities.","Activities, Desired outcomes, Framework, Participants, Problem statement, workshop",Workshop planning
+Facilitation Guide Generator,"Facilitation guide, Reasioning, Risks",Generate a facilitator guide that can be used during a live workshop.,"Activities, Agenda, Framework, Participants, workshop",Facilitation
+Workshop Synthesis Generator,"Findings, Opportunities, Reasioning, Themes","Analyse workshop outputs and generate findings, themes and opportunities.","Framework, Sticky notes, Transcripts, Workshop outputs",Synthesis
+Decision Recommendation Generator,"Confidence, Reasioning, Recommended decisions, Risks",Generate recommendations based on workshop findings.,"Framework, Problem statement, Workshop findings",Decision making
+Action Plan Generator,"Action plan, Owners, Success metrics",Convert decisions into an actionable plan.,"Participants, Recommended decisions, Workshop findings",Action planning
