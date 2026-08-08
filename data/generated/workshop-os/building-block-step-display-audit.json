@@ -1,0 +1,840 @@
+{
+  "sourcePath": "docs/notion-export/03-Building Block Steps/Building Block Steps/Building Block Steps 373eb253b7f680b3a60bd26cb0c144dc.csv",
+  "generatedAt": "2026-07-11T09:39:29.570Z",
+  "targetMaxCharacters": 20,
+  "rowCount": 46,
+  "rows": [
+    {
+      "parentBlockName": "Objectives and Key Results (OKRs)",
+      "order": 1,
+      "canonicalName": "Introduction",
+      "canonicalNameLength": 12,
+      "displayName": null,
+      "effectiveDisplayName": "Introduction",
+      "displayNameLength": 12,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Objectives and Key Results (OKRs)",
+      "order": 2,
+      "canonicalName": "Review Objectives",
+      "canonicalNameLength": 17,
+      "displayName": null,
+      "effectiveDisplayName": "Review Objectives",
+      "displayNameLength": 17,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Objectives and Key Results (OKRs)",
+      "order": 3,
+      "canonicalName": "Theme Sort Objectives",
+      "canonicalNameLength": 21,
+      "displayName": "Cluster Objectives",
+      "effectiveDisplayName": "Cluster Objectives",
+      "displayNameLength": 18,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "cluster",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Objectives and Key Results (OKRs)",
+      "order": 4,
+      "canonicalName": "Select Objective",
+      "canonicalNameLength": 16,
+      "displayName": null,
+      "effectiveDisplayName": "Select Objective",
+      "displayNameLength": 16,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "select-decide",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Objectives and Key Results (OKRs)",
+      "order": 5,
+      "canonicalName": "Generate Success Metrics",
+      "canonicalNameLength": 24,
+      "displayName": "Generate Metrics",
+      "effectiveDisplayName": "Generate Metrics",
+      "displayNameLength": 16,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "capture-generate",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Objectives and Key Results (OKRs)",
+      "order": 6,
+      "canonicalName": "Theme Sort Metrics",
+      "canonicalNameLength": 18,
+      "displayName": "Cluster Metrics",
+      "effectiveDisplayName": "Cluster Metrics",
+      "displayNameLength": 15,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "cluster",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Objectives and Key Results (OKRs)",
+      "order": 7,
+      "canonicalName": "Select Success Metrics",
+      "canonicalNameLength": 22,
+      "displayName": "Select Metrics",
+      "effectiveDisplayName": "Select Metrics",
+      "displayNameLength": 14,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "select-decide",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Objectives and Key Results (OKRs)",
+      "order": 8,
+      "canonicalName": "Create Key Results",
+      "canonicalNameLength": 18,
+      "displayName": null,
+      "effectiveDisplayName": "Create Key Results",
+      "displayNameLength": 18,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Objectives and Key Results (OKRs)",
+      "order": 9,
+      "canonicalName": "Review and Commit",
+      "canonicalNameLength": 17,
+      "displayName": "Review & Commit",
+      "effectiveDisplayName": "Review & Commit",
+      "displayNameLength": 15,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Five Whys",
+      "order": 1,
+      "canonicalName": "Define the Problem",
+      "canonicalNameLength": 18,
+      "displayName": null,
+      "effectiveDisplayName": "Define the Problem",
+      "displayNameLength": 18,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Five Whys",
+      "order": 2,
+      "canonicalName": "Why #1",
+      "canonicalNameLength": 6,
+      "displayName": null,
+      "effectiveDisplayName": "Why #1",
+      "displayNameLength": 6,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "ask-why",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Five Whys",
+      "order": 3,
+      "canonicalName": "Why #2",
+      "canonicalNameLength": 6,
+      "displayName": null,
+      "effectiveDisplayName": "Why #2",
+      "displayNameLength": 6,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "ask-why",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Five Whys",
+      "order": 4,
+      "canonicalName": "Why #3",
+      "canonicalNameLength": 6,
+      "displayName": null,
+      "effectiveDisplayName": "Why #3",
+      "displayNameLength": 6,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "ask-why",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Five Whys",
+      "order": 5,
+      "canonicalName": "Why #4",
+      "canonicalNameLength": 6,
+      "displayName": null,
+      "effectiveDisplayName": "Why #4",
+      "displayNameLength": 6,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "ask-why",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Five Whys",
+      "order": 6,
+      "canonicalName": "Why #5",
+      "canonicalNameLength": 6,
+      "displayName": null,
+      "effectiveDisplayName": "Why #5",
+      "displayNameLength": 6,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "ask-why",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Five Whys",
+      "order": 7,
+      "canonicalName": "Review Root Causes",
+      "canonicalNameLength": 18,
+      "displayName": null,
+      "effectiveDisplayName": "Review Root Causes",
+      "displayNameLength": 18,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Five Whys",
+      "order": 8,
+      "canonicalName": "Define Next Steps",
+      "canonicalNameLength": 17,
+      "displayName": null,
+      "effectiveDisplayName": "Define Next Steps",
+      "displayNameLength": 17,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "commit-action",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Problem Statement",
+      "order": 1,
+      "canonicalName": "Review Context & Evidence",
+      "canonicalNameLength": 25,
+      "displayName": "Review Evidence",
+      "effectiveDisplayName": "Review Evidence",
+      "displayNameLength": 15,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Problem Statement",
+      "order": 2,
+      "canonicalName": "Capture Problem Statements",
+      "canonicalNameLength": 26,
+      "displayName": "Capture Problems",
+      "effectiveDisplayName": "Capture Problems",
+      "displayNameLength": 16,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "capture-generate",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Problem Statement",
+      "order": 3,
+      "canonicalName": "Theme Sort Problem Statements",
+      "canonicalNameLength": 29,
+      "displayName": "Cluster Problems",
+      "effectiveDisplayName": "Cluster Problems",
+      "displayNameLength": 16,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "cluster",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Problem Statement",
+      "order": 4,
+      "canonicalName": "Draft Problem Statements",
+      "canonicalNameLength": 24,
+      "displayName": "Draft Statements",
+      "effectiveDisplayName": "Draft Statements",
+      "displayNameLength": 16,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "draft-refine",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Problem Statement",
+      "order": 5,
+      "canonicalName": "Refine & Consolidate",
+      "canonicalNameLength": 20,
+      "displayName": "Refine Statements",
+      "effectiveDisplayName": "Refine Statements",
+      "displayNameLength": 17,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "draft-refine",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Problem Statement",
+      "order": 6,
+      "canonicalName": "Select Problem Statement",
+      "canonicalNameLength": 24,
+      "displayName": "Select Statement",
+      "effectiveDisplayName": "Select Statement",
+      "displayNameLength": 16,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "select-decide",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "How Might We",
+      "order": 1,
+      "canonicalName": "Review Problem Statement",
+      "canonicalNameLength": 24,
+      "displayName": "Review Problem",
+      "effectiveDisplayName": "Review Problem",
+      "displayNameLength": 14,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "How Might We",
+      "order": 2,
+      "canonicalName": "Generate How Might We Statements",
+      "canonicalNameLength": 32,
+      "displayName": "Generate HMWs",
+      "effectiveDisplayName": "Generate HMWs",
+      "displayNameLength": 13,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "capture-generate",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "How Might We",
+      "order": 3,
+      "canonicalName": "Theme Sort Opportunities",
+      "canonicalNameLength": 24,
+      "displayName": "Cluster Opportunities",
+      "effectiveDisplayName": "Cluster Opportunities",
+      "displayNameLength": 21,
+      "withinTargetBefore": false,
+      "withinTargetAfter": false,
+      "actionCategory": "cluster",
+      "status": "needs-review"
+    },
+    {
+      "parentBlockName": "How Might We",
+      "order": 4,
+      "canonicalName": "Refine Opportunity Areas",
+      "canonicalNameLength": 24,
+      "displayName": "Refine Opportunities",
+      "effectiveDisplayName": "Refine Opportunities",
+      "displayNameLength": 20,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "draft-refine",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "How Might We",
+      "order": 5,
+      "canonicalName": "Select Opportunity Areas",
+      "canonicalNameLength": 24,
+      "displayName": "Select Opportunities",
+      "effectiveDisplayName": "Select Opportunities",
+      "displayNameLength": 20,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "select-decide",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Impact Effort Map",
+      "order": 1,
+      "canonicalName": "Review Opportunities",
+      "canonicalNameLength": 20,
+      "displayName": null,
+      "effectiveDisplayName": "Review Opportunities",
+      "displayNameLength": 20,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Impact Effort Map",
+      "order": 2,
+      "canonicalName": "Create Impact Effort Matrix",
+      "canonicalNameLength": 27,
+      "displayName": "Set Up Matrix",
+      "effectiveDisplayName": "Set Up Matrix",
+      "displayNameLength": 13,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "map-evaluate",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Impact Effort Map",
+      "order": 3,
+      "canonicalName": "Map Opportunities",
+      "canonicalNameLength": 17,
+      "displayName": null,
+      "effectiveDisplayName": "Map Opportunities",
+      "displayNameLength": 17,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "map-evaluate",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Impact Effort Map",
+      "order": 4,
+      "canonicalName": "Review Opportunity Clusters",
+      "canonicalNameLength": 27,
+      "displayName": "Review Clusters",
+      "effectiveDisplayName": "Review Clusters",
+      "displayNameLength": 15,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Impact Effort Map",
+      "order": 5,
+      "canonicalName": "Select Priorities",
+      "canonicalNameLength": 17,
+      "displayName": null,
+      "effectiveDisplayName": "Select Priorities",
+      "displayNameLength": 17,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "select-decide",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Impact Effort Map",
+      "order": 6,
+      "canonicalName": "Confirm Recommendations",
+      "canonicalNameLength": 23,
+      "displayName": "Confirm Choices",
+      "effectiveDisplayName": "Confirm Choices",
+      "displayNameLength": 15,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "select-decide",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Priority Map",
+      "order": 1,
+      "canonicalName": "Review Opportunities",
+      "canonicalNameLength": 20,
+      "displayName": null,
+      "effectiveDisplayName": "Review Opportunities",
+      "displayNameLength": 20,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Priority Map",
+      "order": 2,
+      "canonicalName": "Define Prioritisation Criteria",
+      "canonicalNameLength": 30,
+      "displayName": "Define Criteria",
+      "effectiveDisplayName": "Define Criteria",
+      "displayNameLength": 15,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Priority Map",
+      "order": 3,
+      "canonicalName": "Map Priorities",
+      "canonicalNameLength": 14,
+      "displayName": null,
+      "effectiveDisplayName": "Map Priorities",
+      "displayNameLength": 14,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "map-evaluate",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Priority Map",
+      "order": 4,
+      "canonicalName": "Review Priority Groups",
+      "canonicalNameLength": 22,
+      "displayName": "Review Groups",
+      "effectiveDisplayName": "Review Groups",
+      "displayNameLength": 13,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Priority Map",
+      "order": 5,
+      "canonicalName": "Select Priorities",
+      "canonicalNameLength": 17,
+      "displayName": null,
+      "effectiveDisplayName": "Select Priorities",
+      "displayNameLength": 17,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "select-decide",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Priority Map",
+      "order": 6,
+      "canonicalName": "Commit Actions",
+      "canonicalNameLength": 14,
+      "displayName": null,
+      "effectiveDisplayName": "Commit Actions",
+      "displayNameLength": 14,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "commit-action",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Start Stop Continue",
+      "order": 1,
+      "canonicalName": "Review Context",
+      "canonicalNameLength": 14,
+      "displayName": null,
+      "effectiveDisplayName": "Review Context",
+      "displayNameLength": 14,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "review-orient",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Start Stop Continue",
+      "order": 2,
+      "canonicalName": "Capture Start Stop Continue Items",
+      "canonicalNameLength": 33,
+      "displayName": "Capture Responses",
+      "effectiveDisplayName": "Capture Responses",
+      "displayNameLength": 17,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "capture-generate",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Start Stop Continue",
+      "order": 3,
+      "canonicalName": "Theme Sort Responses",
+      "canonicalNameLength": 20,
+      "displayName": "Cluster Responses",
+      "effectiveDisplayName": "Cluster Responses",
+      "displayNameLength": 17,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "cluster",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Start Stop Continue",
+      "order": 4,
+      "canonicalName": "Review & Refine Themes",
+      "canonicalNameLength": 22,
+      "displayName": "Refine Themes",
+      "effectiveDisplayName": "Refine Themes",
+      "displayNameLength": 13,
+      "withinTargetBefore": false,
+      "withinTargetAfter": true,
+      "actionCategory": "draft-refine",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Start Stop Continue",
+      "order": 5,
+      "canonicalName": "Select Priorities",
+      "canonicalNameLength": 17,
+      "displayName": null,
+      "effectiveDisplayName": "Select Priorities",
+      "displayNameLength": 17,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "select-decide",
+      "status": "ready"
+    },
+    {
+      "parentBlockName": "Start Stop Continue",
+      "order": 6,
+      "canonicalName": "Commit Actions",
+      "canonicalNameLength": 14,
+      "displayName": null,
+      "effectiveDisplayName": "Commit Actions",
+      "displayNameLength": 14,
+      "withinTargetBefore": true,
+      "withinTargetAfter": true,
+      "actionCategory": "commit-action",
+      "status": "ready"
+    }
+  ],
+  "reviewItems": [
+    {
+      "parentBlockName": "How Might We",
+      "order": 3,
+      "canonicalName": "Theme Sort Opportunities",
+      "canonicalNameLength": 24,
+      "displayName": "Cluster Opportunities",
+      "effectiveDisplayName": "Cluster Opportunities",
+      "displayNameLength": 21,
+      "withinTargetBefore": false,
+      "withinTargetAfter": false,
+      "actionCategory": "cluster",
+      "status": "needs-review"
+    }
+  ],
+  "duplicateReport": {
+    "canonicalStepNames": [
+      {
+        "canonicalName": "Review Opportunities",
+        "count": 2,
+        "occurrences": [
+          {
+            "parentBlockName": "Impact Effort Map",
+            "order": 1,
+            "canonicalName": "Review Opportunities",
+            "effectiveDisplayName": "Review Opportunities"
+          },
+          {
+            "parentBlockName": "Priority Map",
+            "order": 1,
+            "canonicalName": "Review Opportunities",
+            "effectiveDisplayName": "Review Opportunities"
+          }
+        ]
+      },
+      {
+        "canonicalName": "Select Priorities",
+        "count": 3,
+        "occurrences": [
+          {
+            "parentBlockName": "Impact Effort Map",
+            "order": 5,
+            "canonicalName": "Select Priorities",
+            "effectiveDisplayName": "Select Priorities"
+          },
+          {
+            "parentBlockName": "Priority Map",
+            "order": 5,
+            "canonicalName": "Select Priorities",
+            "effectiveDisplayName": "Select Priorities"
+          },
+          {
+            "parentBlockName": "Start Stop Continue",
+            "order": 5,
+            "canonicalName": "Select Priorities",
+            "effectiveDisplayName": "Select Priorities"
+          }
+        ]
+      },
+      {
+        "canonicalName": "Commit Actions",
+        "count": 2,
+        "occurrences": [
+          {
+            "parentBlockName": "Priority Map",
+            "order": 6,
+            "canonicalName": "Commit Actions",
+            "effectiveDisplayName": "Commit Actions"
+          },
+          {
+            "parentBlockName": "Start Stop Continue",
+            "order": 6,
+            "canonicalName": "Commit Actions",
+            "effectiveDisplayName": "Commit Actions"
+          }
+        ]
+      }
+    ],
+    "effectiveDisplayNames": [
+      {
+        "effectiveDisplayName": "Review Opportunities",
+        "count": 2,
+        "occurrences": [
+          {
+            "parentBlockName": "Impact Effort Map",
+            "order": 1,
+            "canonicalName": "Review Opportunities",
+            "effectiveDisplayName": "Review Opportunities"
+          },
+          {
+            "parentBlockName": "Priority Map",
+            "order": 1,
+            "canonicalName": "Review Opportunities",
+            "effectiveDisplayName": "Review Opportunities"
+          }
+        ]
+      },
+      {
+        "effectiveDisplayName": "Select Priorities",
+        "count": 3,
+        "occurrences": [
+          {
+            "parentBlockName": "Impact Effort Map",
+            "order": 5,
+            "canonicalName": "Select Priorities",
+            "effectiveDisplayName": "Select Priorities"
+          },
+          {
+            "parentBlockName": "Priority Map",
+            "order": 5,
+            "canonicalName": "Select Priorities",
+            "effectiveDisplayName": "Select Priorities"
+          },
+          {
+            "parentBlockName": "Start Stop Continue",
+            "order": 5,
+            "canonicalName": "Select Priorities",
+            "effectiveDisplayName": "Select Priorities"
+          }
+        ]
+      },
+      {
+        "effectiveDisplayName": "Commit Actions",
+        "count": 2,
+        "occurrences": [
+          {
+            "parentBlockName": "Priority Map",
+            "order": 6,
+            "canonicalName": "Commit Actions",
+            "effectiveDisplayName": "Commit Actions"
+          },
+          {
+            "parentBlockName": "Start Stop Continue",
+            "order": 6,
+            "canonicalName": "Commit Actions",
+            "effectiveDisplayName": "Commit Actions"
+          }
+        ]
+      }
+    ]
+  },
+  "iconActionCategories": [
+    {
+      "id": "review-orient",
+      "label": "Review / Orient",
+      "intent": "Read, align, introduce, or inspect existing context before work starts.",
+      "examples": [
+        "Introduction",
+        "Review Evidence",
+        "Review Opportunities"
+      ]
+    },
+    {
+      "id": "capture-generate",
+      "label": "Capture / Generate",
+      "intent": "Create raw inputs, responses, statements, metrics, or opportunities.",
+      "examples": [
+        "Capture Problems",
+        "Generate Metrics",
+        "Generate HMWs"
+      ]
+    },
+    {
+      "id": "cluster",
+      "label": "Cluster",
+      "intent": "Group related inputs into themes or meaningful sets.",
+      "examples": [
+        "Cluster Objectives",
+        "Cluster Problems",
+        "Cluster Responses"
+      ]
+    },
+    {
+      "id": "draft-refine",
+      "label": "Draft / Refine",
+      "intent": "Turn raw material into clearer options or improve existing candidates.",
+      "examples": [
+        "Draft Statements",
+        "Refine Opportunities",
+        "Refine Themes"
+      ]
+    },
+    {
+      "id": "map-evaluate",
+      "label": "Map / Evaluate",
+      "intent": "Place options on a matrix or evaluate them against criteria.",
+      "examples": [
+        "Set Up Matrix",
+        "Map Opportunities",
+        "Map Priorities"
+      ]
+    },
+    {
+      "id": "select-decide",
+      "label": "Select / Decide",
+      "intent": "Choose, confirm, prioritise, or commit to a decision.",
+      "examples": [
+        "Select Priorities",
+        "Select Opportunities",
+        "Confirm Choices"
+      ]
+    },
+    {
+      "id": "ask-why",
+      "label": "Ask Why",
+      "intent": "Iterate through causal questioning while preserving separate executable steps.",
+      "examples": [
+        "Why #1",
+        "Why #2",
+        "Why #5"
+      ]
+    },
+    {
+      "id": "commit-action",
+      "label": "Commit / Action",
+      "intent": "Translate outcomes into next steps, actions, or commitment.",
+      "examples": [
+        "Commit Actions",
+        "Define Next Steps",
+        "Review & Commit"
+      ]
+    }
+  ],
+  "canonicalChangesRequired": {
+    "csv": "data/canonical/workshop-os/building-block-steps.csv",
+    "json": "data/generated/workshop-os/building-block-steps.json",
+    "note": "Add optional Display Name / displayName. Keep Step Name / name unchanged. Empty CSV Display Name values should fall back to Step Name."
+  },
+  "modellingQuestions": [
+    "Should OKRs display all nine steps in the Builder modal, or map them into the approved six high-level stages?",
+    "Should Five Whys display five separate Why iterations, or one grouped Ask Why stage in the Builder modal?",
+    "Should modal-flow grouping use a separate builderFlowStage model rather than modifying Building Block Steps?"
+  ],
+  "recommendation": "Keep Building Block Steps as the executable canonical model, add optional displayName only for compact labels, and introduce a separate builderFlowStage model for modal grouping. That lets the Builder show grouped stages such as OKR high-level stages or a single Ask Why stage while preserving every runnable step and canonical Step Name."
+}
