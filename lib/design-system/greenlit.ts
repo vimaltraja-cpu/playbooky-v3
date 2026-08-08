@@ -30,3 +30,16 @@ export const greenlitSurfaces: GreenlitSurface[] = [
       "Centre-card elastic enter, then fan into the recommended workshop deck. Linked from loading."
   }
 ];
+
+/** Stitched product journey: Composer → Diagnosis → green-lit Recommendation. */
+export const productJourneyHref = "/journey";
+
+export const productJourneyStages = [
+  { id: "composer", label: "Composer", href: "/journey?stage=composer" },
+  { id: "diagnosis", label: "Diagnosis", href: "/journey?stage=diagnosis" },
+  {
+    id: "recommendation",
+    label: "Recommendation",
+    href: "/journey?stage=recommendation"
+  }
+] as const;

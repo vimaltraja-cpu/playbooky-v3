@@ -1,0 +1,222 @@
+.shell {
+  --pj-ink: #171614;
+  --pj-muted: #5e5a53;
+  --pj-paper: #f6f1e8;
+  --pj-surface: #fcfbf9;
+  --pj-line: #e6e2dc;
+  --pj-accent-start: #7d5330;
+  --pj-accent-end: #d99c56;
+  background: var(--pj-paper);
+  color: var(--pj-ink);
+  font-family:
+    Geist,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  min-height: 100svh;
+  position: relative;
+  width: 100%;
+}
+
+.wash {
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(217, 156, 86, 0.18), transparent 60%),
+    radial-gradient(ellipse 70% 45% at 90% 10%, rgba(125, 83, 48, 0.12), transparent 55%);
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin: 0 auto;
+  max-width: 1120px;
+  min-height: 100svh;
+  padding: 48px 24px 64px;
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.eyebrow {
+  color: var(--pj-accent-start);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 8px 0 0;
+  max-width: 18ch;
+}
+
+.copy {
+  color: var(--pj-muted);
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 12px 0 0;
+  max-width: 42ch;
+}
+
+.stageRail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stageChip {
+  border: 1px solid var(--pj-line);
+  border-radius: 999px;
+  color: var(--pj-muted);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+}
+
+.stageChipActive {
+  background: var(--pj-ink);
+  border-color: var(--pj-ink);
+  color: #fff;
+}
+
+.stageChipDone {
+  background: rgba(125, 83, 48, 0.1);
+  border-color: rgba(125, 83, 48, 0.28);
+  color: var(--pj-accent-start);
+}
+
+.composerWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  width: 100%;
+}
+
+.questionLabel {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.progress {
+  color: var(--pj-muted);
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  justify-items: center;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.grid :global(.diagnosis-card-prototype) {
+  max-width: 100%;
+  width: min(100%, 445.33px) !important;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.primaryButton,
+.secondaryButton {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 600;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  transition:
+    background 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.primaryButton {
+  background: linear-gradient(
+    45deg,
+    var(--pj-accent-start) 0%,
+    var(--pj-accent-end) 100%
+  );
+  border: 0;
+  color: #fff;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.secondaryButton {
+  background: transparent;
+  border: 1px solid var(--pj-line);
+  color: var(--pj-ink);
+}
+
+.activitiesGrid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin-top: 12px;
+  width: 100%;
+}
+
+.activitiesCard {
+  display: flex;
+  justify-content: center;
+}
+
+.revealContinue {
+  bottom: 28px;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  z-index: 20;
+}
+
+.revealContinue button {
+  pointer-events: auto;
+}
+
+@media (max-width: 767px) {
+  .inner {
+    padding: 32px 16px 48px;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    flex: 1;
+  }
+}
