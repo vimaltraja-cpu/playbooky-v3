@@ -127,7 +127,7 @@ function DiagnosisFullPage() {
     return (
       <main className="diagnosis-question-screen" data-viewport={viewport}>
         <SiteBackgroundWash />
-        <div className="diagnosis-content-shell" />
+        <div className="diagnosis-main-region" />
       </main>
     );
   }
@@ -136,7 +136,7 @@ function DiagnosisFullPage() {
     return (
       <main className="diagnosis-question-screen" data-viewport={viewport}>
         <SiteBackgroundWash />
-        <div className="diagnosis-content-shell" />
+        <div className="diagnosis-main-region" />
       </main>
     );
   }
