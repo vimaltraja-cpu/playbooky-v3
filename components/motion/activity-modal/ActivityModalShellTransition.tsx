@@ -33,7 +33,7 @@ import {
 export type ActivityModalShellCard = {
   id: string;
   label: string;
-  modalData: ActivityDetailModalData;
+  modalData?: ActivityDetailModalData;
 };
 
 export type ShellPhase = "idle" | "opening" | "open" | "closing" | "paused";
@@ -69,6 +69,11 @@ type ActivityModalShellTransitionOptions = {
   onRemoveActivity?: (card: ActivityModalShellCard) => void;
   onReplaceActivity?: (card: ActivityModalShellCard) => void;
   onShellChange?: (shell: ShellState | null) => void;
+  renderContent?: (context: {
+    card: ActivityModalShellCard;
+    closeShell: () => void;
+    phase: Exclude<ShellPhase, "idle">;
+  }) => ReactNode;
   variant?: ShellMotionVariant;
 };
 
@@ -220,6 +225,7 @@ export function useActivityModalShellTransition({
   onRemoveActivity,
   onReplaceActivity,
   onShellChange,
+  renderContent,
   variant = APPROVED_PRODUCT_VARIANT
 }: ActivityModalShellTransitionOptions = {}): ActivityModalShellTransitionApi {
   const [debugState, setDebugState] = useState(initialActivityModalDebugState);
@@ -308,7 +314,9 @@ export function useActivityModalShellTransition({
   }
 
   function preloadCard(card: ActivityModalShellCard) {
-    void preloadModalIllustration(card.modalData.illustration);
+    if (card.modalData?.illustration) {
+      void preloadModalIllustration(card.modalData.illustration);
+    }
   }
 
   function restoreOriginFocus() {
@@ -453,7 +461,10 @@ export function useActivityModalShellTransition({
     }
 
     openingLockRef.current = true;
-    await preloadModalIllustration(card.modalData.illustration);
+
+    if (card.modalData?.illustration) {
+      await preloadModalIllustration(card.modalData.illustration);
+    }
 
     const cardElement = cardRefs.current[card.id];
     const destinationElement = destinationRef.current;
@@ -607,7 +618,11 @@ export function useActivityModalShellTransition({
   const transitionLayer = shell
     ? createPortal(
       <div
-        aria-label={`${shell.card.label} activity details`}
+        aria-label={
+          renderContent
+            ? shell.card.label
+            : `${shell.card.label} activity details`
+        }
         aria-modal={phase === "open" ? true : undefined}
         className="pointer-events-none fixed z-50 overflow-hidden border-[2px] border-[#B77B32] bg-[#FCFBFA]/[0.18] will-change-[top,left,width,height,border-radius,backdrop-filter]"
         ref={shellRef}
@@ -621,32 +636,45 @@ export function useActivityModalShellTransition({
         }}
       >
         <div
-          className="pointer-events-none absolute overflow-hidden [&>article]:h-full [&>article]:w-full"
+          className={[
+            "absolute overflow-hidden [&>article]:h-full [&>article]:w-full",
+            phase === "open" ? "pointer-events-auto" : "pointer-events-none"
+          ].join(" ")}
           data-activity-modal-v2-content="true"
           ref={contentCanvasRef}
           style={{
             inset: 0
           }}
         >
-          <ActivityDetailModal
-            activity={shell.card.modalData}
-            contentOnly
-            isOpen
-            onRemove={() => onRemoveActivity?.(shell.card)}
-            onReplace={() => onReplaceActivity?.(shell.card)}
-          />
+          {renderContent ? (
+            renderContent({
+              card: shell.card,
+              closeShell,
+              phase: shell.phase
+            })
+          ) : shell.card.modalData ? (
+            <ActivityDetailModal
+              activity={shell.card.modalData}
+              contentOnly
+              isOpen
+              onRemove={() => onRemoveActivity?.(shell.card)}
+              onReplace={() => onReplaceActivity?.(shell.card)}
+            />
+          ) : null}
         </div>
 
         <div
           aria-hidden="true"
-          className="absolute inset-0 z-10"
+          className="pointer-events-none absolute inset-0 z-10"
           data-activity-modal-v2-frost="true"
           ref={frostRef}
         />
 
         {phase === "open" ? (
           <button
-            aria-label="Close activity details"
+            aria-label={
+              renderContent ? "Close activity library" : "Close activity details"
+            }
             className="pointer-events-auto absolute right-4 top-4 z-20 grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/80 text-2xl leading-none text-[#324236] shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#aa7d3a]/50"
             onClick={closeShell}
             ref={closeButtonRef}

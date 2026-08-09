@@ -200,6 +200,96 @@ export const portalNavigation: PortalNavSection[] = [
       {
         category: "Core Experience",
         description:
+          "Desktop activity library picker in the activity modal shell: stage tabs, list, and condensed side rail.",
+        href: "/design-system/core-experience/activity-library-modal",
+        icon: "list",
+        keywords: [
+          "activity",
+          "library",
+          "modal",
+          "add activity",
+          "tabs",
+          "side rail",
+          "picker"
+        ],
+        label: "Activity Library Modal"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Full-screen activity library side drawer with card grid and preview rail. Full prototype at /playground/activity-library-side-scroll.",
+        href: "/design-system/core-experience/activity-library-side-scroll",
+        icon: "layout",
+        keywords: [
+          "activity",
+          "library",
+          "side scroll",
+          "drawer",
+          "fullscreen",
+          "add activity",
+          "picker",
+          "playground"
+        ],
+        label: "Activity Library Side Scroll"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Shelf browse + immersive inspect library prototype. Playground: /playground/activity-library-shelves.",
+        href: "/playground/activity-library-shelves",
+        icon: "layout",
+        keywords: [
+          "activity",
+          "library",
+          "shelves",
+          "netflix",
+          "steam",
+          "inspect",
+          "playground",
+          "premium browse"
+        ],
+        label: "Activity Library Shelves"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Curated pack tray + illustration-led inventory with in-place inspect. Playground: /playground/activity-library-packs.",
+        href: "/playground/activity-library-packs",
+        icon: "layout",
+        keywords: [
+          "activity",
+          "library",
+          "packs",
+          "inventory",
+          "curated",
+          "diablo",
+          "inspect",
+          "playground"
+        ],
+        label: "Activity Library Packs"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Full workshop prototype: real drag grid + detail modal + pack library overlay. Playground: /playground/activity-library-grid.",
+        href: "/playground/activity-library-grid",
+        icon: "layout",
+        keywords: [
+          "activity",
+          "library",
+          "packs",
+          "grid",
+          "drag",
+          "modal",
+          "prototype",
+          "playground",
+          "workshop"
+        ],
+        label: "Activity Library on Grid"
+      },
+      {
+        category: "Core Experience",
+        description:
           "Static desktop review for the Builder Activity Detail Modal.",
         href: "/design-system/core-experience/activity-detail-modal",
         icon: "maximize-2",
@@ -315,7 +405,7 @@ export const portalNavigation: PortalNavSection[] = [
           "early access"
         ],
         label: "Workshop Ready Waitlist"
-      },
+      }
     ],
     icon: "monitor",
     id: "core-experience",
