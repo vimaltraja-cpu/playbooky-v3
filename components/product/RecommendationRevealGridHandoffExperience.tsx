@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { ActivityGridExperience } from "@/components/product/ActivityGridExperience";
 import {
   activityGridViewports,
   type ActivityGridViewportMode
@@ -15,6 +14,8 @@ import {
 import type { RecommendationLoadingViewport } from "@/components/product/RecommendationLoadingExperience";
 import { RecommendationRevealTemplateExperience } from "@/components/product/RecommendationRevealTemplateExperience";
 import { ActivityCard, type ActivityCardData } from "@/components/ui/ActivityCard";
+import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-library-modal";
+import { ActiveGridWithLibrary } from "@/src/features/recommendation-journey/ActiveGridWithLibrary";
 import styles from "./RecommendationScreens.module.css";
 
 type HandoffPhase = "reveal" | "armed" | "moving" | "grid";
@@ -99,7 +100,13 @@ function cardTransform(
   return `translate3d(${translateX}px, ${translateY}px, 0) rotate(${placement.rotation}deg) scale(${scaleX}, ${scaleY})`;
 }
 
-export function RecommendationRevealGridHandoffExperience() {
+export function RecommendationRevealGridHandoffExperience({
+  libraryActivities = [],
+  onContinue
+}: {
+  libraryActivities?: ActivityLibraryModalItem[];
+  onContinue?: () => void;
+}) {
   const [viewport, setViewport] = useState<ActivityGridViewportMode>("desktop");
   const [revealPhase, setRevealPhase] =
     useState<RecommendationCardRevealPhase>("pending");
@@ -262,9 +269,11 @@ export function RecommendationRevealGridHandoffExperience() {
         className={styles.revealGridPageLayer}
         data-visible={showGrid ? "true" : "false"}
       >
-        <ActivityGridExperience
+        <ActiveGridWithLibrary
           hiddenCardIds={gridInteractive ? [] : hiddenCardIds}
           inert={!gridInteractive}
+          libraryActivities={libraryActivities}
+          onContinue={onContinue}
           registerCard={registerGridCard}
           showContinue={gridInteractive}
           viewport={viewport}

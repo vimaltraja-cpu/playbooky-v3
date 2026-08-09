@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { RecommendationLoadingExperience } from "@/components/product/RecommendationLoadingExperience";
 import { RecommendationRevealGridHandoffExperience } from "@/components/product/RecommendationRevealGridHandoffExperience";
 import { RecommendationRevealTemplateExperience } from "@/components/product/RecommendationRevealTemplateExperience";
+import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-library-modal";
 import styles from "./RecommendationScreens.module.css";
 
 type JourneyPhase = "loading" | "exiting" | "entering" | "reveal";
@@ -21,10 +22,14 @@ const HOLD_AT_BLUR_MS = 220;
 export function RecommendationLoadingRevealJourney({
   continueLabel,
   includeGridHandoff = false,
+  libraryActivities = [],
+  onGridContinue,
   onRevealComplete
 }: {
   continueLabel?: string;
   includeGridHandoff?: boolean;
+  libraryActivities?: ActivityLibraryModalItem[];
+  onGridContinue?: () => void;
   onRevealComplete?: () => void;
 } = {}) {
   const [phase, setPhase] = useState<JourneyPhase>("loading");
@@ -79,7 +84,10 @@ export function RecommendationLoadingRevealJourney({
           />
         ) : (
           includeGridHandoff ? (
-            <RecommendationRevealGridHandoffExperience />
+            <RecommendationRevealGridHandoffExperience
+              libraryActivities={libraryActivities}
+              onContinue={onGridContinue}
+            />
           ) : (
             <RecommendationRevealTemplateExperience
               continueLabel={continueLabel}
