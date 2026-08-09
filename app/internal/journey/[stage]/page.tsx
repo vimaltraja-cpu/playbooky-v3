@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
 
+import { getCanonicalActivityCards } from "@/lib/data/canonical-activity-cards";
+import { buildActivityLibraryModalItems } from "@/lib/design-system/activity-library-modal";
+import { getLibraryDataset } from "@/lib/product-system/library-read-model";
 import { JourneyFullPage } from "@/src/features/recommendation-journey/JourneyFullPage";
 import {
   getJourneyStage,
@@ -22,5 +25,16 @@ export default async function InternalJourneyStagePage({
     notFound();
   }
 
-  return <JourneyFullPage stage={stage} />;
+  const [dataset, cards] = await Promise.all([
+    getLibraryDataset(),
+    Promise.resolve(getCanonicalActivityCards())
+  ]);
+  const libraryActivities = buildActivityLibraryModalItems(
+    dataset.activities,
+    cards
+  );
+
+  return (
+    <JourneyFullPage libraryActivities={libraryActivities} stage={stage} />
+  );
 }

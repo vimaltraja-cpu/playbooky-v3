@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { ActivityGridExperience } from "@/components/product/ActivityGridExperience";
+import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-library-modal";
+import { ActiveGridWithLibrary } from "@/src/features/recommendation-journey/ActiveGridWithLibrary";
 import { DiagnosisQuestionScreen } from "@/components/product/DiagnosisQuestionScreen";
 import {
   type DiagnosisScreenViewport
@@ -74,11 +75,18 @@ function useResponsiveMode<Mode extends string>(
 }
 
 function ActiveGridFullPage({
-  initialOpenCardId
+  initialOpenCardId,
+  libraryActivities
 }: {
   initialOpenCardId?: string;
+  libraryActivities: ActivityLibraryModalItem[];
 }) {
-  return <ActivityGridExperience initialOpenCardId={initialOpenCardId} />;
+  return (
+    <ActiveGridWithLibrary
+      initialOpenCardId={initialOpenCardId}
+      libraryActivities={libraryActivities}
+    />
+  );
 }
 
 function DiagnosisFullPage() {
@@ -203,7 +211,10 @@ function DiagnosisFullPage() {
   );
 }
 
-function renderStage(stageId: JourneyStageId) {
+function renderStage(
+  stageId: JourneyStageId,
+  libraryActivities: ActivityLibraryModalItem[]
+) {
   if (stageId === "composer") {
     return <HomepageComposerLayout />;
   }
@@ -221,12 +232,23 @@ function renderStage(stageId: JourneyStageId) {
   }
 
   if (stageId === "active-grid") {
-    return <ActiveGridFullPage />;
+    return <ActiveGridFullPage libraryActivities={libraryActivities} />;
   }
 
-  return <ActiveGridFullPage initialOpenCardId="commitment-check" />;
+  return (
+    <ActiveGridFullPage
+      initialOpenCardId="commitment-check"
+      libraryActivities={libraryActivities}
+    />
+  );
 }
 
-export function JourneyFullPage({ stage }: { stage: JourneyStage }) {
-  return renderStage(stage.id);
+export function JourneyFullPage({
+  libraryActivities,
+  stage
+}: {
+  libraryActivities: ActivityLibraryModalItem[];
+  stage: JourneyStage;
+}) {
+  return renderStage(stage.id, libraryActivities);
 }
