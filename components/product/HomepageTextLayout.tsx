@@ -3,8 +3,9 @@ import Image from "next/image";
 import playbookyLogo from "@/assets/logos/Logo_icon.svg";
 import { GuideMeInsteadLink } from "@/components/product/GuideMeInsteadLink";
 import { HomepageComposerController } from "@/components/product/HomepageComposerController";
+import { HomepageComposerWash } from "@/components/product/HomepageComposerWash";
+import { HomepageMarketingSections } from "@/components/product/HomepageMarketingSections";
 import { AIComposer } from "@/components/ui/AIComposer";
-import { SiteBackgroundWash } from "@/components/ui/SiteBackgroundWash";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 
 export type HomepageTextLayoutViewport =
@@ -99,8 +100,9 @@ export function HomepageComposerLayout({
         framed ? "homepage-text-layout--framed" : "",
         framed ? "homepage-composer-layout--framed" : ""
       ].join(" ")}
+      id="top"
     >
-      <SiteBackgroundWash />
+      <HomepageComposerWash />
       <SiteHeader variant="landing" />
       <main className="homepage-text-layout__main">
         <section
@@ -138,6 +140,7 @@ export function HomepageComposerLayout({
           </div>
         </section>
       </main>
+      {framed ? null : <HomepageMarketingSections />}
     </div>
   );
 }

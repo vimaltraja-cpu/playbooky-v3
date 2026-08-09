@@ -11,9 +11,9 @@ export type SiteHeaderProps = {
 };
 
 const navigationItems = [
-  { href: "/how-it-works", label: "How it works" },
-  { href: "/workshops", label: "Workshops" },
-  { href: "/price", label: "Price" },
+  { href: "#how-it-works", label: "How it works" },
+  { href: "#workshops", label: "Workshops" },
+  { href: "#price", label: "Price" },
   { href: "/resources", label: "Resources", menu: true }
 ];
 

@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 type AIComposerState =
   | "empty"
   | "focused"
@@ -15,6 +17,7 @@ type AIComposerProps = {
   onChange?: (value: string) => void;
   onSubmit?: ((value: string) => void) | (() => void);
   placeholder?: string;
+  sendChildren?: ReactNode;
   state?: AIComposerState;
   value?: string;
   viewport?: AIComposerViewport;
@@ -56,6 +59,7 @@ function ArrowUpIcon() {
   return (
     <svg
       aria-hidden="true"
+      className="ai-composer__send-arrow"
       fill="none"
       height="20"
       stroke="#E2E8F0"
@@ -76,6 +80,7 @@ export function AIComposer({
   onChange,
   onSubmit,
   placeholder,
+  sendChildren,
   state = "empty",
   value,
   viewport = "desktop"
@@ -116,6 +121,7 @@ export function AIComposer({
     <div
       aria-disabled={isDisabled}
       aria-label="AI Composer"
+      className="ai-composer"
       data-state={resolvedState}
       role="group"
       style={{
@@ -128,6 +134,7 @@ export function AIComposer({
       }}
     >
       <div
+        className="ai-composer__surface"
         style={{
           alignItems: "flex-start",
           background: "#FCFBF9",
@@ -144,6 +151,7 @@ export function AIComposer({
         {isInteractive ? (
           <textarea
             aria-label="Challenge prompt"
+            className="ai-composer__input"
             disabled={isDisabled || isLoading}
             onChange={(event) => onChange?.(event.target.value)}
             onKeyDown={(event) => {
@@ -172,6 +180,7 @@ export function AIComposer({
           />
         ) : (
           <p
+            className="ai-composer__copy"
             style={{
               color: isMobile ? "#45413C" : "#5E5A53",
               fontFamily:
@@ -187,6 +196,7 @@ export function AIComposer({
         )}
 
         <div
+          className="ai-composer__actions"
           style={{
             alignItems: "center",
             display: "flex",
@@ -197,26 +207,19 @@ export function AIComposer({
             width: "100%"
           }}
         >
-          <MicIcon />
+          <span className="ai-composer__mic">
+            <MicIcon />
+          </span>
           <button
             aria-label={isLoading ? "Sending" : "Send prompt"}
+            className="ai-composer__send"
+            data-ready={canSubmit ? "true" : "false"}
             disabled={!canSubmit}
             onClick={submit}
-            style={{
-              alignItems: "center",
-              background: "linear-gradient(45deg, #7D5330 0%, #D99C56 100%)",
-              border: 0,
-              borderRadius: "20px",
-              display: "inline-flex",
-              height: "40px",
-              justifyContent: "center",
-              opacity: canSubmit ? 1 : 0.45,
-              padding: 0,
-              width: "40px"
-            }}
             type="button"
           >
             <ArrowUpIcon />
+            {sendChildren}
           </button>
         </div>
       </div>
