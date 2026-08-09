@@ -84,6 +84,8 @@ export function ActivityGridInteractiveLayer({
   hiddenCardIds = [],
   inert = false,
   initialOpenCardId,
+  onAddActivity,
+  onRemoveActivity,
   registerCard,
   viewport = "desktop"
 }: {
@@ -91,6 +93,8 @@ export function ActivityGridInteractiveLayer({
   hiddenCardIds?: string[];
   inert?: boolean;
   initialOpenCardId?: string;
+  onAddActivity?: () => void;
+  onRemoveActivity?: (card: ActivityGridVisualCard) => void;
   registerCard?: (id: string, element: HTMLButtonElement | null) => void;
   viewport?: ActivityGridViewportMode;
 }) {
@@ -133,7 +137,14 @@ export function ActivityGridInteractiveLayer({
     preloadCard,
     registerCard: registerModalCard,
     transitionLayer
-  } = useActivityModalShellTransition();
+  } = useActivityModalShellTransition({
+    onRemoveActivity: (modalCard) => {
+      const card = cardsById.get(modalCard.id);
+      if (card) {
+        onRemoveActivity?.(card);
+      }
+    }
+  });
   const initialOpenCardIdRef = useRef<string | null>(initialOpenCardId ?? null);
 
   const getSlotPosition = useCallback(
@@ -413,17 +424,34 @@ export function ActivityGridInteractiveLayer({
         );
       })}
 
-      <div
-        aria-label="Add Activity placeholder"
-        className="absolute left-0 top-0 flex items-center justify-center rounded-[14px] border-2 border-dashed border-[#c8bcaa] bg-[#fbf7ef]/70 text-[40px] font-light text-[#9e927f]"
-        style={{
-          height: cardHeight,
-          transform: `translate3d(${addSlot.x}px, ${addSlot.y}px, 0)`,
-          width: cardWidth
-        }}
-      >
-        +
-      </div>
+      {onAddActivity ? (
+        <button
+          aria-label="Add activity"
+          className="absolute left-0 top-0 flex items-center justify-center rounded-[14px] border-2 border-dashed border-[#c8bcaa] bg-[#fbf7ef]/70 text-[40px] font-light text-[#9e927f] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#aa7d3a]/50 disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={inert || isInteractionLocked}
+          onClick={onAddActivity}
+          style={{
+            height: cardHeight,
+            transform: `translate3d(${addSlot.x}px, ${addSlot.y}px, 0)`,
+            width: cardWidth
+          }}
+          type="button"
+        >
+          +
+        </button>
+      ) : (
+        <div
+          aria-label="Add Activity placeholder"
+          className="absolute left-0 top-0 flex items-center justify-center rounded-[14px] border-2 border-dashed border-[#c8bcaa] bg-[#fbf7ef]/70 text-[40px] font-light text-[#9e927f]"
+          style={{
+            height: cardHeight,
+            transform: `translate3d(${addSlot.x}px, ${addSlot.y}px, 0)`,
+            width: cardWidth
+          }}
+        >
+          +
+        </div>
+      )}
     </div>
   );
 
