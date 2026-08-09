@@ -289,6 +289,116 @@ export const portalNavigation: PortalNavSection[] = [
           "motion"
         ],
         label: "Workshop Navigation Motion"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Locked Workshop Mode navigation using Active Elastic Pop (RTL Icon).",
+        href: "/design-system/core-experience/workshop-mode-nav",
+        icon: "navigation",
+        keywords: [
+          "workshop",
+          "navigation",
+          "facilitator guide",
+          "figjam",
+          "playbooky live",
+          "elastic pop",
+          "locked"
+        ],
+        label: "Workshop Mode Nav"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Locked Facilitator Guide header with logo, Share, and Download PDF actions.",
+        href: "/design-system/core-experience/facilitator-guide-header",
+        icon: "layout",
+        keywords: [
+          "header",
+          "facilitator guide",
+          "share",
+          "download pdf",
+          "logo",
+          "locked"
+        ],
+        label: "Facilitator Guide Header"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Secondary activity tabs for Facilitator Guide, driven by ordered workshop activities.",
+        href: "/design-system/core-experience/facilitator-activity-tabs",
+        icon: "list",
+        keywords: [
+          "facilitator guide",
+          "activity tabs",
+          "secondary navigation",
+          "workshop order",
+          "underline tabs"
+        ],
+        label: "Facilitator Activity Tabs"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Facilitator Guide activity hero with type, title, description, and illustration.",
+        href: "/design-system/core-experience/facilitator-activity-hero",
+        icon: "image",
+        keywords: [
+          "facilitator guide",
+          "activity hero",
+          "title",
+          "description",
+          "illustration"
+        ],
+        label: "Facilitator Activity Hero"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Facilitator Guide activity steps with what to say, discussion prompts, and expected outcomes.",
+        href: "/design-system/core-experience/facilitator-activity-steps",
+        icon: "list",
+        keywords: [
+          "facilitator guide",
+          "activity steps",
+          "what to say",
+          "discussion prompt",
+          "expected outcome"
+        ],
+        label: "Facilitator Activity Steps"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Live Facilitator Guide model packed from Active Library diagnosis at 120 and 150 minutes.",
+        href: "/design-system/core-experience/facilitator-guide-live",
+        icon: "play",
+        keywords: [
+          "facilitator guide",
+          "live",
+          "diagnosis",
+          "active library",
+          "workshop packing",
+          "canonical gaps"
+        ],
+        label: "Facilitator Guide Live"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Waitlist panel for FigJam Board and PlayBooky Live, with join and submitted variants.",
+        href: "/design-system/core-experience/workshop-ready-waitlist",
+        icon: "mail",
+        keywords: [
+          "waitlist",
+          "figjam",
+          "playbooky live",
+          "email",
+          "workshop ready",
+          "early access"
+        ],
+        label: "Workshop Ready Waitlist"
       }
     ],
     icon: "monitor",
