@@ -9,7 +9,8 @@ import {
   REVEAL_PRELOAD_LAG_MS,
   preloadRecommendationRevealAssets,
   recommendationRevealCards,
-  type RecommendationCardRevealPhase
+  type RecommendationCardRevealPhase,
+  type RecommendationRevealCardId
 } from "@/components/product/RecommendationCardReveal";
 import {
   RecommendationExperienceShell,
@@ -72,7 +73,7 @@ function wait(ms: number) {
   });
 }
 
-const recommendationRevealWorkshop = {
+export const recommendationRevealWorkshop = {
   activityCards: recommendationRevealCards.map((card) => card.activity),
   description: exampleGeneratedWorkshopFlow.objective,
   metadata: {
@@ -97,12 +98,23 @@ const recommendationRevealWorkshop = {
 export function RecommendationRevealTemplateExperience({
   className = "",
   continueLabel = "Continue to activities",
+  hiddenCardIds = [],
+  interactive = true,
   onContinue,
+  onRevealPhaseChange,
+  registerCard,
   viewport
 }: {
   className?: string;
   continueLabel?: string;
+  hiddenCardIds?: string[];
+  interactive?: boolean;
   onContinue?: () => void;
+  onRevealPhaseChange?: (phase: RecommendationCardRevealPhase) => void;
+  registerCard?: (
+    id: RecommendationRevealCardId,
+    element: HTMLDivElement | null
+  ) => void;
   viewport?: RecommendationLoadingViewport;
 }) {
   const [responsiveViewport, setResponsiveViewport] =
@@ -170,6 +182,10 @@ export function RecommendationRevealTemplateExperience({
     };
   }, [effectiveViewport]);
 
+  useEffect(() => {
+    onRevealPhaseChange?.(revealPhase);
+  }, [onRevealPhaseChange, revealPhase]);
+
   return (
     <RecommendationExperienceShell
       ariaLabel="Recommendation reveal"
@@ -200,8 +216,10 @@ export function RecommendationRevealTemplateExperience({
         <div className="recommendation-reveal-template-scale">
           <RecommendationCardReveal
             activityCards={recommendationRevealWorkshop.activityCards}
-            interactive={revealPhase === "complete"}
+            hiddenCardIds={hiddenCardIds}
+            interactive={interactive && revealPhase === "complete"}
             phase={revealPhase}
+            registerCard={registerCard}
             viewport={effectiveViewport}
           />
         </div>

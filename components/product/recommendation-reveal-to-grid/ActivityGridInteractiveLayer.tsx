@@ -81,12 +81,14 @@ function toModalCard(card: ActivityGridVisualCard): ActivityModalShellCard {
 // before cards have arrived -- but no drag handlers run.
 export function ActivityGridInteractiveLayer({
   cards,
+  hiddenCardIds = [],
   inert = false,
   initialOpenCardId,
   registerCard,
   viewport = "desktop"
 }: {
   cards: ActivityGridVisualCard[];
+  hiddenCardIds?: string[];
   inert?: boolean;
   initialOpenCardId?: string;
   registerCard?: (id: string, element: HTMLButtonElement | null) => void;
@@ -94,6 +96,7 @@ export function ActivityGridInteractiveLayer({
 }) {
   const geometry = activityGridViewports[viewport];
   const { cardHeight, cardWidth, columns, gap } = geometry;
+  const hiddenCards = new Set(hiddenCardIds);
 
   const [orderedIds, setOrderedIds] = useState(() => cards.map((card) => card.id));
   const cardsById = useMemo(
@@ -399,6 +402,7 @@ export function ActivityGridInteractiveLayer({
               transition: isDragging
                 ? "box-shadow 120ms ease, transform 0ms"
                 : `transform ${duration}s ${easeValue}, box-shadow ${duration}s ${easeValue}`,
+              visibility: hiddenCards.has(card.id) ? "hidden" : "visible",
               width: cardWidth,
               zIndex: isDragging ? 20 : 2
             }}

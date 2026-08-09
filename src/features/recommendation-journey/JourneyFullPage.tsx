@@ -1,23 +1,16 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import playBookyHorizontalLogo from "@/assets/logos/Horizontal Logo.svg";
-import type { ActivityGridViewportMode } from "@/components/product/ActivityGridVisualLayer";
+import { ActivityGridExperience } from "@/components/product/ActivityGridExperience";
 import { DiagnosisQuestionScreen } from "@/components/product/DiagnosisQuestionScreen";
 import {
   type DiagnosisScreenViewport
 } from "@/components/product/DiagnosisQuestionScreen";
 import { HomepageComposerLayout } from "@/components/product/HomepageTextLayout";
-import {
-  recommendationRevealCards
-} from "@/components/product/RecommendationCardReveal";
 import { RecommendationCardRevealExperience } from "@/components/product/RecommendationCardRevealExperience";
 import { RecommendationLoadingRevealJourney } from "@/components/product/RecommendationLoadingRevealJourney";
-import { ActivityGridInteractiveLayer } from "@/components/product/recommendation-reveal-to-grid/ActivityGridInteractiveLayer";
 import { SiteBackgroundWash } from "@/components/ui/SiteBackgroundWash";
 import { diagnosisQuestions } from "@/lib/design-system/diagnosis-options";
 import type { DiagnosisQuestionId } from "@/lib/design-system/diagnosis-options";
@@ -62,22 +55,6 @@ function getDiagnosisViewport(): DiagnosisScreenViewport {
   return "desktop";
 }
 
-function getActivityGridViewport(): ActivityGridViewportMode {
-  if (typeof window === "undefined") {
-    return "desktop";
-  }
-
-  if (window.innerWidth < 768) {
-    return "mobile";
-  }
-
-  if (window.innerWidth < 1200) {
-    return "tablet";
-  }
-
-  return "desktop";
-}
-
 function useResponsiveMode<Mode extends string>(
   getMode: () => Mode,
   initialMode: Mode
@@ -96,54 +73,12 @@ function useResponsiveMode<Mode extends string>(
   return mode;
 }
 
-function InternalJourneyHeader() {
-  return (
-    <header className="relative z-10 flex h-[72px] shrink-0 items-center px-6 md:px-10">
-      <Link aria-label="PlayBooky home" href="/">
-        <Image
-          alt=""
-          aria-hidden="true"
-          height={35}
-          priority
-          src={playBookyHorizontalLogo}
-          width={142}
-        />
-      </Link>
-    </header>
-  );
-}
-
 function ActiveGridFullPage({
   initialOpenCardId
 }: {
   initialOpenCardId?: string;
 }) {
-  const viewport = useResponsiveMode(
-    getActivityGridViewport,
-    "desktop" satisfies ActivityGridViewportMode
-  );
-  const cards = useMemo(
-    () =>
-      recommendationRevealCards.map((card) => ({
-        activity: card.activity,
-        id: card.id,
-        label: card.activity.title
-      })),
-    []
-  );
-
-  return (
-    <main className="min-h-screen overflow-x-hidden bg-[#F6F1E8] text-[#171614]">
-      <InternalJourneyHeader />
-      <section className="px-4 pb-12 pt-4 md:px-8">
-        <ActivityGridInteractiveLayer
-          cards={cards}
-          initialOpenCardId={initialOpenCardId}
-          viewport={viewport}
-        />
-      </section>
-    </main>
-  );
+  return <ActivityGridExperience initialOpenCardId={initialOpenCardId} />;
 }
 
 function DiagnosisFullPage() {
@@ -278,7 +213,7 @@ function renderStage(stageId: JourneyStageId) {
   }
 
   if (stageId === "loading") {
-    return <RecommendationLoadingRevealJourney />;
+    return <RecommendationLoadingRevealJourney includeGridHandoff />;
   }
 
   if (stageId === "reveal") {

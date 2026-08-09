@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { RecommendationLoadingExperience } from "@/components/product/RecommendationLoadingExperience";
+import { RecommendationRevealGridHandoffExperience } from "@/components/product/RecommendationRevealGridHandoffExperience";
 import { RecommendationRevealTemplateExperience } from "@/components/product/RecommendationRevealTemplateExperience";
 import styles from "./RecommendationScreens.module.css";
 
@@ -19,9 +20,11 @@ const HOLD_AT_BLUR_MS = 220;
  */
 export function RecommendationLoadingRevealJourney({
   continueLabel,
+  includeGridHandoff = false,
   onRevealComplete
 }: {
   continueLabel?: string;
+  includeGridHandoff?: boolean;
   onRevealComplete?: () => void;
 } = {}) {
   const [phase, setPhase] = useState<JourneyPhase>("loading");
@@ -75,10 +78,14 @@ export function RecommendationLoadingRevealJourney({
             onComplete={handleLoadingComplete}
           />
         ) : (
-          <RecommendationRevealTemplateExperience
-            continueLabel={continueLabel}
-            onContinue={onRevealComplete}
-          />
+          includeGridHandoff ? (
+            <RecommendationRevealGridHandoffExperience />
+          ) : (
+            <RecommendationRevealTemplateExperience
+              continueLabel={continueLabel}
+              onContinue={onRevealComplete}
+            />
+          )
         )}
       </div>
     </div>
