@@ -1,3 +1,5 @@
+import type { StepTypeId } from "./step-types";
+
 export const workshopStageIds = [
   "goals",
   "understand",
@@ -88,6 +90,7 @@ export type BuildingBlockStep = {
   order: number;
   parentBlockId: string;
   purpose: string;
+  stepType: StepTypeId;
   techniqueUsed?: string;
 };
 
@@ -114,6 +117,7 @@ export type WorkshopFlowStep = {
   name: string;
   order: number;
   sourceStepId: string;
+  stepType: StepTypeId;
 };
 
 /**

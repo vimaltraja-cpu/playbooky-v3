@@ -8,6 +8,7 @@ import {
   workshopDesignLogicRules,
   workshopOsFixtureSource
 } from "@/lib/workshop-os/fixtures";
+import { isStepTypeId, type StepTypeId } from "@/lib/workshop-os/step-types";
 
 export type LibraryItemType = "activity" | "building-block" | "step";
 export type LibraryStatus = "active" | "incomplete";
@@ -56,6 +57,7 @@ export type BuildingBlockStepRecord = LibraryItem & {
   instructions?: string;
   order?: number;
   purpose?: string;
+  stepType: StepTypeId;
   techniqueUsed?: string;
 };
 
@@ -143,6 +145,16 @@ function createSearchText(parts: Array<string | string[] | undefined>) {
     .toLowerCase();
 }
 
+function requireStepType(value: string | undefined, stepTitle: string): StepTypeId {
+  const stepType = value?.trim();
+
+  if (stepType && isStepTypeId(stepType)) {
+    return stepType;
+  }
+
+  throw new Error(`Invalid Step Type "${value ?? ""}" for Building Block Step "${stepTitle}".`);
+}
+
 async function readCsv(relativePath: string) {
   const csv = await readFile(path.join(process.cwd(), relativePath), "utf8");
   return parseCsv(csv);
@@ -179,6 +191,7 @@ export async function getLibraryDataset(): Promise<LibraryDataset> {
     const title = row["Step Name"] || row["Display Name"] || "Untitled step";
     const id = `step-${slugify(parentTitle)}-${slugify(title)}-${row["Step Order"] || "0"}`;
     const durationMinutes = numberFromText(row.Duration);
+    const stepType = requireStepType(row["Step Type"], title);
     const tags = splitList(row["Technique Used"]);
 
     return {
@@ -205,12 +218,14 @@ export async function getLibraryDataset(): Promise<LibraryDataset> {
         row.Purpose,
         row.Instructions,
         row["Facilitator Notes"],
+        stepType,
         row["Technique Used"]
       ]),
       source: stepSource,
-      status: hasMissing(row, ["Step Name", "Parent Block", "Step Order", "Duration", "Purpose", "Instructions"])
+      status: hasMissing(row, ["Step Name", "Parent Block", "Step Order", "Duration", "Purpose", "Instructions", "Step Type"])
         ? "incomplete"
         : "active",
+      stepType,
       tags,
       techniqueUsed: row["Technique Used"] || undefined,
       title

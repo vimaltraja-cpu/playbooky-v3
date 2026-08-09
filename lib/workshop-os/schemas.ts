@@ -1,3 +1,4 @@
+import { stepTypeIds } from "./step-types";
 import { workshopStageIds } from "./types";
 
 type FieldSchema = {
@@ -119,6 +120,11 @@ export const workshopOsSchemas = {
         description: "Why this step exists in the block.",
         required: true,
         type: "string"
+      },
+      stepType: {
+        description: `Dominant participant behaviour for this executable step: ${stepTypeIds.join(", ")}.`,
+        required: true,
+        type: "StepTypeId"
       },
       techniqueUsed: {
         description: "Optional facilitation technique used by the step.",

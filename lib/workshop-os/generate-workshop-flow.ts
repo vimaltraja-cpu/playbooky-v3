@@ -61,7 +61,8 @@ function createFlowBlock(
       instructions: step.instructions,
       name: step.name,
       order: orderOffset + index + 1,
-      sourceStepId: step.id
+      sourceStepId: step.id,
+      stepType: step.stepType
     }))
   };
 }

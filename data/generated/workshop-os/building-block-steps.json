@@ -8,7 +8,8 @@
     "durationMinutes": 5,
     "purpose": "Create a shared understanding of the workshop objective and explain how OKRs will be used during the session.",
     "instructions": "Introduce the purpose of the workshop.\n\nExplain the difference between Objectives and Key Results.\n\nSet expectations for the session and explain that the goal is to align around a single objective and measurable indicators of success.\n\nReview the agenda and answer any questions before beginning.",
-    "facilitatorNotes": "Keep the introduction short and focused.\n\nAvoid teaching OKRs in depth.\n\nThe goal is to create enough understanding for participants to confidently take part in the activity."
+    "facilitatorNotes": "Keep the introduction short and focused.\n\nAvoid teaching OKRs in depth.\n\nThe goal is to create enough understanding for participants to confidently take part in the activity.",
+    "stepType": "introduction"
   },
   {
     "id": "objectives-and-key-results-review-objectives",
@@ -19,7 +20,8 @@
     "durationMinutes": 5,
     "purpose": "Review proposed objectives and ensure everyone understands the options being considered.",
     "instructions": "Review each submitted objective one at a time.\n\nClarify wording where needed.\n\nEnsure participants understand what each objective is trying to achieve before moving on.",
-    "facilitatorNotes": "Do not debate which objective is best at this stage.\n\nFocus only on understanding and clarification."
+    "facilitatorNotes": "Do not debate which objective is best at this stage.\n\nFocus only on understanding and clarification.",
+    "stepType": "review"
   },
   {
     "id": "objectives-and-key-results-theme-sort-objectives",
@@ -32,7 +34,8 @@
     "purpose": "Group similar objectives together and identify common themes.",
     "techniqueUsed": "Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)",
     "instructions": "Ask participants to group similar objectives together.\n\nDiscuss emerging themes and identify overlaps.\n\nCreate labels for each cluster once patterns begin to emerge.",
-    "facilitatorNotes": "Avoid naming themes too early.\n\nFocus on patterns and relationships rather than perfect categorisation."
+    "facilitatorNotes": "Avoid naming themes too early.\n\nFocus on patterns and relationships rather than perfect categorisation.",
+    "stepType": "cluster"
   },
   {
     "id": "objectives-and-key-results-select-objective",
@@ -44,7 +47,8 @@
     "purpose": "Select a single objective that the group believes should be the primary focus.",
     "techniqueUsed": "Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)",
     "instructions": "Review the objective themes.\n\nAllow participants a short period to reflect independently.\n\nRun a blind vote.\n\nReveal results simultaneously.\n\nIf there is no clear outcome, facilitate a short discussion and conduct a second round of voting.",
-    "facilitatorNotes": "Avoid debate before voting.\n\nBlind voting helps reduce hierarchy and groupthink.\n\nThe objective is alignment, not unanimity."
+    "facilitatorNotes": "Avoid debate before voting.\n\nBlind voting helps reduce hierarchy and groupthink.\n\nThe objective is alignment, not unanimity.",
+    "stepType": "vote"
   },
   {
     "id": "objectives-and-key-results-generate-success-metrics",
@@ -56,7 +60,8 @@
     "durationMinutes": 10,
     "purpose": "Generate possible measures that indicate progress towards the selected objective.",
     "instructions": "Ask participants:\n\nHow would we know we are making progress?\n\nCapture every suggestion.\n\nEncourage quantity over quality.\n\nAvoid evaluating metrics while they are being generated.",
-    "facilitatorNotes": "Keep participants focused on measurable signals rather than solutions or outputs.\n\nPush for observable outcomes where possible."
+    "facilitatorNotes": "Keep participants focused on measurable signals rather than solutions or outputs.\n\nPush for observable outcomes where possible.",
+    "stepType": "generate"
   },
   {
     "id": "objectives-and-key-results-theme-sort-metrics",
@@ -69,7 +74,8 @@
     "purpose": "Group similar metrics together and identify the strongest indicators of success.",
     "techniqueUsed": "Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)",
     "instructions": "Group similar metrics into clusters.\n\nRemove duplicates.\n\nIdentify common themes and discuss which measures best indicate progress.",
-    "facilitatorNotes": "Focus on clarity and relevance.\n\nDo not spend time debating exact numbers at this stage."
+    "facilitatorNotes": "Focus on clarity and relevance.\n\nDo not spend time debating exact numbers at this stage.",
+    "stepType": "cluster"
   },
   {
     "id": "objectives-and-key-results-select-success-metrics",
@@ -82,7 +88,8 @@
     "purpose": "Identify the most meaningful metrics that will become Key Results.",
     "techniqueUsed": "Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)",
     "instructions": "Review the grouped metrics.\n\nAsk participants to independently vote for the metrics they believe best represent progress towards the objective.\n\nReveal votes simultaneously.\n\nSelect the highest scoring metrics for the next step.",
-    "facilitatorNotes": "Limit the final selection to a small number of metrics.\n\nFocus on quality and relevance rather than quantity.\n\nThe chosen metrics should be understandable and measurable."
+    "facilitatorNotes": "Limit the final selection to a small number of metrics.\n\nFocus on quality and relevance rather than quantity.\n\nThe chosen metrics should be understandable and measurable.",
+    "stepType": "vote"
   },
   {
     "id": "objectives-and-key-results-create-key-results",
@@ -93,7 +100,8 @@
     "durationMinutes": 5,
     "purpose": "Convert selected metrics into measurable Key Results.",
     "instructions": "Review each selected metric.\n\nTurn each metric into a measurable target.\n\nCapture the baseline if known and define a target outcome.\n\nEnsure each Key Result can be objectively measured.",
-    "facilitatorNotes": "Avoid vague targets.\n\nPush for measurable and time-bound outcomes.\n\nChallenge targets that are either unrealistic or too easy to achieve."
+    "facilitatorNotes": "Avoid vague targets.\n\nPush for measurable and time-bound outcomes.\n\nChallenge targets that are either unrealistic or too easy to achieve.",
+    "stepType": "create"
   },
   {
     "id": "objectives-and-key-results-review-and-commit",
@@ -106,7 +114,8 @@
     "purpose": "Confirm alignment on the final Objective and Key Results and agree ownership.",
     "techniqueUsed": "Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)",
     "instructions": "Review the final Objective and Key Results.\n\nAgree who owns each Key Result.\n\nCapture any follow-up actions and review dates.\n\nConfirm commitment from the group before closing the activity.",
-    "facilitatorNotes": "Do not end the workshop without clear ownership.\n\nEnsure actions are assigned to individuals rather than teams.\n\nFinish with clarity on what happens next and when progress will be reviewed."
+    "facilitatorNotes": "Do not end the workshop without clear ownership.\n\nEnsure actions are assigned to individuals rather than teams.\n\nFinish with clarity on what happens next and when progress will be reviewed.",
+    "stepType": "commit"
   },
   {
     "id": "five-whys-define-the-problem",
@@ -117,7 +126,8 @@
     "durationMinutes": 5,
     "purpose": "Create a shared understanding of the problem that will be explored during the activity.",
     "instructions": "Present the problem statement to the group.\n\nReview any relevant evidence, examples or observations.\n\nEnsure everyone agrees on the problem being explored before moving on.\n\nCapture the final wording of the problem so it remains visible throughout the activity.",
-    "facilitatorNotes": "Spend time clarifying the problem if needed.\n\nA poorly defined problem will lead to poor root-cause analysis.\n\nFocus on observable issues rather than assumptions about causes."
+    "facilitatorNotes": "Spend time clarifying the problem if needed.\n\nA poorly defined problem will lead to poor root-cause analysis.\n\nFocus on observable issues rather than assumptions about causes.",
+    "stepType": "define"
   },
   {
     "id": "five-whys-why-1",
@@ -128,7 +138,8 @@
     "durationMinutes": 5,
     "purpose": "Identify the most immediate cause of the problem.",
     "instructions": "Ask the group:\n\n\"Why is this problem happening?\"\n\nCapture all responses.\n\nDiscuss the responses and agree on the most likely cause.\n\nRecord the agreed cause clearly as it will become the input for the next why.",
-    "facilitatorNotes": "Encourage participants to use evidence and observations where possible.\n\nAvoid jumping to solutions.\n\nFocus on understanding causes rather than assigning blame."
+    "facilitatorNotes": "Encourage participants to use evidence and observations where possible.\n\nAvoid jumping to solutions.\n\nFocus on understanding causes rather than assigning blame.",
+    "stepType": "explore"
   },
   {
     "id": "five-whys-why-2",
@@ -139,7 +150,8 @@
     "durationMinutes": 5,
     "purpose": "Explore the underlying cause of the first identified cause.",
     "instructions": "Take the agreed cause from Why #1.\n\nAsk the group:\n\n\"Why is this happening?\"\n\nCapture responses.\n\nDiscuss the responses and agree on the most likely underlying cause.\n\nRecord the agreed cause so it can be explored further in the next step.",
-    "facilitatorNotes": "Keep digging beneath symptoms.\n\nChallenge assumptions and ask for evidence where possible.\n\nAvoid accepting the first answer without discussion.\n\nThe objective is to move closer to the root cause."
+    "facilitatorNotes": "Keep digging beneath symptoms.\n\nChallenge assumptions and ask for evidence where possible.\n\nAvoid accepting the first answer without discussion.\n\nThe objective is to move closer to the root cause.",
+    "stepType": "explore"
   },
   {
     "id": "five-whys-why-3",
@@ -150,7 +162,8 @@
     "durationMinutes": 5,
     "purpose": "Continue exploring deeper causes to move beyond surface-level explanations.",
     "instructions": "Take the agreed cause from Why #2.\n\nAsk the group:\n\n\"Why is this happening?\"\n\nCapture responses.\n\nDiscuss the responses and agree on the most likely underlying cause.\n\nRecord the agreed cause so it can be explored further in the next step.",
-    "facilitatorNotes": "Watch for participants repeating previous answers in different words.\n\nEncourage the group to think about systems, processes and behaviours.\n\nIf the discussion moves towards solutions, redirect the conversation back to causes."
+    "facilitatorNotes": "Watch for participants repeating previous answers in different words.\n\nEncourage the group to think about systems, processes and behaviours.\n\nIf the discussion moves towards solutions, redirect the conversation back to causes.",
+    "stepType": "explore"
   },
   {
     "id": "five-whys-why-4",
@@ -161,7 +174,8 @@
     "durationMinutes": 5,
     "purpose": "Explore deeper systemic causes and identify factors contributing to the problem.",
     "instructions": "Take the agreed cause from Why #3.\n\nAsk the group:\n\n\"Why is this happening?\"\n\nCapture responses.\n\nDiscuss the responses and agree on the most likely underlying cause.\n\nRecord the agreed cause so it can be explored further in the next step.",
-    "facilitatorNotes": "By this stage the group should be moving beyond symptoms and into organisational, process or behavioural causes.\n\nKeep asking for evidence and examples."
+    "facilitatorNotes": "By this stage the group should be moving beyond symptoms and into organisational, process or behavioural causes.\n\nKeep asking for evidence and examples.",
+    "stepType": "explore"
   },
   {
     "id": "five-whys-why-5",
@@ -172,7 +186,8 @@
     "durationMinutes": 5,
     "purpose": "Identify the root cause or causes that the group believes are driving the problem.",
     "instructions": "Take the agreed cause from Why #4.\n\nAsk the group:\n\n\"Why is this happening?\"\n\nCapture responses.\n\nDiscuss the responses and agree on the most likely root cause.\n\nRecord the final root cause clearly and visibly.",
-    "facilitatorNotes": "Do not force the group to stop at exactly five levels if a root cause has already emerged.\n\nEqually, do not stop too early if the group is still discussing symptoms."
+    "facilitatorNotes": "Do not force the group to stop at exactly five levels if a root cause has already emerged.\n\nEqually, do not stop too early if the group is still discussing symptoms.",
+    "stepType": "explore"
   },
   {
     "id": "five-whys-review-root-causes",
@@ -183,7 +198,8 @@
     "durationMinutes": 5,
     "purpose": "Review the chain of causes and confirm the root cause or causes identified by the group.",
     "instructions": "Review each why and its corresponding answer.\n\nWalk the group through the full chain of reasoning.\n\nConfirm agreement on the root cause or causes before moving on.",
-    "facilitatorNotes": "Look for gaps in logic.\n\nChallenge conclusions that are not supported by evidence.\n\nIt is acceptable to identify multiple root causes if they are connected."
+    "facilitatorNotes": "Look for gaps in logic.\n\nChallenge conclusions that are not supported by evidence.\n\nIt is acceptable to identify multiple root causes if they are connected.",
+    "stepType": "confirm"
   },
   {
     "id": "five-whys-define-next-steps",
@@ -195,7 +211,8 @@
     "purpose": "Agree how the root causes will be used to inform future activities or decisions.",
     "techniqueUsed": "Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)",
     "instructions": "Review the identified root causes.\n\nAgree any immediate actions, owners and follow-up activities.\n\nCapture next steps and ensure accountability before closing the activity.",
-    "facilitatorNotes": "Five Whys should rarely end without action.\n\nEnsure the outputs are carried into the next activity, such as Problem Statement, How Might We or Opportunity Mapping."
+    "facilitatorNotes": "Five Whys should rarely end without action.\n\nEnsure the outputs are carried into the next activity, such as Problem Statement, How Might We or Opportunity Mapping.",
+    "stepType": "commit"
   },
   {
     "id": "problem-statement-review-context-and-evidence",
@@ -207,7 +224,8 @@
     "durationMinutes": 10,
     "purpose": "Create a shared understanding of the evidence, research and observations that led to the workshop.",
     "instructions": "Review the available research, insights, feedback and evidence.\n\nPresent key findings and observations.\n\nAllow participants to ask clarifying questions.\n\nEnsure everyone has a common understanding of the challenge before defining the problem.",
-    "facilitatorNotes": "Focus on facts and evidence rather than opinions.\n\nAvoid discussing solutions.\n\nThe goal is to establish a shared understanding of the situation."
+    "facilitatorNotes": "Focus on facts and evidence rather than opinions.\n\nAvoid discussing solutions.\n\nThe goal is to establish a shared understanding of the situation.",
+    "stepType": "review"
   },
   {
     "id": "problem-statement-capture-problem-statements",
@@ -219,7 +237,8 @@
     "durationMinutes": 10,
     "purpose": "Generate multiple perspectives on what the problem actually is.",
     "instructions": "Ask participants to individually write their version of the problem statement.\n\nEncourage concise statements.\n\nCapture all responses before discussing them.",
-    "facilitatorNotes": "Keep participants focused on the problem.\n\nDo not allow solution statements.\n\nIndividual thinking before discussion usually produces better results."
+    "facilitatorNotes": "Keep participants focused on the problem.\n\nDo not allow solution statements.\n\nIndividual thinking before discussion usually produces better results.",
+    "stepType": "capture"
   },
   {
     "id": "problem-statement-theme-sort-problem-statements",
@@ -232,7 +251,8 @@
     "purpose": "Identify common themes and patterns across the submitted problem statements.",
     "techniqueUsed": "Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)",
     "instructions": "Group similar problem statements together.\n\nIdentify recurring themes.\n\nDiscuss similarities and differences.\n\nCreate labels for each cluster.",
-    "facilitatorNotes": "Look for patterns rather than perfect wording.\n\nAvoid jumping to conclusions too early.\n\nThe goal is to understand how the group views the challenge."
+    "facilitatorNotes": "Look for patterns rather than perfect wording.\n\nAvoid jumping to conclusions too early.\n\nThe goal is to understand how the group views the challenge.",
+    "stepType": "cluster"
   },
   {
     "id": "problem-statement-draft-problem-statements",
@@ -244,7 +264,8 @@
     "durationMinutes": 10,
     "purpose": "Create a small number of candidate problem statements based on the themes identified.",
     "instructions": "Using the themes identified, ask participants to draft candidate problem statements.\n\nAim for clear, concise and evidence-based statements.\n\nCapture all drafts before evaluating them.",
-    "facilitatorNotes": "Challenge vague language.\n\nEnsure statements describe the problem rather than the solution.\n\nEncourage participants to use evidence gathered earlier in the activity."
+    "facilitatorNotes": "Challenge vague language.\n\nEnsure statements describe the problem rather than the solution.\n\nEncourage participants to use evidence gathered earlier in the activity.",
+    "stepType": "create"
   },
   {
     "id": "problem-statement-refine-and-consolidate",
@@ -256,7 +277,8 @@
     "durationMinutes": 10,
     "purpose": "Refine the strongest candidate statements and consolidate them into a shortlist.",
     "instructions": "Review the drafted problem statements.\n\nDiscuss strengths and weaknesses.\n\nCombine similar statements and improve wording.\n\nReduce the list to a small number of strong candidates.",
-    "facilitatorNotes": "Review the drafted problem statements.\n\nDiscuss strengths and weaknesses.\n\nCombine similar statements and improve wording.\n\nReduce the list to a small number of strong candidates."
+    "facilitatorNotes": "Review the drafted problem statements.\n\nDiscuss strengths and weaknesses.\n\nCombine similar statements and improve wording.\n\nReduce the list to a small number of strong candidates.",
+    "stepType": "refine"
   },
   {
     "id": "problem-statement-select-problem-statement",
@@ -269,7 +291,8 @@
     "purpose": "Align on the problem statement that will guide future activities.",
     "techniqueUsed": "Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)",
     "instructions": "Review the shortlisted problem statements.\n\nAsk participants to independently vote for the statement they believe best represents the challenge.\n\nReveal votes simultaneously.\n\nSelect the winning statement or run a second round if needed.",
-    "facilitatorNotes": "The goal is alignment, not perfection.\n\nIf two statements are very similar, consider merging them before voting.\n\nCapture the final agreed problem statement clearly and visibly."
+    "facilitatorNotes": "The goal is alignment, not perfection.\n\nIf two statements are very similar, consider merging them before voting.\n\nCapture the final agreed problem statement clearly and visibly.",
+    "stepType": "vote"
   },
   {
     "id": "how-might-we-review-problem-statement",
@@ -281,7 +304,8 @@
     "durationMinutes": 5,
     "purpose": "Ensure everyone understands the problem statement that will be used to generate opportunities.",
     "instructions": "Review the agreed problem statement.\n\nClarify any questions.\n\nEnsure participants understand the challenge before moving into opportunity generation.",
-    "facilitatorNotes": "Keep this step brief.\n\nThe goal is alignment, not rewriting the problem statement."
+    "facilitatorNotes": "Keep this step brief.\n\nThe goal is alignment, not rewriting the problem statement.",
+    "stepType": "review"
   },
   {
     "id": "how-might-we-generate-how-might-we-statements",
@@ -293,7 +317,8 @@
     "durationMinutes": 10,
     "purpose": "Generate multiple opportunity-focused questions from the problem statement.",
     "instructions": "Ask participants to rewrite the problem statement as a series of How Might We questions.\n\nEncourage quantity over quality.\n\nCapture all suggestions before discussing them.",
-    "facilitatorNotes": "Ask participants to rewrite the problem statement as a series of How Might We questions.\n\nEncourage quantity over quality.\n\nCapture all suggestions before discussing them."
+    "facilitatorNotes": "Ask participants to rewrite the problem statement as a series of How Might We questions.\n\nEncourage quantity over quality.\n\nCapture all suggestions before discussing them.",
+    "stepType": "generate"
   },
   {
     "id": "how-might-we-theme-sort-opportunities",
@@ -306,7 +331,8 @@
     "purpose": "Identify patterns and common opportunity areas across the generated questions.",
     "techniqueUsed": "Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)",
     "instructions": "Group similar How Might We questions together.\n\nIdentify common themes and opportunity areas.\n\nLabel each cluster.",
-    "facilitatorNotes": "Focus on opportunities rather than solutions.\n\nAvoid debating feasibility at this stage."
+    "facilitatorNotes": "Focus on opportunities rather than solutions.\n\nAvoid debating feasibility at this stage.",
+    "stepType": "cluster"
   },
   {
     "id": "how-might-we-refine-opportunity-areas",
@@ -318,7 +344,8 @@
     "durationMinutes": 10,
     "purpose": "Refine the strongest opportunity areas and remove duplicates or overlapping themes.",
     "instructions": "Review each opportunity cluster.\n\nDiscuss overlaps and similarities.\n\nMerge related opportunities where appropriate.\n\nCreate a shortlist of the strongest opportunity areas.",
-    "facilitatorNotes": "Focus on opportunity quality rather than quantity.\n\nAvoid moving into solution discussions.\n\nEnsure the opportunities remain connected to the original problem statement."
+    "facilitatorNotes": "Focus on opportunity quality rather than quantity.\n\nAvoid moving into solution discussions.\n\nEnsure the opportunities remain connected to the original problem statement.",
+    "stepType": "refine"
   },
   {
     "id": "how-might-we-select-opportunity-areas",
@@ -331,7 +358,8 @@
     "purpose": "Align on the opportunity areas that should be explored further.",
     "techniqueUsed": "Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)",
     "instructions": "Review the shortlisted opportunity areas.\n\nAsk participants to vote independently.\n\nReveal votes simultaneously.\n\nSelect the highest scoring opportunities for future exploration.",
-    "facilitatorNotes": "The objective is prioritisation, not perfection.\n\nIf there is no clear winner, facilitate a short discussion and vote again."
+    "facilitatorNotes": "The objective is prioritisation, not perfection.\n\nIf there is no clear winner, facilitate a short discussion and vote again.",
+    "stepType": "vote"
   },
   {
     "id": "impact-effort-map-review-opportunities",
@@ -342,7 +370,8 @@
     "durationMinutes": 5,
     "purpose": "Review the opportunities, ideas or initiatives that will be evaluated during the activity.",
     "instructions": "Review the list of opportunities.\n\nClarify any questions.\n\nEnsure participants understand what each opportunity is before evaluation begins.",
-    "facilitatorNotes": "Keep discussion focused on understanding.\n\nDo not begin evaluating opportunities yet."
+    "facilitatorNotes": "Keep discussion focused on understanding.\n\nDo not begin evaluating opportunities yet.",
+    "stepType": "review"
   },
   {
     "id": "impact-effort-map-create-impact-effort-matrix",
@@ -354,7 +383,8 @@
     "durationMinutes": 5,
     "purpose": "Establish a shared understanding of the evaluation framework.",
     "instructions": "Introduce the Impact Effort matrix.\n\nExplain the two axes:\n\nImpact\nEffort\n\nReview the criteria that will be used to assess opportunities.",
-    "facilitatorNotes": "Agree the criteria before evaluating opportunities.\n\nDifferent interpretations of impact or effort can create unnecessary debate later."
+    "facilitatorNotes": "Agree the criteria before evaluating opportunities.\n\nDifferent interpretations of impact or effort can create unnecessary debate later.",
+    "stepType": "define"
   },
   {
     "id": "impact-effort-map-map-opportunities",
@@ -365,7 +395,8 @@
     "durationMinutes": 15,
     "purpose": "Evaluate and position opportunities based on their expected impact and effort.",
     "instructions": "Review each opportunity one at a time.\n\nDiscuss expected impact.\n\nDiscuss expected effort.\n\nPlace the opportunity on the matrix.\n\nRepeat until all opportunities have been mapped.",
-    "facilitatorNotes": "Focus on relative comparison rather than perfect scoring.\n\nEncourage evidence-based discussion where possible.\n\nAvoid spending too much time on individual opportunities."
+    "facilitatorNotes": "Focus on relative comparison rather than perfect scoring.\n\nEncourage evidence-based discussion where possible.\n\nAvoid spending too much time on individual opportunities.",
+    "stepType": "map"
   },
   {
     "id": "impact-effort-map-review-opportunity-clusters",
@@ -378,7 +409,8 @@
     "purpose": "Identify patterns and discuss what the completed matrix is revealing.",
     "techniqueUsed": "Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)",
     "instructions": "Review the completed matrix.\n\nIdentify opportunities that naturally group together.\n\nDiscuss patterns emerging across the map.\n\nHighlight quick wins, strategic bets and low-value opportunities.",
-    "facilitatorNotes": "Focus on patterns rather than individual opportunities.\n\nEncourage discussion around what the map is telling the team."
+    "facilitatorNotes": "Focus on patterns rather than individual opportunities.\n\nEncourage discussion around what the map is telling the team.",
+    "stepType": "cluster"
   },
   {
     "id": "impact-effort-map-select-priorities",
@@ -390,7 +422,8 @@
     "purpose": "Align on which opportunities should move forward.",
     "techniqueUsed": "Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)",
     "instructions": "Review the opportunities identified as strong candidates.\n\nAsk participants to vote independently.\n\nReveal votes simultaneously.\n\nIdentify the highest-priority opportunities.",
-    "facilitatorNotes": "Use voting to reduce bias and avoid dominant voices driving the decision.\n\nFocus on commitment rather than perfection."
+    "facilitatorNotes": "Use voting to reduce bias and avoid dominant voices driving the decision.\n\nFocus on commitment rather than perfection.",
+    "stepType": "vote"
   },
   {
     "id": "impact-effort-map-confirm-recommendations",
@@ -403,7 +436,8 @@
     "purpose": "Agree the final recommendations and capture next steps.",
     "techniqueUsed": "Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)",
     "instructions": "Review the selected priorities.\n\nAgree actions, owners and timelines.\n\nCapture next steps and confirm accountability.",
-    "facilitatorNotes": "Ensure the workshop ends with clear ownership and agreed follow-up actions.\n\nAvoid leaving priorities without accountability."
+    "facilitatorNotes": "Ensure the workshop ends with clear ownership and agreed follow-up actions.\n\nAvoid leaving priorities without accountability.",
+    "stepType": "commit"
   },
   {
     "id": "priority-map-review-opportunities",
@@ -414,7 +448,8 @@
     "durationMinutes": 5,
     "purpose": "Review the opportunities, ideas or initiatives that need to be prioritised.",
     "instructions": "Review all opportunities that have been brought into the workshop.\n\nClarify any questions.\n\nEnsure everyone understands the options before prioritisation begins.",
-    "facilitatorNotes": "Focus on understanding rather than debating.\n\nKeep the group aligned on what is being prioritised."
+    "facilitatorNotes": "Focus on understanding rather than debating.\n\nKeep the group aligned on what is being prioritised.",
+    "stepType": "review"
   },
   {
     "id": "priority-map-define-prioritisation-criteria",
@@ -426,7 +461,8 @@
     "durationMinutes": 5,
     "purpose": "Agree the criteria that will be used to evaluate and prioritise opportunities.",
     "instructions": "Discuss what makes an opportunity important.\n\nAgree the prioritisation criteria.\n\nCapture the criteria where everyone can see them before continuing.",
-    "facilitatorNotes": "Misaligned criteria create poor prioritisation.\n\nInvest time here to create a shared understanding."
+    "facilitatorNotes": "Misaligned criteria create poor prioritisation.\n\nInvest time here to create a shared understanding.",
+    "stepType": "define"
   },
   {
     "id": "priority-map-map-priorities",
@@ -437,7 +473,8 @@
     "durationMinutes": 15,
     "purpose": "Evaluate opportunities against the agreed criteria and identify relative priorities.",
     "instructions": "Evaluate opportunities against the agreed criteria and identify relative priorities.",
-    "facilitatorNotes": "Encourage evidence-based discussion.\n\nFocus on relative comparison rather than absolute scoring.\n\nAvoid spending too much time debating a single opportunity."
+    "facilitatorNotes": "Encourage evidence-based discussion.\n\nFocus on relative comparison rather than absolute scoring.\n\nAvoid spending too much time debating a single opportunity.",
+    "stepType": "map"
   },
   {
     "id": "priority-map-review-priority-groups",
@@ -450,7 +487,8 @@
     "purpose": "Review the emerging priority groups and identify patterns in the prioritisation.",
     "techniqueUsed": "Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)",
     "instructions": "Review the prioritised opportunities.\n\nGroup similar priorities together where appropriate.\n\nDiscuss patterns, dependencies and strategic themes.\n\nIdentify which opportunities appear most important.",
-    "facilitatorNotes": "Look for clusters and themes rather than focusing on individual items.\n\nEncourage the team to discuss what the prioritisation is revealing."
+    "facilitatorNotes": "Look for clusters and themes rather than focusing on individual items.\n\nEncourage the team to discuss what the prioritisation is revealing.",
+    "stepType": "cluster"
   },
   {
     "id": "priority-map-select-priorities",
@@ -462,7 +500,8 @@
     "purpose": "Align on the opportunities that should move forward.",
     "techniqueUsed": "Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)",
     "instructions": "Review the prioritised opportunities.\n\nAsk participants to vote independently.\n\nReveal votes simultaneously.\n\nSelect the highest-priority opportunities.",
-    "facilitatorNotes": "Use voting to reduce bias and create transparency.\n\nFocus on reaching alignment rather than achieving a perfect ranking."
+    "facilitatorNotes": "Use voting to reduce bias and create transparency.\n\nFocus on reaching alignment rather than achieving a perfect ranking.",
+    "stepType": "vote"
   },
   {
     "id": "priority-map-commit-actions",
@@ -474,7 +513,8 @@
     "purpose": "Capture actions, ownership and next steps for the selected priorities.",
     "techniqueUsed": "Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)",
     "instructions": "Review the selected priorities.\n\nAgree actions, owners and timelines.\n\nCapture next steps and confirm accountability.",
-    "facilitatorNotes": "Do not end the activity without clear ownership.\n\nEnsure actions are assigned to individuals and have realistic deadlines."
+    "facilitatorNotes": "Do not end the activity without clear ownership.\n\nEnsure actions are assigned to individuals and have realistic deadlines.",
+    "stepType": "commit"
   },
   {
     "id": "start-stop-continue-review-context",
@@ -485,7 +525,8 @@
     "durationMinutes": 10,
     "purpose": "Create a shared understanding of the topic, process or team behaviour being reviewed.",
     "instructions": "Introduce the focus area being reviewed.\n\nExplain the purpose of the activity.\n\nReview any relevant context, evidence or observations.\n\nEnsure everyone understands the scope before beginning.",
-    "facilitatorNotes": "Keep the discussion focused on the agreed topic.\n\nAvoid moving into solutions at this stage."
+    "facilitatorNotes": "Keep the discussion focused on the agreed topic.\n\nAvoid moving into solutions at this stage.",
+    "stepType": "review"
   },
   {
     "id": "start-stop-continue-capture-start-stop-continue-items",
@@ -497,7 +538,8 @@
     "durationMinutes": 15,
     "purpose": "Generate ideas for what should start, stop and continue.",
     "instructions": "Ask participants to individually generate items for:\n\nStart\nStop\nContinue\n\nCapture all contributions before discussion begins.",
-    "facilitatorNotes": "Encourage participants to think independently before discussing ideas.\n\nFocus on behaviours, processes and ways of working."
+    "facilitatorNotes": "Encourage participants to think independently before discussing ideas.\n\nFocus on behaviours, processes and ways of working.",
+    "stepType": "capture"
   },
   {
     "id": "start-stop-continue-theme-sort-responses",
@@ -510,7 +552,8 @@
     "purpose": "Identify common themes and patterns across participant responses.",
     "techniqueUsed": "Theme Sort (https://app.notion.com/p/Theme-Sort-373eb253b7f680a79694c82252566fab?pvs=21)",
     "instructions": "Group similar responses together.\n\nIdentify recurring themes.\n\nLabel clusters and discuss common patterns.",
-    "facilitatorNotes": "Look for repeated issues and opportunities.\n\nAvoid debating individual contributions."
+    "facilitatorNotes": "Look for repeated issues and opportunities.\n\nAvoid debating individual contributions.",
+    "stepType": "cluster"
   },
   {
     "id": "start-stop-continue-review-and-refine-themes",
@@ -522,7 +565,8 @@
     "durationMinutes": 10,
     "purpose": "Refine the themes and identify the most important areas for action.",
     "instructions": "Review each theme.\n\nDiscuss overlaps and clarify wording.\n\nConsolidate themes where appropriate.\n\nPrepare a shortlist for prioritisation.",
-    "facilitatorNotes": "Focus on clarity and actionability.\n\nAvoid introducing new ideas at this stage."
+    "facilitatorNotes": "Focus on clarity and actionability.\n\nAvoid introducing new ideas at this stage.",
+    "stepType": "refine"
   },
   {
     "id": "start-stop-continue-select-priorities",
@@ -534,7 +578,8 @@
     "purpose": "Align on the most important themes that should be acted upon.",
     "techniqueUsed": "Blind Vote (https://app.notion.com/p/Blind-Vote-373eb253b7f680fdb80effd9c0fd2384?pvs=21)",
     "instructions": "Review the shortlisted themes.\n\nAsk participants to vote independently.\n\nReveal votes simultaneously.\n\nIdentify the themes that should move forward.",
-    "facilitatorNotes": "Keep voting focused on impact and importance.\n\nUse a second round if results are unclear."
+    "facilitatorNotes": "Keep voting focused on impact and importance.\n\nUse a second round if results are unclear.",
+    "stepType": "vote"
   },
   {
     "id": "start-stop-continue-commit-actions",
@@ -546,6 +591,7 @@
     "purpose": "Turn the selected themes into actions with ownership and accountability.",
     "techniqueUsed": "Who, What, When (https://app.notion.com/p/Who-What-When-373eb253b7f68060a116d23c05af6816?pvs=21)",
     "instructions": "Review the selected themes.\n\nAgree actions, owners and timelines.\n\nCapture next steps and confirm accountability.",
-    "facilitatorNotes": "Do not finish the activity without clear ownership.\n\nFocus on realistic actions that can be followed through."
+    "facilitatorNotes": "Do not finish the activity without clear ownership.\n\nFocus on realistic actions that can be followed through.",
+    "stepType": "commit"
   }
 ]

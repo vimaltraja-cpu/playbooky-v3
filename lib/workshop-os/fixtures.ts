@@ -208,7 +208,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 1,
     parentBlockId: "five-whys",
     purpose:
-      "Create a shared understanding of the problem that will be explored during the activity."
+      "Create a shared understanding of the problem that will be explored during the activity.",
+    stepType: "define"
   },
   {
     durationMinutes: 5,
@@ -218,7 +219,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     name: "Why #1",
     order: 2,
     parentBlockId: "five-whys",
-    purpose: "Identify the most immediate cause of the problem."
+    purpose: "Identify the most immediate cause of the problem.",
+    stepType: "explore"
   },
   {
     durationMinutes: 5,
@@ -229,7 +231,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     name: "Why #2",
     order: 3,
     parentBlockId: "five-whys",
-    purpose: "Explore the underlying cause of the first identified cause."
+    purpose: "Explore the underlying cause of the first identified cause.",
+    stepType: "explore"
   },
   {
     durationMinutes: 5,
@@ -240,7 +243,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 4,
     parentBlockId: "five-whys",
     purpose:
-      "Continue exploring deeper causes to move beyond surface-level explanations."
+      "Continue exploring deeper causes to move beyond surface-level explanations.",
+    stepType: "explore"
   },
   {
     durationMinutes: 5,
@@ -251,7 +255,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 5,
     parentBlockId: "five-whys",
     purpose:
-      "Explore deeper systemic causes and identify factors contributing to the problem."
+      "Explore deeper systemic causes and identify factors contributing to the problem.",
+    stepType: "explore"
   },
   {
     durationMinutes: 5,
@@ -262,7 +267,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 6,
     parentBlockId: "five-whys",
     purpose:
-      "Identify the root cause or causes that the group believes are driving the problem."
+      "Identify the root cause or causes that the group believes are driving the problem.",
+    stepType: "explore"
   },
   {
     durationMinutes: 5,
@@ -273,7 +279,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 7,
     parentBlockId: "five-whys",
     purpose:
-      "Review the chain of causes and confirm the root cause or causes identified by the group."
+      "Review the chain of causes and confirm the root cause or causes identified by the group.",
+    stepType: "confirm"
   },
   {
     durationMinutes: 10,
@@ -284,7 +291,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 8,
     parentBlockId: "five-whys",
     purpose:
-      "Agree how the root causes will be used to inform future activities or decisions."
+      "Agree how the root causes will be used to inform future activities or decisions.",
+    stepType: "commit"
   },
   {
     durationMinutes: 10,
@@ -296,7 +304,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 1,
     parentBlockId: "problem-statement",
     purpose:
-      "Create a shared understanding of the evidence, research and observations that led to the workshop."
+      "Create a shared understanding of the evidence, research and observations that led to the workshop.",
+    stepType: "review"
   },
   {
     durationMinutes: 10,
@@ -306,7 +315,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     name: "Capture Problem Statements",
     order: 2,
     parentBlockId: "problem-statement",
-    purpose: "Generate multiple perspectives on what the problem actually is."
+    purpose: "Generate multiple perspectives on what the problem actually is.",
+    stepType: "capture"
   },
   {
     durationMinutes: 15,
@@ -319,6 +329,7 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     parentBlockId: "problem-statement",
     purpose:
       "Identify common themes and patterns across the submitted problem statements.",
+    stepType: "cluster",
     techniqueUsed: "Theme Sort"
   },
   {
@@ -331,7 +342,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 4,
     parentBlockId: "problem-statement",
     purpose:
-      "Create a small number of candidate problem statements based on the themes identified."
+      "Create a small number of candidate problem statements based on the themes identified.",
+    stepType: "create"
   },
   {
     durationMinutes: 10,
@@ -342,7 +354,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 5,
     parentBlockId: "problem-statement",
     purpose:
-      "Refine the strongest candidate statements and consolidate them into a shortlist."
+      "Refine the strongest candidate statements and consolidate them into a shortlist.",
+    stepType: "refine"
   },
   {
     durationMinutes: 5,
@@ -354,7 +367,8 @@ export const buildingBlockSteps: BuildingBlockStep[] = [
     order: 6,
     parentBlockId: "problem-statement",
     purpose:
-      "Align on the problem statement that will guide future activities."
+      "Align on the problem statement that will guide future activities.",
+    stepType: "vote"
   }
 ];
 
