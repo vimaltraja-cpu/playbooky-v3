@@ -200,11 +200,211 @@ export const portalNavigation: PortalNavSection[] = [
       {
         category: "Core Experience",
         description:
+          "Desktop activity library picker in the activity modal shell: stage tabs, list, and condensed side rail.",
+        href: "/design-system/core-experience/activity-library-modal",
+        icon: "list",
+        keywords: [
+          "activity",
+          "library",
+          "modal",
+          "add activity",
+          "tabs",
+          "side rail",
+          "picker"
+        ],
+        label: "Activity Library Modal"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Full-screen activity library side drawer with card grid and preview rail. Full prototype at /playground/activity-library-side-scroll.",
+        href: "/design-system/core-experience/activity-library-side-scroll",
+        icon: "layout",
+        keywords: [
+          "activity",
+          "library",
+          "side scroll",
+          "drawer",
+          "fullscreen",
+          "add activity",
+          "picker",
+          "playground"
+        ],
+        label: "Activity Library Side Scroll"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Shelf browse + immersive inspect library prototype. Playground: /playground/activity-library-shelves.",
+        href: "/playground/activity-library-shelves",
+        icon: "layout",
+        keywords: [
+          "activity",
+          "library",
+          "shelves",
+          "netflix",
+          "steam",
+          "inspect",
+          "playground",
+          "premium browse"
+        ],
+        label: "Activity Library Shelves"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Curated pack tray + illustration-led inventory with in-place inspect. Playground: /playground/activity-library-packs.",
+        href: "/playground/activity-library-packs",
+        icon: "layout",
+        keywords: [
+          "activity",
+          "library",
+          "packs",
+          "inventory",
+          "curated",
+          "diablo",
+          "inspect",
+          "playground"
+        ],
+        label: "Activity Library Packs"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Full workshop prototype: real drag grid + detail modal + pack library overlay. Playground: /playground/activity-library-grid.",
+        href: "/playground/activity-library-grid",
+        icon: "layout",
+        keywords: [
+          "activity",
+          "library",
+          "packs",
+          "grid",
+          "drag",
+          "modal",
+          "prototype",
+          "playground",
+          "workshop"
+        ],
+        label: "Activity Library on Grid"
+      },
+      {
+        category: "Core Experience",
+        description:
           "Static desktop review for the Builder Activity Detail Modal.",
         href: "/design-system/core-experience/activity-detail-modal",
         icon: "maximize-2",
         keywords: ["activity", "modal", "detail", "builder"],
         label: "Activity Detail Modal"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Locked Workshop Mode navigation using Active Elastic Pop (RTL Icon).",
+        href: "/design-system/core-experience/workshop-mode-nav",
+        icon: "navigation",
+        keywords: [
+          "workshop",
+          "navigation",
+          "facilitator guide",
+          "figjam",
+          "playbooky live",
+          "elastic pop",
+          "locked"
+        ],
+        label: "Workshop Mode Nav"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Locked Facilitator Guide header with logo, Share, and Download PDF actions.",
+        href: "/design-system/core-experience/facilitator-guide-header",
+        icon: "layout",
+        keywords: [
+          "header",
+          "facilitator guide",
+          "share",
+          "download pdf",
+          "logo",
+          "locked"
+        ],
+        label: "Facilitator Guide Header"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Secondary activity tabs for Facilitator Guide, driven by ordered workshop activities.",
+        href: "/design-system/core-experience/facilitator-activity-tabs",
+        icon: "list",
+        keywords: [
+          "facilitator guide",
+          "activity tabs",
+          "secondary navigation",
+          "workshop order",
+          "underline tabs"
+        ],
+        label: "Facilitator Activity Tabs"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Facilitator Guide activity hero with type, title, description, and illustration.",
+        href: "/design-system/core-experience/facilitator-activity-hero",
+        icon: "image",
+        keywords: [
+          "facilitator guide",
+          "activity hero",
+          "title",
+          "description",
+          "illustration"
+        ],
+        label: "Facilitator Activity Hero"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Facilitator Guide activity steps with what to say, discussion prompts, and expected outcomes.",
+        href: "/design-system/core-experience/facilitator-activity-steps",
+        icon: "list",
+        keywords: [
+          "facilitator guide",
+          "activity steps",
+          "what to say",
+          "discussion prompt",
+          "expected outcome"
+        ],
+        label: "Facilitator Activity Steps"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Live Facilitator Guide model packed from Active Library diagnosis at 120 and 150 minutes.",
+        href: "/design-system/core-experience/facilitator-guide-live",
+        icon: "play",
+        keywords: [
+          "facilitator guide",
+          "live",
+          "diagnosis",
+          "active library",
+          "workshop packing",
+          "canonical gaps"
+        ],
+        label: "Facilitator Guide Live"
+      },
+      {
+        category: "Core Experience",
+        description:
+          "Waitlist panel for FigJam Board and PlayBooky Live, with join and submitted variants.",
+        href: "/design-system/core-experience/workshop-ready-waitlist",
+        icon: "mail",
+        keywords: [
+          "waitlist",
+          "figjam",
+          "playbooky live",
+          "email",
+          "workshop ready",
+          "early access"
+        ],
+        label: "Workshop Ready Waitlist"
       }
     ],
     icon: "monitor",

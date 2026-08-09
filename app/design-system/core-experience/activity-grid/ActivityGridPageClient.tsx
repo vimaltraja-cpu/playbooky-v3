@@ -17,12 +17,14 @@ import {
   ActivityCard,
   type ActivityCardData
 } from "@/components/ui/ActivityCard";
+import { ActivityLibraryPacks } from "@/components/ui/ActivityLibraryPacks";
 import {
   useActivityModalShellTransition,
   type ActivityModalShellCard
 } from "@/components/motion/activity-modal/ActivityModalShellTransition";
 import type { CanonicalActivityCardRecord } from "@/lib/data/canonical-activity-cards";
 import { getActivityDetailModalData } from "@/lib/design-system/activity-detail-modal-demo";
+import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-library-modal";
 
 type ViewportMode = "desktop" | "tablet" | "mobile";
 type VariantKey = "final" | "calm" | "playful" | "expressive";
@@ -88,8 +90,6 @@ type DebugReadout = {
 
 const DEFAULT_CARD_WIDTH = 256;
 const DEFAULT_CARD_HEIGHT = 370;
-const NORMAL_CARD_COUNT = 6;
-const SLOT_COUNT = NORMAL_CARD_COUNT + 1;
 const DESKTOP_REPRESENTATIVE_WORKSHOP_ACTIVITY_SLUGS = [
   "problem-statement",
   "five-whys",
@@ -130,6 +130,48 @@ function getInitialCards(activities: CanonicalActivityCardRecord[]) {
       modalData: getActivityDetailModalData(activity)
     } satisfies ActivityTemplateCard;
   });
+}
+
+function slugFromWorkshopCardId(id: string) {
+  return id.replace(/^canonical-activity-/, "").replace(/^activity-/, "");
+}
+
+function toTemplateCardFromLibrary(
+  item: ActivityLibraryModalItem,
+  canonicalCards: CanonicalActivityCardRecord[]
+): ActivityTemplateCard {
+  const canonical = canonicalCards.find((card) => card.slug === item.slug);
+
+  if (canonical) {
+    const cardData = toActivityCardData(canonical);
+
+    return {
+      activity: cardData,
+      id: `canonical-activity-${canonical.slug}`,
+      label: cardData.title,
+      modalData: getActivityDetailModalData(canonical)
+    };
+  }
+
+  const fallback: CanonicalActivityCardRecord = {
+    bestUsedWhen: item.outcome,
+    description: item.outcome,
+    duration: item.duration,
+    illustration: item.illustration.src,
+    illustrationFile: null,
+    isMissingIllustration: item.illustration.src.startsWith("data:"),
+    slug: item.slug,
+    stage: item.stage,
+    title: item.title,
+    workshopType: item.stageDisplay
+  };
+
+  return {
+    activity: toActivityCardData(fallback),
+    id: `canonical-activity-${item.slug}`,
+    label: item.title,
+    modalData: getActivityDetailModalData(fallback)
+  };
 }
 
 const BASE_VARIANTS: Record<VariantKey, MotionConfig> = {
@@ -530,7 +572,8 @@ function getSlotPosition(index: number, viewport: ViewportConfig) {
 function getNearestNormalSlot(
   x: number,
   y: number,
-  viewport: ViewportConfig
+  viewport: ViewportConfig,
+  cardCount: number
 ) {
   const centerX = x + viewport.cardWidth / 2;
   const centerY = y + viewport.cardHeight / 2;
@@ -538,7 +581,7 @@ function getNearestNormalSlot(
   let nearestIndex = 0;
   let nearestDistance = Number.POSITIVE_INFINITY;
 
-  for (let index = 0; index < NORMAL_CARD_COUNT; index += 1) {
+  for (let index = 0; index < cardCount; index += 1) {
     const slot = getSlotPosition(index, viewport);
     const slotCenterX = slot.x + viewport.cardWidth / 2;
     const slotCenterY = slot.y + viewport.cardHeight / 2;
@@ -641,15 +684,20 @@ function DesktopActivityCardPreview({
 }
 
 function ActivityGridPlayArea({
+  canonicalActivities,
   initialCards,
+  libraryActivities,
   variantKey,
   viewport
 }: {
+  canonicalActivities: CanonicalActivityCardRecord[];
   initialCards: ActivityTemplateCard[];
+  libraryActivities: ActivityLibraryModalItem[];
   variantKey: VariantKey;
   viewport: ViewportConfig;
 }) {
   const [cards, setCards] = useState(initialCards);
+  const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [dropCorrection, setDropCorrection] = useState<DropCorrection | null>(
     null
@@ -689,6 +737,20 @@ function ActivityGridPlayArea({
       );
     }
   });
+
+  const workshopActivityIds = useMemo(
+    () =>
+      cards.flatMap((card) => {
+        const slug = slugFromWorkshopCardId(card.id);
+        return [card.id, slug, `activity-${slug}`];
+      }),
+    [cards]
+  );
+
+  const suggestedIds = useMemo(
+    () => cards.map((card) => `activity-${slugFromWorkshopCardId(card.id)}`),
+    [cards]
+  );
 
   useEffect(() => {
     const element = previewShellRef.current;
@@ -733,14 +795,15 @@ function ActivityGridPlayArea({
     [baseMotion, viewportScale]
   );
   const easeValue = toEaseValue(motion.ease);
+  const slotCount = cards.length + 1;
   const slots = useMemo(
     () =>
-      Array.from({ length: SLOT_COUNT }, (_, index) =>
+      Array.from({ length: slotCount }, (_, index) =>
         getSlotPosition(index, runtimeViewport)
       ),
-    [runtimeViewport]
+    [runtimeViewport, slotCount]
   );
-  const rows = Math.ceil(SLOT_COUNT / runtimeViewport.columns);
+  const rows = Math.ceil(slotCount / runtimeViewport.columns);
   const gridWidth =
     runtimeViewport.columns * runtimeViewport.cardWidth +
     (runtimeViewport.columns - 1) * runtimeViewport.gap;
@@ -880,7 +943,12 @@ function ActivityGridPlayArea({
           : current
       );
 
-      const nextIndex = getNearestNormalSlot(nextX, nextY, runtimeViewport);
+      const nextIndex = getNearestNormalSlot(
+        nextX,
+        nextY,
+        runtimeViewport,
+        cards.length
+      );
       setCards((currentCards) =>
         moveCard(currentCards, activeDrag.id, nextIndex)
       );
@@ -901,7 +969,7 @@ function ActivityGridPlayArea({
       window.removeEventListener("pointerup", handlePointerUp);
       window.removeEventListener("pointercancel", handlePointerUp);
     };
-  }, [drag, finishDrop, motion, runtimeViewport, viewport.mode]);
+  }, [cards.length, drag, finishDrop, motion, runtimeViewport, viewport.mode]);
 
   function handlePointerDown(
     event: React.PointerEvent<HTMLButtonElement>,
@@ -1046,17 +1114,23 @@ function ActivityGridPlayArea({
         );
       })}
 
-      <div
-        aria-label="Add Activity placeholder"
-        className="absolute left-0 top-0 flex items-center justify-center rounded-[14px] border-2 border-dashed border-[#c8bcaa] bg-[#fbf7ef]/70 text-[40px] font-light text-[#9e927f]"
+      <button
+        aria-label="Add activity"
+        className="absolute left-0 top-0 flex items-center justify-center rounded-[14px] border-2 border-dashed border-[#c8bcaa] bg-[#fbf7ef]/70 text-[40px] font-light text-[#9e927f] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#aa7d3a]/50 disabled:cursor-not-allowed disabled:opacity-50"
+        disabled={isInteractionLocked || isLibraryOpen}
+        onClick={() => {
+          setIsLibraryOpen(true);
+          setActionStatus("Activity library open.");
+        }}
         style={{
           height: runtimeViewport.cardHeight,
-          transform: `translate3d(${slots[NORMAL_CARD_COUNT].x}px, ${slots[NORMAL_CARD_COUNT].y}px, 0)`,
+          transform: `translate3d(${slots[cards.length].x}px, ${slots[cards.length].y}px, 0)`,
           width: runtimeViewport.cardWidth
         }}
+        type="button"
       >
         +
-      </div>
+      </button>
     </div>
   );
 
@@ -1144,7 +1218,7 @@ function ActivityGridPlayArea({
           ],
           ["Card size", `${viewport.cardWidth}px x ${viewport.cardHeight}px`],
           ["Columns", String(viewport.columns)],
-          ["Card count", `${NORMAL_CARD_COUNT} cards + Add Activity`],
+          ["Card count", `${cards.length} cards + Add Activity`],
           ["Scroll behaviour", viewport.scrollBehaviour],
           ["Motion preset", motion.label],
           ["Activity detail modal", modalPhase]
@@ -1173,6 +1247,44 @@ function ActivityGridPlayArea({
         {actionStatus}
       </p>
       {transitionLayer}
+
+      <ActivityLibraryPacks
+        activities={libraryActivities}
+        isOpen={isLibraryOpen}
+        onAdd={(activity) => {
+          const nextCard = toTemplateCardFromLibrary(
+            activity,
+            canonicalActivities
+          );
+          setCards((current) => {
+            if (
+              current.some(
+                (card) =>
+                  slugFromWorkshopCardId(card.id) === activity.slug ||
+                  card.id === nextCard.id
+              )
+            ) {
+              return current;
+            }
+            return [...current, nextCard];
+          });
+          setActionStatus(`Added “${activity.title}” to the workshop.`);
+        }}
+        onClose={() => {
+          setIsLibraryOpen(false);
+          setActionStatus("Activity library closed.");
+        }}
+        onRemove={(activity) => {
+          setCards((current) =>
+            current.filter(
+              (card) => slugFromWorkshopCardId(card.id) !== activity.slug
+            )
+          );
+          setActionStatus(`Removed “${activity.title}” from the workshop.`);
+        }}
+        suggestedIds={suggestedIds}
+        workshopActivityIds={workshopActivityIds}
+      />
     </article>
   );
 }
@@ -1234,9 +1346,13 @@ function StatesSection() {
 }
 
 function ViewportSection({
-  initialCards
+  canonicalActivities,
+  initialCards,
+  libraryActivities
 }: {
+  canonicalActivities: CanonicalActivityCardRecord[];
   initialCards: ActivityTemplateCard[];
+  libraryActivities: ActivityLibraryModalItem[];
 }) {
   const [variantKey, setVariantKey] = useState<VariantKey>("final");
   const viewportItems = (["desktop", "tablet", "mobile"] as const).map(
@@ -1295,7 +1411,9 @@ function ViewportSection({
       renderPreview={(activeViewport) => (
         <ActivityGridPlayArea
           key={`${activeViewport}-${variantKey}`}
+          canonicalActivities={canonicalActivities}
           initialCards={initialCards}
+          libraryActivities={libraryActivities}
           variantKey={variantKey}
           viewport={VIEWPORTS[activeViewport]}
         />
@@ -1306,9 +1424,11 @@ function ViewportSection({
 }
 
 export function ActivityGridPageClient({
-  activities
+  activities,
+  libraryActivities
 }: {
   activities: CanonicalActivityCardRecord[];
+  libraryActivities: ActivityLibraryModalItem[];
 }) {
   const initialCards = useMemo(() => getInitialCards(activities), [activities]);
 
@@ -1324,7 +1444,11 @@ export function ActivityGridPageClient({
         >
           <ComponentOverviewSection {...overviewCopy} />
 
-          <ViewportSection initialCards={initialCards} />
+          <ViewportSection
+            canonicalActivities={activities}
+            initialCards={initialCards}
+            libraryActivities={libraryActivities}
+          />
 
           <StatesSection />
 
