@@ -13,6 +13,7 @@ import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-libr
 type ActiveGridWithLibraryProps = {
   initialOpenCardId?: string;
   libraryActivities: ActivityLibraryModalItem[];
+  onContinue?: () => void;
 };
 
 function slugFromCardId(id: string) {
@@ -41,7 +42,8 @@ function toVisualCardFromLibrary(
  */
 export function ActiveGridWithLibrary({
   initialOpenCardId,
-  libraryActivities
+  libraryActivities,
+  onContinue
 }: ActiveGridWithLibraryProps) {
   const starterCards = useMemo(
     () =>
@@ -107,6 +109,7 @@ export function ActiveGridWithLibrary({
         cards={workshopCards}
         initialOpenCardId={initialOpenCardId}
         onAddActivity={openLibrary}
+        onContinue={onContinue}
         onRemoveActivity={handleRemoveFromModal}
       />
       <ActivityLibraryPacks

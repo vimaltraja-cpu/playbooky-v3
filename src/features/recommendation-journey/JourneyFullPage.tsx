@@ -81,10 +81,13 @@ function ActiveGridFullPage({
   initialOpenCardId?: string;
   libraryActivities: ActivityLibraryModalItem[];
 }) {
+  const router = useRouter();
+
   return (
     <ActiveGridWithLibrary
       initialOpenCardId={initialOpenCardId}
       libraryActivities={libraryActivities}
+      onContinue={() => router.push("/facilitator-guide")}
     />
   );
 }
