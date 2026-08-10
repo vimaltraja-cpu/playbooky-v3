@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   CARD_FAN_MS,
@@ -16,6 +16,10 @@ import {
   RecommendationExperienceShell,
   type RecommendationLoadingViewport
 } from "@/components/product/RecommendationLoadingExperience";
+import type {
+  JourneyActivityCard,
+  JourneyGeneratedWorkshop
+} from "@/src/features/recommendation-journey/journeySession";
 import { exampleGeneratedWorkshopFlow } from "@/lib/workshop-os/generate-workshop-flow";
 
 function getResponsiveViewport(): RecommendationLoadingViewport {
@@ -96,6 +100,7 @@ export const recommendationRevealWorkshop = {
 };
 
 export function RecommendationRevealTemplateExperience({
+  activityCards,
   className = "",
   continueLabel = "Continue to activities",
   hiddenCardIds = [],
@@ -103,8 +108,10 @@ export function RecommendationRevealTemplateExperience({
   onContinue,
   onRevealPhaseChange,
   registerCard,
-  viewport
+  viewport,
+  workshop
 }: {
+  activityCards?: JourneyActivityCard[];
   className?: string;
   continueLabel?: string;
   hiddenCardIds?: string[];
@@ -116,12 +123,27 @@ export function RecommendationRevealTemplateExperience({
     element: HTMLDivElement | null
   ) => void;
   viewport?: RecommendationLoadingViewport;
+  workshop?: JourneyGeneratedWorkshop;
 }) {
   const [responsiveViewport, setResponsiveViewport] =
     useState<RecommendationLoadingViewport>("desktop");
   const [revealPhase, setRevealPhase] =
     useState<RecommendationCardRevealPhase>("pending");
   const effectiveViewport = viewport ?? responsiveViewport;
+  const effectiveActivityCards = useMemo(
+    () =>
+      activityCards?.map((card) => card.activity) ??
+      recommendationRevealWorkshop.activityCards,
+    [activityCards]
+  );
+  const effectiveWorkshop = useMemo(
+    () => ({
+      description:
+        workshop?.description ?? recommendationRevealWorkshop.description,
+      title: workshop?.title ?? recommendationRevealWorkshop.title
+    }),
+    [workshop]
+  );
 
   useEffect(() => {
     if (viewport) {
@@ -145,7 +167,7 @@ export function RecommendationRevealTemplateExperience({
       // Mount cards invisibly first and wait for illustrations so the centre
       // card never pops in empty.
       await preloadRecommendationRevealAssets(
-        recommendationRevealWorkshop.activityCards
+        effectiveActivityCards
       );
 
       if (cancelled) {
@@ -180,7 +202,7 @@ export function RecommendationRevealTemplateExperience({
     return () => {
       cancelled = true;
     };
-  }, [effectiveViewport]);
+  }, [effectiveActivityCards, effectiveViewport]);
 
   useEffect(() => {
     onRevealPhaseChange?.(revealPhase);
@@ -192,7 +214,7 @@ export function RecommendationRevealTemplateExperience({
       className={["recommendation-reveal-template-experience", className].join(
         " "
       )}
-      copy={recommendationRevealWorkshop.description}
+      copy={effectiveWorkshop.description}
       eyebrow={
         <span className="recommendation-reveal-template-eyebrow-text">
           YOUR RECOMMENDED WORKSHOP
@@ -200,7 +222,7 @@ export function RecommendationRevealTemplateExperience({
       }
       heading={
         <span className="recommendation-reveal-template-title">
-          {recommendationRevealWorkshop.title}
+          {effectiveWorkshop.title}
         </span>
       }
       metadata={
@@ -215,7 +237,7 @@ export function RecommendationRevealTemplateExperience({
       <div className="recommendation-loading-illustration recommendation-reveal-template-illustration relative grid aspect-square place-items-center">
         <div className="recommendation-reveal-template-scale">
           <RecommendationCardReveal
-            activityCards={recommendationRevealWorkshop.activityCards}
+            activityCards={effectiveActivityCards}
             hiddenCardIds={hiddenCardIds}
             interactive={interactive && revealPhase === "complete"}
             phase={revealPhase}

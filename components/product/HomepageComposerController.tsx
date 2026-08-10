@@ -5,7 +5,14 @@ import { useState, useTransition } from "react";
 
 import { AIComposer } from "@/components/ui/AIComposer";
 import type { HomepageTextLayoutViewport } from "@/components/product/HomepageTextLayout";
-import { journeyChallengeStorageKey } from "@/src/features/recommendation-journey/diagnosisIntelligence";
+import {
+  interpretComposerChallenge,
+  journeyChallengeStorageKey
+} from "@/src/features/recommendation-journey/diagnosisIntelligence";
+import {
+  createJourneySession,
+  writeJourneySession
+} from "@/src/features/recommendation-journey/journeySession";
 
 export function HomepageComposerController({
   viewport
@@ -24,9 +31,24 @@ export function HomepageComposerController({
     }
 
     try {
+      const interpretation = interpretComposerChallenge(trimmedChallenge);
+
       window.sessionStorage.setItem(
         journeyChallengeStorageKey,
         trimmedChallenge
+      );
+      writeJourneySession(
+        createJourneySession({
+          activityCards: undefined,
+          activityMutations: [],
+          activityOrder: [],
+          brief: trimmedChallenge,
+          diagnosisAnswers: undefined,
+          generatedWorkshop: undefined,
+          interpretation,
+          recommendationDescription: undefined,
+          recommendationReasoning: undefined
+        })
       );
     } catch {
       // Navigation is the meaningful journey action; storage is only a temporary handoff aid.

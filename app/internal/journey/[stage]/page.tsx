@@ -35,6 +35,10 @@ export default async function InternalJourneyStagePage({
   );
 
   return (
-    <JourneyFullPage libraryActivities={libraryActivities} stage={stage} />
+    <JourneyFullPage
+      dataset={dataset}
+      libraryActivities={libraryActivities}
+      stage={stage}
+    />
   );
 }

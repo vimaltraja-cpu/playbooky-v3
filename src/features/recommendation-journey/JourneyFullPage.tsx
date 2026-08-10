@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-library-modal";
+import type { LibraryDataset } from "@/lib/product-system/library-read-model";
 import { ActiveGridWithLibrary } from "@/src/features/recommendation-journey/ActiveGridWithLibrary";
 import { DiagnosisQuestionScreen } from "@/components/product/DiagnosisQuestionScreen";
 import {
@@ -25,6 +26,16 @@ import {
   mergeDiagnosisAnswers,
   type DiagnosisAnswersByQuestion
 } from "@/src/features/recommendation-journey/diagnosisIntelligence";
+import {
+  createSessionWorkshopFromDiagnosis
+} from "@/src/features/recommendation-journey/journeyWorkshopAdapter";
+import {
+  patchJourneySession,
+  readJourneySession,
+  type JourneyActivityCard,
+  type JourneyActivityMutation,
+  type JourneySessionPayload
+} from "@/src/features/recommendation-journey/journeySession";
 import type {
   JourneyStage,
   JourneyStageId
@@ -75,18 +86,27 @@ function useResponsiveMode<Mode extends string>(
 }
 
 function ActiveGridFullPage({
+  initialCards,
   initialOpenCardId,
-  libraryActivities
+  libraryActivities,
+  onCardsChange,
+  onActivityMutation
 }: {
+  initialCards?: JourneyActivityCard[];
   initialOpenCardId?: string;
   libraryActivities: ActivityLibraryModalItem[];
+  onActivityMutation?: (mutation: JourneyActivityMutation) => void;
+  onCardsChange?: (cards: JourneyActivityCard[]) => void;
 }) {
   const router = useRouter();
 
   return (
     <ActiveGridWithLibrary
+      initialCards={initialCards}
       initialOpenCardId={initialOpenCardId}
       libraryActivities={libraryActivities}
+      onActivityMutation={onActivityMutation}
+      onCardsChange={onCardsChange}
       onContinue={() => router.push("/facilitator-guide")}
     />
   );
@@ -174,6 +194,16 @@ function DiagnosisFullPage() {
         journeyDiagnosisAnswersStorageKey,
         JSON.stringify(combinedAnswers)
       );
+      patchJourneySession({
+        activityCards: undefined,
+        activityMutations: [],
+        activityOrder: [],
+        diagnosisAnswers: combinedAnswers,
+        generatedWorkshop: undefined,
+        interpretation,
+        recommendationDescription: undefined,
+        recommendationReasoning: undefined
+      });
     } catch {
       // Diagnosis can continue; storage is a journey handoff aid.
     }
@@ -216,7 +246,11 @@ function DiagnosisFullPage() {
 
 function renderStage(
   stageId: JourneyStageId,
+  sessionCards: JourneyActivityCard[] | undefined,
+  sessionWorkshop: ReturnType<typeof createSessionWorkshopFromDiagnosis> | null,
   libraryActivities: ActivityLibraryModalItem[],
+  onCardsChange: (cards: JourneyActivityCard[]) => void,
+  onActivityMutation: (mutation: JourneyActivityMutation) => void,
   onGridContinue: () => void
 ) {
   if (stageId === "composer") {
@@ -230,9 +264,13 @@ function renderStage(
   if (stageId === "loading") {
     return (
       <RecommendationLoadingRevealJourney
+        activityCards={sessionCards}
         includeGridHandoff
         libraryActivities={libraryActivities}
         onGridContinue={onGridContinue}
+        onGridActivityMutation={onActivityMutation}
+        onGridCardsChange={onCardsChange}
+        workshop={sessionWorkshop?.generatedWorkshop}
       />
     );
   }
@@ -242,27 +280,116 @@ function renderStage(
   }
 
   if (stageId === "active-grid") {
-    return <ActiveGridFullPage libraryActivities={libraryActivities} />;
+    return (
+      <ActiveGridFullPage
+        initialCards={sessionCards}
+        libraryActivities={libraryActivities}
+        onActivityMutation={onActivityMutation}
+        onCardsChange={onCardsChange}
+      />
+    );
   }
 
   return (
     <ActiveGridFullPage
+      initialCards={sessionCards}
       initialOpenCardId="commitment-check"
       libraryActivities={libraryActivities}
+      onActivityMutation={onActivityMutation}
+      onCardsChange={onCardsChange}
     />
   );
 }
 
 export function JourneyFullPage({
+  dataset,
   libraryActivities,
   stage
 }: {
+  dataset: LibraryDataset;
   libraryActivities: ActivityLibraryModalItem[];
   stage: JourneyStage;
 }) {
-  const router = useRouter();
+  const [session, setSession] = useState<JourneySessionPayload | null>(null);
 
-  return renderStage(stage.id, libraryActivities, () =>
-    router.push("/facilitator-guide")
+  useEffect(() => {
+    setSession(readJourneySession());
+  }, []);
+
+  const generatedSessionWorkshop = useMemo(() => {
+    if (!session?.diagnosisAnswers) {
+      return null;
+    }
+
+    return createSessionWorkshopFromDiagnosis({
+      brief: session.brief,
+      dataset,
+      diagnosisAnswers: session.diagnosisAnswers
+    });
+  }, [dataset, session?.brief, session?.diagnosisAnswers]);
+
+  const sessionCards =
+    session?.activityCards ??
+    generatedSessionWorkshop?.activityCards;
+
+  useEffect(() => {
+    if (
+      !generatedSessionWorkshop ||
+      session?.activityCards ||
+      session?.generatedWorkshop
+    ) {
+      return;
+    }
+
+    const nextSession = patchJourneySession({
+      activityCards: generatedSessionWorkshop.activityCards,
+      activityMutations: session?.activityMutations ?? [],
+      activityOrder: generatedSessionWorkshop.activityCards.map((card) => card.id),
+      generatedWorkshop: generatedSessionWorkshop.generatedWorkshop,
+      recommendationDescription: generatedSessionWorkshop.generatedWorkshop.description,
+      recommendationReasoning: generatedSessionWorkshop.generatedWorkshop.reasoning
+    });
+
+    setSession(nextSession);
+  }, [generatedSessionWorkshop, session]);
+
+  const handleCardsChange = useCallback((cards: JourneyActivityCard[]) => {
+    const nextSession = patchJourneySession((current) => ({
+      activityCards: cards,
+      activityOrder: cards.map((card) => card.id),
+      generatedWorkshop:
+        current?.generatedWorkshop ??
+        generatedSessionWorkshop?.generatedWorkshop,
+      recommendationDescription:
+        current?.recommendationDescription ??
+        generatedSessionWorkshop?.generatedWorkshop.description,
+      recommendationReasoning:
+        current?.recommendationReasoning ??
+        generatedSessionWorkshop?.generatedWorkshop.reasoning
+    }));
+
+    setSession(nextSession);
+  }, [generatedSessionWorkshop]);
+
+  const handleActivityMutation = useCallback((mutation: JourneyActivityMutation) => {
+    const nextSession = patchJourneySession((current) => ({
+      activityMutations: [...(current?.activityMutations ?? []), mutation]
+    }));
+
+    setSession(nextSession);
+  }, []);
+
+  const handleGridContinue = useCallback(() => {
+    window.location.assign("/facilitator-guide");
+  }, []);
+
+  return renderStage(
+    stage.id,
+    sessionCards,
+    generatedSessionWorkshop,
+    libraryActivities,
+    handleCardsChange,
+    handleActivityMutation,
+    handleGridContinue
   );
 }

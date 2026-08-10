@@ -6,6 +6,11 @@ import { RecommendationLoadingExperience } from "@/components/product/Recommenda
 import { RecommendationRevealGridHandoffExperience } from "@/components/product/RecommendationRevealGridHandoffExperience";
 import { RecommendationRevealTemplateExperience } from "@/components/product/RecommendationRevealTemplateExperience";
 import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-library-modal";
+import type {
+  JourneyActivityCard,
+  JourneyActivityMutation,
+  JourneyGeneratedWorkshop
+} from "@/src/features/recommendation-journey/journeySession";
 import styles from "./RecommendationScreens.module.css";
 
 type JourneyPhase = "loading" | "exiting" | "entering" | "reveal";
@@ -20,17 +25,25 @@ const HOLD_AT_BLUR_MS = 220;
  * Isolated reveal review remains at /recommendation-reveal-template.
  */
 export function RecommendationLoadingRevealJourney({
+  activityCards,
   continueLabel,
   includeGridHandoff = false,
   libraryActivities = [],
+  onGridActivityMutation,
+  onGridCardsChange,
   onGridContinue,
-  onRevealComplete
+  onRevealComplete,
+  workshop
 }: {
+  activityCards?: JourneyActivityCard[];
   continueLabel?: string;
   includeGridHandoff?: boolean;
   libraryActivities?: ActivityLibraryModalItem[];
+  onGridActivityMutation?: (mutation: JourneyActivityMutation) => void;
+  onGridCardsChange?: (cards: JourneyActivityCard[]) => void;
   onGridContinue?: () => void;
   onRevealComplete?: () => void;
+  workshop?: JourneyGeneratedWorkshop;
 } = {}) {
   const [phase, setPhase] = useState<JourneyPhase>("loading");
 
@@ -85,13 +98,19 @@ export function RecommendationLoadingRevealJourney({
         ) : (
           includeGridHandoff ? (
             <RecommendationRevealGridHandoffExperience
+              activityCards={activityCards}
               libraryActivities={libraryActivities}
+              onActivityMutation={onGridActivityMutation}
+              onCardsChange={onGridCardsChange}
               onContinue={onGridContinue}
+              workshop={workshop}
             />
           ) : (
             <RecommendationRevealTemplateExperience
+              activityCards={activityCards}
               continueLabel={continueLabel}
               onContinue={onRevealComplete}
+              workshop={workshop}
             />
           )
         )}
