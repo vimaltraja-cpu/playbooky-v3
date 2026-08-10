@@ -240,11 +240,7 @@ test("Overlapping signals deduplicate rules and blocks", async () => {
 
 test("Not-sure input explicitly selects the Discovery rules", async () => {
   const dataset = await getLibraryDataset();
-  const workshop = createLibraryWorkshop(
-    dataset,
-    { goals: ["not-sure"] },
-    120
-  );
+  const workshop = createLibraryWorkshop(dataset, { goals: ["not-sure"] }, 120);
 
   assert.equal(workshop.fallbackUsed, false);
   assert.deepEqual(
@@ -286,118 +282,90 @@ test("Playbook construction uses intent and explicit uncertainty signals only", 
   });
 });
 
-test("Recommended playbook follows canonical dependency order", async () => {
-  const dataset = await getLibraryDataset();
-  const workshop = createRecommendedPlaybook(dataset, {
-    goals: ["new-ideas"],
-    outcome: ["actionable-plan"]
-  });
+function canonicalIds(workshop) {
+  return workshop.selected.map((candidate) => candidate.canonicalItemId);
+}
 
-  assert.deepEqual(
-    workshop.selected.map((candidate) => candidate.block?.id),
-    [
-      "block-how-might-we",
-      "block-impact-effort-map",
-      "block-priority-map",
-      "block-who-what-when"
-    ]
-  );
-  assert.deepEqual(
-    workshop.selected.map((candidate) => candidate.origin),
-    ["diagnosis-adapter", "what-next", "what-next", "diagnosis-adapter"]
-  );
-  assert.equal(workshop.totalDuration, 145);
-});
-
-test("Recommended playbook handles each primary Goal deterministically", async () => {
+test("Canonical routes resolve documented diagnosis scenarios", async () => {
   const dataset = await getLibraryDataset();
   const cases = [
     [
-      "align-a-team",
-      ["block-objectives-and-key-results-okrs", "block-blind-vote"],
-      65
+      { goals: ["understand-a-problem"] },
+      "discovery-problem-understanding",
+      150
+    ],
+    [{ goals: ["new-ideas"] }, "ideation", 90],
+    [
+      { goals: ["make-decisions"], outcome: ["better-decisions"] },
+      "prioritisation-and-decision",
+      75
     ],
     [
-      "understand-a-problem",
-      ["block-five-whys", "block-problem-statement"],
+      { goals: ["align-a-team"], outcome: ["clear-alignment"] },
+      "product-strategy-alignment",
+      150
+    ],
+    [
+      { challenges: ["alignment-issues"], outcome: ["actionable-plan"] },
+      "stakeholder-alignment",
+      195
+    ],
+    [
+      { challenges: ["too-many-ideas"], outcome: ["actionable-plan"] },
+      "mvp-definition",
       105
     ],
-    ["make-decisions", ["block-priority-map", "block-blind-vote"], 50],
-    [
-      "new-ideas",
-      ["block-how-might-we", "block-impact-effort-map", "block-priority-map"],
-      130
-    ],
-    ["create-an-action-plan", ["block-who-what-when"], 15]
+    [{ challenges: ["performance-issues"] }, "operational-root-cause", 180],
+    [{ goals: ["not-sure"] }, "discovery-problem-understanding", 150]
   ];
 
-  for (const [goal, expectedBlocks, expectedDuration] of cases) {
-    const workshop = createRecommendedPlaybook(dataset, { goals: [goal] });
-
-    assert.deepEqual(
-      workshop.selected.map((candidate) => candidate.block?.id),
-      expectedBlocks
-    );
-    assert.equal(workshop.totalDuration, expectedDuration);
+  for (const [diagnosis, routeId, duration] of cases) {
+    const workshop = createRecommendedPlaybook(dataset, diagnosis);
+    assert.equal(workshop.selectedRoute?.id, routeId);
+    assert.equal(workshop.totalDuration, duration);
   }
 });
 
-test("Goal, Challenge and Outcome construct one coherent playbook", async () => {
+test("Canonical route preserves documented order and source identity", async () => {
   const dataset = await getLibraryDataset();
   const workshop = createRecommendedPlaybook(dataset, {
-    challenges: ["too-many-ideas"],
+    goals: ["understand-a-problem"]
+  });
+
+  assert.deepEqual(canonicalIds(workshop), [
+    "activity-journey-map",
+    "activity-five-whys",
+    "activity-problem-statement"
+  ]);
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.canonicalSource),
+    ["activity", "activity", "activity"]
+  );
+});
+
+test("Goal dominance wins while the next-highest need remains secondary", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createRecommendedPlaybook(dataset, {
+    challenges: ["performance-issues"],
     goals: ["new-ideas"],
-    outcome: ["actionable-plan"]
+    outcome: ["better-decisions"]
   });
 
-  assert.deepEqual(
-    workshop.selected.map((candidate) => candidate.block?.id),
-    [
-      "block-how-might-we",
-      "block-impact-effort-map",
-      "block-priority-map",
-      "block-who-what-when"
-    ]
-  );
-  assert.equal(workshop.totalDuration, 145);
+  assert.equal(workshop.stageRanking?.[0]?.stage, "ideas");
+  assert.equal(workshop.stageRanking?.[1]?.stage, "understand");
+  assert.equal(workshop.selectedRoute?.id, "ideation");
 });
 
-test("Multiple answers retain deterministic sequence and provenance", async () => {
-  const dataset = await getLibraryDataset();
-  const workshop = createRecommendedPlaybook(dataset, {
-    goals: ["understand-a-problem", "new-ideas"]
-  });
-
-  assert.deepEqual(
-    workshop.selected.map((candidate) => candidate.block?.id),
-    [
-      "block-five-whys",
-      "block-problem-statement",
-      "block-how-might-we",
-      "block-impact-effort-map",
-      "block-priority-map"
-    ]
-  );
-  assert.equal(workshop.totalDuration, 235);
-});
-
-test("Action-only intent is not silently treated as a complete playbook", async () => {
+test("Action-only intent remains explicitly unresolved", async () => {
   const dataset = await getLibraryDataset();
   const workshop = createRecommendedPlaybook(dataset, {
     goals: ["create-an-action-plan"],
     outcome: ["actionable-plan"]
   });
 
-  assert.deepEqual(
-    workshop.selected.map((candidate) => candidate.block?.id),
-    ["block-who-what-when"]
-  );
-  assert.equal(
-    workshop.warnings.includes(
-      "Action-plan intent did not provide enough upstream workshop context to construct a complete multi-activity playbook."
-    ),
-    true
-  );
+  assert.deepEqual(workshop.selected, []);
+  assert.equal(workshop.totalDuration, 0);
+  assert.match(workshop.warnings[0], /complete canonical playbook route/);
 });
 
 test("Unmapped collaboration-only intent does not become arbitrary Discovery", async () => {
@@ -405,39 +373,100 @@ test("Unmapped collaboration-only intent does not become arbitrary Discovery", a
   const workshop = createRecommendedPlaybook(dataset, {
     outcome: ["stronger-collaboration"]
   });
-
   assert.deepEqual(workshop.selected, []);
   assert.equal(workshop.totalDuration, 0);
-  assert.deepEqual(workshop.warnings, [
-    "The supplied intent does not yet have enough approved canonical recommendation logic to construct a playbook."
-  ]);
 });
 
-test("Real journey derives duration and is not capped at 120 minutes", async () => {
+test("Every successful canonical route contains 2–7 real canonical items", async () => {
+  const dataset = await getLibraryDataset();
+
+  for (const route of dataset.playbookRoutes) {
+    const references = route.itemReferences;
+    assert.equal(references.length >= 2 && references.length <= 7, true);
+    for (const reference of references) {
+      const collection =
+        reference.source === "activity"
+          ? dataset.activities
+          : dataset.buildingBlocks;
+      assert.equal(
+        collection.some((item) => item.id === reference.id),
+        true,
+        `${route.id}: ${reference.id}`
+      );
+    }
+  }
+});
+
+test("Previously oversized unions now select one bounded route", async () => {
+  const dataset = await getLibraryDataset();
+  const cases = [
+    {
+      goals: ["align-a-team"],
+      challenges: ["too-many-ideas", "performance-issues"],
+      outcome: ["clear-alignment", "actionable-plan"]
+    },
+    {
+      goals: ["align-a-team", "new-ideas"],
+      challenges: ["alignment-issues", "performance-issues"],
+      outcome: ["clear-alignment"]
+    },
+    {
+      goals: ["align-a-team", "new-ideas"],
+      challenges: ["alignment-issues", "performance-issues"],
+      outcome: ["clear-alignment", "actionable-plan"]
+    },
+    {
+      goals: ["understand-a-problem", "new-ideas"],
+      challenges: ["alignment-issues"],
+      outcome: ["clear-alignment", "actionable-plan"]
+    },
+    {
+      goals: ["understand-a-problem", "new-ideas"],
+      challenges: ["unclear-priorities", "performance-issues"],
+      outcome: ["better-decisions", "actionable-plan"]
+    }
+  ];
+
+  for (const diagnosis of cases) {
+    const workshop = createRecommendedPlaybook(dataset, diagnosis);
+    assert.equal(
+      workshop.selected.length >= 2 && workshop.selected.length <= 7,
+      true
+    );
+  }
+});
+
+test("Optional future duration rejects whole incompatible routes without slicing", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createRecommendedPlaybook(
+    dataset,
+    { goals: ["understand-a-problem"] },
+    { requestedDurationMinutes: 90 }
+  );
+
+  assert.deepEqual(workshop.selected, []);
+  assert.match(workshop.warnings[0], /requested 90-minute duration/);
+});
+
+test("Real journey duration equals the sum of canonical route activities", async () => {
   const dataset = await getLibraryDataset();
   const generated = createSessionWorkshopFromDiagnosis({
-    brief: "Generate ideas, decide what matters, and leave with owners.",
+    brief: "Generate ideas and explore multiple approaches.",
     dataset,
     diagnosisAnswers: {
       goals: {
         optionIds: ["new-ideas"],
         questionId: "goals",
         source: "diagnosis"
-      },
-      outcome: {
-        optionIds: ["actionable-plan"],
-        questionId: "outcome",
-        source: "diagnosis"
       }
     }
   });
-
   const canonicalDuration = generated.workshop.selected.reduce(
     (total, candidate) => total + candidate.duration,
     0
   );
 
-  assert.equal(canonicalDuration, 145);
+  assert.equal(canonicalDuration, 90);
   assert.equal(generated.generatedWorkshop.totalDuration, canonicalDuration);
   assert.equal(generated.generatedWorkshop.durationMinutes, canonicalDuration);
 });
@@ -456,7 +485,9 @@ test("Action-planning remains a truthful single-activity result", async () => {
   );
   assert.equal(workshop.totalDuration, 15);
   assert.equal(
-    workshop.warnings.some((warning) => warning.includes("Only one compatible")),
+    workshop.warnings.some((warning) =>
+      warning.includes("Only one compatible")
+    ),
     true
   );
 });

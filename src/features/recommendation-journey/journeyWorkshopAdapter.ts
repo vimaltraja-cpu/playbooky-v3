@@ -3,9 +3,7 @@ import type {
   FacilitatorGuideActivityContent,
   FacilitatorGuideContent
 } from "@/lib/facilitator-guide/map-workshop-to-guide";
-import {
-  mapWorkshopToFacilitatorGuide
-} from "@/lib/facilitator-guide/map-workshop-to-guide";
+import { mapWorkshopToFacilitatorGuide } from "@/lib/facilitator-guide/map-workshop-to-guide";
 import { temporaryActivityIllustrationMap } from "@/lib/data/activity-illustration-map";
 import type {
   ActivityRecord,
@@ -91,7 +89,8 @@ function toSentenceCase(value: string) {
 }
 
 function fallbackCardAt(index: number): JourneyActivityCard {
-  const fallback = recommendationRevealCards[index % recommendationRevealCards.length];
+  const fallback =
+    recommendationRevealCards[index % recommendationRevealCards.length];
 
   return {
     activity: fallback.activity,
@@ -106,31 +105,42 @@ function candidateToActivityCard(
   dataset: LibraryDataset,
   index: number
 ): JourneyActivityCard | null {
-  if (!candidate.block) {
+  if (!candidate.block && !candidate.activity) {
     return null;
   }
 
   const block = candidate.block;
-  const activity = findActivityRecord(dataset, block);
+  const activity =
+    candidate.activity ??
+    (block ? findActivityRecord(dataset, block) : undefined);
   const revealSlot = recommendationRevealCards[index];
   const duration =
-    candidate.duration || activity?.durationMinutes || block.durationMinutes || 0;
+    candidate.duration ||
+    activity?.durationMinutes ||
+    block?.durationMinutes ||
+    0;
+  const title = activity?.title ?? block?.title ?? "Activity";
 
   return {
     activity: {
       description:
         activity?.description?.trim() ||
-        block.description?.trim() ||
+        block?.description?.trim() ||
         activity?.bestUsedWhen?.trim() ||
         candidate.rule.reason,
       duration: formatDuration(duration),
-      illustration: resolveIllustrationSrc(block.title),
-      title: block.title,
-      workshopType: block.phase || activity?.phase || "Activity"
+      illustration: resolveIllustrationSrc(title),
+      title,
+      workshopType: block?.phase || activity?.phase || "Activity"
     },
-    candidateBlockId: block.id,
-    id: revealSlot?.id ?? block.id,
-    label: block.title,
+    candidateBlockId: block?.id,
+    id:
+      revealSlot?.id ??
+      candidate.canonicalItemId ??
+      block?.id ??
+      activity?.id ??
+      `activity-${index}`,
+    label: title,
     source: "generated"
   };
 }
@@ -165,8 +175,7 @@ function createCandidateFromBlock(
   const rule =
     dataset.workshopRules.find(
       (candidate) => candidate.recommendedBlockId === block.id
-    ) ??
-    dataset.workshopRules[0];
+    ) ?? dataset.workshopRules[0];
 
   return {
     block,
@@ -261,7 +270,9 @@ function findBlockForJourneyCard(
 }
 
 export function diagnosisAnswersToSelectedOptionIds(
-  diagnosisAnswers?: Partial<Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>>
+  diagnosisAnswers?: Partial<
+    Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>
+  >
 ) {
   const selectedOptionIds: Record<string, string[]> = {};
 
@@ -277,9 +288,12 @@ export function diagnosisAnswersToSelectedOptionIds(
 }
 
 export function diagnosisAnswersToPlaybookOptionIds(
-  diagnosisAnswers?: Partial<Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>>
+  diagnosisAnswers?: Partial<
+    Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>
+  >
 ) {
-  const selectedOptionIds = diagnosisAnswersToSelectedOptionIds(diagnosisAnswers);
+  const selectedOptionIds =
+    diagnosisAnswersToSelectedOptionIds(diagnosisAnswers);
 
   return Object.fromEntries(
     Object.entries(selectedOptionIds).flatMap(([questionId, optionIds]) => {
@@ -303,15 +317,22 @@ export function createSessionWorkshopFromDiagnosis({
 }: {
   brief?: string;
   dataset: LibraryDataset;
-  diagnosisAnswers?: Partial<Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>>;
+  diagnosisAnswers?: Partial<
+    Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>
+  >;
 }) {
-  const selectedOptionIds = diagnosisAnswersToPlaybookOptionIds(diagnosisAnswers);
+  const selectedOptionIds =
+    diagnosisAnswersToPlaybookOptionIds(diagnosisAnswers);
   const workshop = createRecommendedPlaybook(dataset, selectedOptionIds);
   const generatedCards = workshop.selected
-    .map((candidate, index) => candidateToActivityCard(candidate, dataset, index))
+    .map((candidate, index) =>
+      candidateToActivityCard(candidate, dataset, index)
+    )
     .filter(Boolean) as JourneyActivityCard[];
   const cards = createFallbackPaddedCards(generatedCards);
   const title =
+    workshop.selectedRoute?.name ??
+    workshop.selected[0]?.activity?.title ??
     workshop.selected[0]?.block?.title ??
     "Root cause discovery workshop";
   const generatedWorkshop: JourneyGeneratedWorkshop = {
@@ -320,15 +341,17 @@ export function createSessionWorkshopFromDiagnosis({
       workshop.selected[0]?.rule.reason ||
       "A workshop path shaped around the current diagnosis.",
     durationMinutes: workshop.totalDuration,
-    id: `journey-workshop-${workshop.selected
-      .map((candidate) => candidate.block?.id)
-      .filter(Boolean)
-      .join("-") || "fallback"}`,
+    id: `journey-workshop-${
+      workshop.selected
+        .map((candidate) => candidate.canonicalItemId ?? candidate.block?.id)
+        .filter(Boolean)
+        .join("-") || "fallback"
+    }`,
     reasoning: workshop.matchedRules.map((rule) => rule.reason),
     selectedBlockIds: workshop.selected
       .map((candidate) => candidate.block?.id)
       .filter(Boolean) as string[],
-    title: toSentenceCase(`${title} workshop`),
+    title: toSentenceCase(workshop.selectedRoute ? title : `${title} workshop`),
     totalDuration: workshop.totalDuration,
     warnings: workshop.warnings
   };
@@ -340,7 +363,9 @@ export function createSessionWorkshopFromDiagnosis({
   };
 }
 
-function genericGuideActivity(card: JourneyActivityCard): FacilitatorGuideActivityContent {
+function genericGuideActivity(
+  card: JourneyActivityCard
+): FacilitatorGuideActivityContent {
   return {
     hero: {
       description: card.activity.description,
@@ -397,7 +422,9 @@ export function mapJourneyCardsToFacilitatorGuide(
               card.activity.description || guideActivity.hero.description,
             illustration: {
               alt: `${card.activity.title} illustration`,
-              src: card.activity.illustration || guideActivity.hero.illustration.src
+              src:
+                card.activity.illustration ||
+                guideActivity.hero.illustration.src
             },
             title: card.activity.title,
             type: card.activity.workshopType || guideActivity.hero.type

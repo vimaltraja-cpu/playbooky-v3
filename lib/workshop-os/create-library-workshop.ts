@@ -1,4 +1,5 @@
 import type {
+  ActivityRecord,
   BuildingBlockRecord,
   BuildingBlockStepRecord,
   LibraryDataset,
@@ -6,11 +7,14 @@ import type {
 } from "@/lib/product-system/library-read-model";
 
 export type GenerationCandidate = {
+  activity?: ActivityRecord;
   block?: BuildingBlockRecord;
+  canonicalItemId?: string;
+  canonicalSource?: "activity" | "building-block";
   duration: number;
   excludedReason?: string;
   orderReason: string;
-  origin: "diagnosis-adapter" | "fallback" | "what-next";
+  origin: "diagnosis-adapter" | "fallback" | "playbook-route" | "what-next";
   rule: WorkshopRuleRecord;
   steps: BuildingBlockStepRecord[];
 };
@@ -21,6 +25,8 @@ export type GeneratedLibraryWorkshop = {
   fallbackUsed: boolean;
   matchedRules: WorkshopRuleRecord[];
   selected: GenerationCandidate[];
+  selectedRoute?: LibraryDataset["playbookRoutes"][number];
+  stageRanking?: Array<{ score: number; stage: string }>;
   totalDuration: number;
   trace: Array<{
     mappedRuleIds: string[];
@@ -53,7 +59,10 @@ export const diagnosisRuleAdapter: Record<string, string[]> = {
   "outcome-focus-priorities": ["need-clear-priorities"],
   "outcome-not-sure-yet": ["problem-not-clearly-defined"],
   "performance-issues": ["root-cause-unknown", "need-team-reflection"],
-  "slow-decision-making": ["need-clear-priorities", "need-alignment-on-options"],
+  "slow-decision-making": [
+    "need-clear-priorities",
+    "need-alignment-on-options"
+  ],
   "too-many-ideas": ["too-many-opportunities"],
   "unclear-priorities": ["need-clear-priorities"],
   "understand-a-problem": ["root-cause-unknown", "problem-not-clearly-defined"]
@@ -217,7 +226,7 @@ export function createLibraryWorkshop(
   if (!selected.length) {
     warnings.push(
       durationLimit !== undefined &&
-      candidates.some((candidate) => candidate.block)
+        candidates.some((candidate) => candidate.block)
         ? `No compatible activities fit within the requested ${durationLimit}-minute workshop duration.`
         : "No compatible activities were found for this diagnosis."
     );
@@ -251,39 +260,163 @@ export function createLibraryWorkshop(
   };
 }
 
-const playbookSequenceOrder: Record<string, number> = {
-  "block-objectives-and-key-results-okrs": 10,
-  "block-five-whys": 20,
-  "block-problem-statement": 30,
-  "block-how-might-we": 40,
-  "block-theme-sort": 50,
-  "block-impact-effort-map": 60,
-  "block-priority-map": 70,
-  "block-dot-vote": 80,
-  "block-blind-vote": 80,
-  "block-start-stop-continue": 90,
-  "block-who-what-when": 100
+type StageSignal = { score: number; stage: string };
+
+const diagnosisStageSignals: Record<string, StageSignal[]> = {
+  "actionable-plan": [
+    { score: 2, stage: "decide" },
+    { score: 1, stage: "goals" }
+  ],
+  "align-a-team": [
+    { score: 3, stage: "goals" },
+    { score: 1, stage: "discuss" }
+  ],
+  "alignment-issues": [
+    { score: 3, stage: "discuss" },
+    { score: 1, stage: "goals" }
+  ],
+  "better-decisions": [
+    { score: 3, stage: "decide" },
+    { score: 1, stage: "evaluate" }
+  ],
+  "clear-alignment": [
+    { score: 3, stage: "discuss" },
+    { score: 1, stage: "goals" }
+  ],
+  "context-not-sure": [
+    { score: 1, stage: "understand" },
+    { score: 1, stage: "frame" }
+  ],
+  "create-an-action-plan": [{ score: 3, stage: "decide" }],
+  "lack-of-ownership": [
+    { score: 2, stage: "decide" },
+    { score: 1, stage: "discuss" }
+  ],
+  "make-decisions": [
+    { score: 3, stage: "decide" },
+    { score: 1, stage: "evaluate" }
+  ],
+  "new-ideas": [{ score: 3, stage: "ideas" }],
+  "not-sure": [
+    { score: 2, stage: "understand" },
+    { score: 2, stage: "frame" }
+  ],
+  "outcome-focus-priorities": [{ score: 3, stage: "evaluate" }],
+  "outcome-not-sure-yet": [
+    { score: 1, stage: "understand" },
+    { score: 1, stage: "frame" }
+  ],
+  "performance-issues": [
+    { score: 3, stage: "understand" },
+    { score: 1, stage: "frame" }
+  ],
+  "slow-decision-making": [
+    { score: 3, stage: "decide" },
+    { score: 1, stage: "discuss" }
+  ],
+  "stronger-collaboration": [{ score: 3, stage: "discuss" }],
+  "too-many-ideas": [{ score: 3, stage: "evaluate" }],
+  "unclear-priorities": [
+    { score: 3, stage: "evaluate" },
+    { score: 1, stage: "decide" }
+  ],
+  "understand-a-problem": [
+    { score: 3, stage: "understand" },
+    { score: 1, stage: "frame" }
+  ]
 };
 
-const justifiedContinuationBlocks: Record<string, string[]> = {
-  "need-more-ideas": ["block-impact-effort-map", "block-priority-map"],
-  "root-cause-unknown": ["block-problem-statement"],
-  "too-many-opportunities": ["block-priority-map"]
-};
+const stageOrder = [
+  "goals",
+  "understand",
+  "frame",
+  "ideas",
+  "evaluate",
+  "decide",
+  "discuss"
+];
 
-function isJustifiedContinuation(
-  candidate: GenerationCandidate,
-  matchedRuleIds: Set<string>
+function rankDiagnosisStages(
+  selectedOptionIds: Record<string, string | string[]>
 ) {
-  const blockId = candidate.block?.id;
+  const scores = new Map(stageOrder.map((stage) => [stage, 0]));
+  const questionScores = new Map(
+    stageOrder.map((stage) => [stage, { challenges: 0, goals: 0, outcome: 0 }])
+  );
 
-  if (!blockId || candidate.origin !== "what-next") {
-    return candidate.origin !== "what-next";
+  (["goals", "challenges", "outcome"] as const).forEach((questionId) => {
+    const value = selectedOptionIds[questionId];
+    const optionIds = Array.isArray(value) ? value : value ? [value] : [];
+
+    optionIds.forEach((optionId) => {
+      diagnosisStageSignals[optionId]?.forEach(({ score, stage }) => {
+        scores.set(stage, (scores.get(stage) ?? 0) + score);
+        questionScores.get(stage)![questionId] += score;
+      });
+    });
+  });
+
+  return stageOrder
+    .map((stage) => ({ score: scores.get(stage) ?? 0, stage }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => {
+      const aQuestions = questionScores.get(a.stage)!;
+      const bQuestions = questionScores.get(b.stage)!;
+
+      return (
+        b.score - a.score ||
+        bQuestions.goals - aQuestions.goals ||
+        bQuestions.challenges - aQuestions.challenges ||
+        bQuestions.outcome - aQuestions.outcome ||
+        stageOrder.indexOf(a.stage) - stageOrder.indexOf(b.stage)
+      );
+    });
+}
+
+function resolveRouteCandidate(
+  dataset: LibraryDataset,
+  route: LibraryDataset["playbookRoutes"][number],
+  reference: LibraryDataset["playbookRoutes"][number]["itemReferences"][number]
+): GenerationCandidate | undefined {
+  const block =
+    reference.source === "building-block"
+      ? dataset.buildingBlocks.find((item) => item.id === reference.id)
+      : undefined;
+  const activity =
+    reference.source === "activity"
+      ? dataset.activities.find((item) => item.id === reference.id)
+      : undefined;
+  const steps = block
+    ? dataset.steps
+        .filter((step) => step.parentId === block.id)
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    : [];
+  const rule =
+    route.provenanceRuleIds
+      .map((id) => dataset.workshopRules.find((item) => item.id === id))
+      .find((item) => item?.recommendedBlockId === block?.id) ??
+    route.provenanceRuleIds
+      .map((id) => dataset.workshopRules.find((item) => item.id === id))
+      .find(Boolean) ??
+    dataset.workshopRules[0];
+
+  if ((!block && !activity) || !rule) {
+    return undefined;
   }
 
-  return Array.from(matchedRuleIds).some((ruleId) =>
-    justifiedContinuationBlocks[ruleId]?.includes(blockId)
-  );
+  return {
+    activity,
+    block,
+    canonicalItemId: reference.id,
+    canonicalSource: reference.source,
+    duration: block
+      ? getBlockDuration(block, steps)
+      : (activity?.durationMinutes ?? 0),
+    orderReason: `Canonical order from playbook route ${route.id}.`,
+    origin: "playbook-route",
+    rule,
+    steps
+  };
 }
 
 /**
@@ -293,79 +426,98 @@ function isJustifiedContinuation(
  */
 export function createRecommendedPlaybook(
   dataset: LibraryDataset,
-  selectedOptionIds: Record<string, string | string[]>
+  selectedOptionIds: Record<string, string | string[]>,
+  constraints: { requestedDurationMinutes?: number } = {}
 ): GeneratedLibraryWorkshop {
   const generated = createLibraryWorkshop(dataset, selectedOptionIds);
-  const hasSelectedIntent = Object.values(selectedOptionIds).some((selected) =>
-    Array.isArray(selected) ? selected.length > 0 : Boolean(selected)
+  const optionIds = Object.values(selectedOptionIds).flatMap((value) =>
+    Array.isArray(value) ? value : value ? [value] : []
   );
-
-  if (generated.fallbackUsed && hasSelectedIntent) {
-    return {
-      ...generated,
-      excluded: [
-        ...generated.excluded,
-        ...generated.selected.map((candidate) => ({
-          ...candidate,
-          excludedReason:
-            "Discovery fallback was not applied because the supplied intent has no approved canonical recommendation mapping."
-        }))
-      ],
-      selected: [],
-      totalDuration: 0,
-      warnings: [
-        "The supplied intent does not yet have enough approved canonical recommendation logic to construct a playbook."
-      ]
-    };
-  }
-
+  const optionSet = new Set(optionIds);
+  const outcomeSet = new Set(
+    Array.isArray(selectedOptionIds.outcome)
+      ? selectedOptionIds.outcome
+      : selectedOptionIds.outcome
+        ? [selectedOptionIds.outcome]
+        : []
+  );
   const matchedRuleIds = new Set(generated.matchedRules.map((rule) => rule.id));
-  const ambiguousContinuations = generated.selected.filter(
-    (candidate) => !isJustifiedContinuation(candidate, matchedRuleIds)
-  );
-  const selected = generated.selected
-    .filter((candidate) => isJustifiedContinuation(candidate, matchedRuleIds))
-    .map((candidate, index) => ({ candidate, index }))
-    .sort((a, b) => {
-      const orderA = a.candidate.block
-        ? (playbookSequenceOrder[a.candidate.block.id] ?? 50)
-        : 50;
-      const orderB = b.candidate.block
-        ? (playbookSequenceOrder[b.candidate.block.id] ?? 50)
-        : 50;
+  const stageRanking = rankDiagnosisStages(selectedOptionIds);
+  const primaryStage = stageRanking[0]?.stage;
+  const secondaryStage = stageRanking[1]?.stage;
 
-      return orderA - orderB || a.index - b.index;
+  const routeMatches = dataset.playbookRoutes
+    .map((route, index) => {
+      const triggerMatches = route.triggerOptionIds.filter((id) =>
+        optionSet.has(id)
+      ).length;
+      const outcomeMatches = route.outcomeOptionIds.filter((id) =>
+        outcomeSet.has(id)
+      ).length;
+      const ruleMatches = route.provenanceRuleIds.filter((id) =>
+        matchedRuleIds.has(id)
+      ).length;
+      const durationFits =
+        constraints.requestedDurationMinutes === undefined ||
+        (route.naturalDurationMinutes ?? Number.POSITIVE_INFINITY) <=
+          constraints.requestedDurationMinutes;
+      const score =
+        triggerMatches * 10 +
+        outcomeMatches * 5 +
+        ruleMatches * 2 +
+        (route.primaryStage === primaryStage ? 4 : 0) +
+        (route.secondaryStage === secondaryStage ? 2 : 0);
+
+      return {
+        durationFits,
+        index,
+        outcomeMatches,
+        route,
+        score,
+        triggerMatches
+      };
     })
-    .map(({ candidate }) => candidate);
-  const totalDuration = selected.reduce(
-    (total, candidate) => total + candidate.duration,
-    0
-  );
-  const warnings = generated.warnings.filter(
-    (warning) => !warning.includes("Only one compatible activity")
-  );
-
-  if (selected.length === 1) {
-    const onlyBlockId = selected[0]?.block?.id;
-
-    warnings.push(
-      onlyBlockId === "block-who-what-when"
-        ? "Action-plan intent did not provide enough upstream workshop context to construct a complete multi-activity playbook."
-        : "Only one canonical activity is justified by the current recommendation signals."
+    .filter((match) => match.triggerMatches > 0 && match.durationFits)
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        b.outcomeMatches - a.outcomeMatches ||
+        a.index - b.index
     );
-  }
+
+  const selectedRoute = routeMatches[0]?.route;
+  const resolved =
+    selectedRoute?.itemReferences.map((reference) =>
+      resolveRouteCandidate(dataset, selectedRoute, reference)
+    ) ?? [];
+  const selected = resolved.filter(Boolean) as GenerationCandidate[];
+  const routeIsValid =
+    Boolean(selectedRoute) &&
+    selected.length === selectedRoute?.itemReferences.length &&
+    selected.length >= 2 &&
+    selected.length <= 7 &&
+    selected.length >= (selectedRoute?.minimumActivities ?? 2) &&
+    selected.length <= (selectedRoute?.maximumActivities ?? 7);
+  const totalDuration = routeIsValid
+    ? selected.reduce((total, candidate) => total + candidate.duration, 0)
+    : 0;
+  const warnings = routeIsValid
+    ? []
+    : [
+        constraints.requestedDurationMinutes !== undefined &&
+        dataset.playbookRoutes.some((route) =>
+          route.triggerOptionIds.some((id) => optionSet.has(id))
+        )
+          ? `No complete canonical playbook route fits the requested ${constraints.requestedDurationMinutes}-minute duration.`
+          : "The supplied intent does not yet resolve to a complete canonical playbook route of 2–7 activities."
+      ];
 
   return {
     ...generated,
-    excluded: [
-      ...generated.excluded,
-      ...ambiguousContinuations.map((candidate) => ({
-        ...candidate,
-        excludedReason:
-          "This What Next relationship is a candidate continuation, but the canonical model does not establish it as required for this playbook."
-      }))
-    ],
-    selected,
+    excluded: generated.excluded,
+    selected: routeIsValid ? selected : [],
+    selectedRoute: routeIsValid ? selectedRoute : undefined,
+    stageRanking,
     totalDuration,
     warnings
   };
