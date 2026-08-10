@@ -10,6 +10,7 @@ import { temporaryActivityIllustrationMap } from "@/lib/data/activity-illustrati
 import type {
   ActivityRecord,
   BuildingBlockRecord,
+  BuildingBlockStepRecord,
   LibraryDataset
 } from "@/lib/product-system/library-read-model";
 import {
@@ -150,6 +151,111 @@ function createFallbackPaddedCards(cards: JourneyActivityCard[]) {
   return nextCards;
 }
 
+function createCandidateFromBlock(
+  dataset: LibraryDataset,
+  block: BuildingBlockRecord
+): GenerationCandidate {
+  const steps = dataset.steps
+    .filter((step) => step.parentId === block.id)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const rule =
+    dataset.workshopRules.find(
+      (candidate) => candidate.recommendedBlockId === block.id
+    ) ??
+    dataset.workshopRules[0];
+
+  return {
+    block,
+    duration: getBlockDuration(block, steps),
+    orderReason: "Resolved from the current journey activity set.",
+    origin: "diagnosis-adapter",
+    rule: rule ?? {
+      expectedOutputs: block.outputs,
+      id: `journey-${block.id}`,
+      nextBlockIds: [],
+      reason: block.description ?? block.title,
+      recommendedBlockId: block.id,
+      rule: block.title,
+      situation: block.description ?? block.title
+    },
+    steps
+  };
+}
+
+function getBlockDuration(
+  block: BuildingBlockRecord,
+  steps: BuildingBlockStepRecord[]
+) {
+  return (
+    steps.reduce((total, step) => total + (step.durationMinutes ?? 0), 0) ||
+    block.durationMinutes ||
+    0
+  );
+}
+
+function stripKnownCardPrefix(id: string) {
+  return id.replace(/^canonical-activity-/, "").replace(/^activity-/, "");
+}
+
+function findActivityForJourneyCard(
+  dataset: LibraryDataset,
+  card: JourneyActivityCard
+): ActivityRecord | undefined {
+  const cardSlug = stripKnownCardPrefix(card.id);
+  const cardTitle = normalizeTitle(card.activity.title);
+
+  return dataset.activities.find((activity) => {
+    const activitySlug = stripKnownCardPrefix(activity.id);
+    const activityTitle = normalizeTitle(activity.title);
+
+    return (
+      activity.id === card.id ||
+      activitySlug === cardSlug ||
+      activityTitle === cardTitle ||
+      activityTitle.includes(cardTitle) ||
+      cardTitle.includes(activityTitle)
+    );
+  });
+}
+
+function findBlockForJourneyCard(
+  dataset: LibraryDataset,
+  card: JourneyActivityCard,
+  selectedBlockId?: string
+): BuildingBlockRecord | undefined {
+  const explicitBlockId = card.candidateBlockId ?? selectedBlockId;
+
+  if (explicitBlockId) {
+    const explicitBlock = dataset.buildingBlocks.find(
+      (block) => block.id === explicitBlockId
+    );
+
+    if (explicitBlock) {
+      return explicitBlock;
+    }
+  }
+
+  const cardTitle = normalizeTitle(card.activity.title);
+  const activity = findActivityForJourneyCard(dataset, card);
+  const activityTitle = activity ? normalizeTitle(activity.title) : "";
+
+  return dataset.buildingBlocks.find((block) => {
+    const blockTitle = normalizeTitle(block.title);
+
+    return (
+      block.id === card.id ||
+      block.id === `block-${stripKnownCardPrefix(card.id)}` ||
+      blockTitle === cardTitle ||
+      (activityTitle.length > 0 && blockTitle === activityTitle) ||
+      blockTitle.includes(cardTitle) ||
+      cardTitle.includes(blockTitle) ||
+      (activityTitle.length > 0 &&
+        (blockTitle.includes(activityTitle) ||
+          activityTitle.includes(blockTitle)))
+    );
+  });
+}
+
 export function diagnosisAnswersToSelectedOptionIds(
   diagnosisAnswers?: Partial<Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>>
 ) {
@@ -249,33 +355,33 @@ export function mapJourneyCardsToFacilitatorGuide(
   cards: JourneyActivityCard[],
   selectedBlockIds: string[] = []
 ): FacilitatorGuideContent {
-  const selectedBlocks = new Set(selectedBlockIds);
-  const generatedWorkshop = createLibraryWorkshop(
-    dataset,
-    {},
-    DEFAULT_WORKSHOP_DURATION_MINUTES
-  );
-  const candidateByBlockId = new Map(
-    generatedWorkshop.candidates
-      .filter((candidate) => candidate.block)
-      .map((candidate) => [candidate.block!.id, candidate])
-  );
-  const guideByBlockId = new Map(
-    mapWorkshopToFacilitatorGuide(
+  const activities = cards.map((card, index) => {
+    const block = findBlockForJourneyCard(
       dataset,
-      Array.from(selectedBlocks)
-        .map((blockId) => candidateByBlockId.get(blockId))
-        .filter(Boolean) as GenerationCandidate[]
-    ).activities.map((activity) => [activity.id, activity])
-  );
-  const activities = cards.map((card) => {
-    if (card.candidateBlockId) {
-      const guideActivity = guideByBlockId.get(card.candidateBlockId);
+      card,
+      card.source === "generated" ? selectedBlockIds[index] : undefined
+    );
+
+    if (block) {
+      const guideActivity = mapWorkshopToFacilitatorGuide(dataset, [
+        createCandidateFromBlock(dataset, block)
+      ]).activities[0];
 
       if (guideActivity) {
         return {
           ...guideActivity,
           id: card.id,
+          hero: {
+            ...guideActivity.hero,
+            description:
+              card.activity.description || guideActivity.hero.description,
+            illustration: {
+              alt: `${card.activity.title} illustration`,
+              src: card.activity.illustration || guideActivity.hero.illustration.src
+            },
+            title: card.activity.title,
+            type: card.activity.workshopType || guideActivity.hero.type
+          },
           title: card.activity.title
         };
       }
@@ -293,4 +399,3 @@ export function mapJourneyCardsToFacilitatorGuide(
     }))
   };
 }
-
