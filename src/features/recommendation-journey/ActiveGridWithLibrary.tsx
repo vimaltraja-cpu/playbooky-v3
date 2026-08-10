@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 
-import type { ActivityGridVisualCard } from "@/components/product/ActivityGridVisualLayer";
+import type {
+  ActivityGridViewportMode,
+  ActivityGridVisualCard
+} from "@/components/product/ActivityGridVisualLayer";
 import { ActivityGridExperience } from "@/components/product/ActivityGridExperience";
 import {
   recommendationRevealCards
@@ -11,8 +14,14 @@ import { ActivityLibraryPacks } from "@/components/ui/ActivityLibraryPacks";
 import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-library-modal";
 
 type ActiveGridWithLibraryProps = {
+  hiddenCardIds?: string[];
+  inert?: boolean;
   initialOpenCardId?: string;
   libraryActivities: ActivityLibraryModalItem[];
+  onContinue?: () => void;
+  registerCard?: (id: string, element: HTMLButtonElement | null) => void;
+  showContinue?: boolean;
+  viewport?: ActivityGridViewportMode;
 };
 
 function slugFromCardId(id: string) {
@@ -40,8 +49,14 @@ function toVisualCardFromLibrary(
  * Does not rewrite the experience shell, header, or grid motion.
  */
 export function ActiveGridWithLibrary({
+  hiddenCardIds,
+  inert,
   initialOpenCardId,
-  libraryActivities
+  libraryActivities,
+  onContinue,
+  registerCard,
+  showContinue,
+  viewport
 }: ActiveGridWithLibraryProps) {
   const starterCards = useMemo(
     () =>
@@ -105,9 +120,15 @@ export function ActiveGridWithLibrary({
     <>
       <ActivityGridExperience
         cards={workshopCards}
+        hiddenCardIds={hiddenCardIds}
+        inert={inert}
         initialOpenCardId={initialOpenCardId}
         onAddActivity={openLibrary}
+        onContinue={onContinue}
         onRemoveActivity={handleRemoveFromModal}
+        registerCard={registerCard}
+        showContinue={showContinue}
+        viewport={viewport}
       />
       <ActivityLibraryPacks
         activities={libraryActivities}

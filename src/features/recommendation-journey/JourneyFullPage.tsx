@@ -81,10 +81,13 @@ function ActiveGridFullPage({
   initialOpenCardId?: string;
   libraryActivities: ActivityLibraryModalItem[];
 }) {
+  const router = useRouter();
+
   return (
     <ActiveGridWithLibrary
       initialOpenCardId={initialOpenCardId}
       libraryActivities={libraryActivities}
+      onContinue={() => router.push("/facilitator-guide")}
     />
   );
 }
@@ -213,7 +216,8 @@ function DiagnosisFullPage() {
 
 function renderStage(
   stageId: JourneyStageId,
-  libraryActivities: ActivityLibraryModalItem[]
+  libraryActivities: ActivityLibraryModalItem[],
+  onGridContinue: () => void
 ) {
   if (stageId === "composer") {
     return <HomepageComposerLayout />;
@@ -224,7 +228,13 @@ function renderStage(
   }
 
   if (stageId === "loading") {
-    return <RecommendationLoadingRevealJourney includeGridHandoff />;
+    return (
+      <RecommendationLoadingRevealJourney
+        includeGridHandoff
+        libraryActivities={libraryActivities}
+        onGridContinue={onGridContinue}
+      />
+    );
   }
 
   if (stageId === "reveal") {
@@ -250,5 +260,9 @@ export function JourneyFullPage({
   libraryActivities: ActivityLibraryModalItem[];
   stage: JourneyStage;
 }) {
-  return renderStage(stage.id, libraryActivities);
+  const router = useRouter();
+
+  return renderStage(stage.id, libraryActivities, () =>
+    router.push("/facilitator-guide")
+  );
 }
