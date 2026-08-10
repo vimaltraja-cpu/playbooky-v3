@@ -56,13 +56,16 @@ const {
   interpretComposerChallenge
 } = require("../src/features/recommendation-journey/diagnosisIntelligence.ts");
 const {
-  diagnosisAnswersToSelectedOptionIds
+  diagnosisAnswersToPlaybookOptionIds,
+  diagnosisAnswersToSelectedOptionIds,
+  createSessionWorkshopFromDiagnosis
 } = require("../src/features/recommendation-journey/journeyWorkshopAdapter.ts");
 const {
   getLibraryDataset
 } = require("../lib/product-system/library-read-model.ts");
 const {
-  createLibraryWorkshop
+  createLibraryWorkshop,
+  createRecommendedPlaybook
 } = require("../lib/workshop-os/create-library-workshop.ts");
 
 test("Composer interpretation preserves multiple resolved signals", () => {
@@ -235,7 +238,7 @@ test("Overlapping signals deduplicate rules and blocks", async () => {
   );
 });
 
-test("Not-sure input uses the explicit deterministic fallback", async () => {
+test("Not-sure input explicitly selects the Discovery rules", async () => {
   const dataset = await getLibraryDataset();
   const workshop = createLibraryWorkshop(
     dataset,
@@ -243,11 +246,200 @@ test("Not-sure input uses the explicit deterministic fallback", async () => {
     120
   );
 
-  assert.equal(workshop.fallbackUsed, true);
+  assert.equal(workshop.fallbackUsed, false);
+  assert.deepEqual(
+    workshop.matchedRules.map((rule) => rule.id),
+    ["root-cause-unknown", "problem-not-clearly-defined"]
+  );
+  assert.equal(
+    workshop.trace.find((entry) => entry.optionId === "not-sure")?.status,
+    "mapped"
+  );
   assert.deepEqual(
     workshop.selected.map((candidate) => candidate.block?.id),
     ["block-five-whys", "block-problem-statement"]
   );
+});
+
+test("Playbook construction uses intent and explicit uncertainty signals only", () => {
+  const selectedOptionIds = diagnosisAnswersToPlaybookOptionIds({
+    context: {
+      optionIds: ["change-or-transition", "context-not-sure"],
+      questionId: "context",
+      source: "diagnosis"
+    },
+    goals: {
+      optionIds: ["understand-a-problem"],
+      questionId: "goals",
+      source: "diagnosis"
+    },
+    participants: {
+      optionIds: ["executives-or-sponsors"],
+      questionId: "participants",
+      source: "diagnosis"
+    }
+  });
+
+  assert.deepEqual(selectedOptionIds, {
+    context: ["context-not-sure"],
+    goals: ["understand-a-problem"]
+  });
+});
+
+test("Recommended playbook follows canonical dependency order", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createRecommendedPlaybook(dataset, {
+    goals: ["new-ideas"],
+    outcome: ["actionable-plan"]
+  });
+
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    [
+      "block-how-might-we",
+      "block-impact-effort-map",
+      "block-priority-map",
+      "block-who-what-when"
+    ]
+  );
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.origin),
+    ["diagnosis-adapter", "what-next", "what-next", "diagnosis-adapter"]
+  );
+  assert.equal(workshop.totalDuration, 145);
+});
+
+test("Recommended playbook handles each primary Goal deterministically", async () => {
+  const dataset = await getLibraryDataset();
+  const cases = [
+    [
+      "align-a-team",
+      ["block-objectives-and-key-results-okrs", "block-blind-vote"],
+      65
+    ],
+    [
+      "understand-a-problem",
+      ["block-five-whys", "block-problem-statement"],
+      105
+    ],
+    ["make-decisions", ["block-priority-map", "block-blind-vote"], 50],
+    [
+      "new-ideas",
+      ["block-how-might-we", "block-impact-effort-map", "block-priority-map"],
+      130
+    ],
+    ["create-an-action-plan", ["block-who-what-when"], 15]
+  ];
+
+  for (const [goal, expectedBlocks, expectedDuration] of cases) {
+    const workshop = createRecommendedPlaybook(dataset, { goals: [goal] });
+
+    assert.deepEqual(
+      workshop.selected.map((candidate) => candidate.block?.id),
+      expectedBlocks
+    );
+    assert.equal(workshop.totalDuration, expectedDuration);
+  }
+});
+
+test("Goal, Challenge and Outcome construct one coherent playbook", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createRecommendedPlaybook(dataset, {
+    challenges: ["too-many-ideas"],
+    goals: ["new-ideas"],
+    outcome: ["actionable-plan"]
+  });
+
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    [
+      "block-how-might-we",
+      "block-impact-effort-map",
+      "block-priority-map",
+      "block-who-what-when"
+    ]
+  );
+  assert.equal(workshop.totalDuration, 145);
+});
+
+test("Multiple answers retain deterministic sequence and provenance", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createRecommendedPlaybook(dataset, {
+    goals: ["understand-a-problem", "new-ideas"]
+  });
+
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    [
+      "block-five-whys",
+      "block-problem-statement",
+      "block-how-might-we",
+      "block-impact-effort-map",
+      "block-priority-map"
+    ]
+  );
+  assert.equal(workshop.totalDuration, 235);
+});
+
+test("Action-only intent is not silently treated as a complete playbook", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createRecommendedPlaybook(dataset, {
+    goals: ["create-an-action-plan"],
+    outcome: ["actionable-plan"]
+  });
+
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    ["block-who-what-when"]
+  );
+  assert.equal(
+    workshop.warnings.includes(
+      "Action-plan intent did not provide enough upstream workshop context to construct a complete multi-activity playbook."
+    ),
+    true
+  );
+});
+
+test("Unmapped collaboration-only intent does not become arbitrary Discovery", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createRecommendedPlaybook(dataset, {
+    outcome: ["stronger-collaboration"]
+  });
+
+  assert.deepEqual(workshop.selected, []);
+  assert.equal(workshop.totalDuration, 0);
+  assert.deepEqual(workshop.warnings, [
+    "The supplied intent does not yet have enough approved canonical recommendation logic to construct a playbook."
+  ]);
+});
+
+test("Real journey derives duration and is not capped at 120 minutes", async () => {
+  const dataset = await getLibraryDataset();
+  const generated = createSessionWorkshopFromDiagnosis({
+    brief: "Generate ideas, decide what matters, and leave with owners.",
+    dataset,
+    diagnosisAnswers: {
+      goals: {
+        optionIds: ["new-ideas"],
+        questionId: "goals",
+        source: "diagnosis"
+      },
+      outcome: {
+        optionIds: ["actionable-plan"],
+        questionId: "outcome",
+        source: "diagnosis"
+      }
+    }
+  });
+
+  const canonicalDuration = generated.workshop.selected.reduce(
+    (total, candidate) => total + candidate.duration,
+    0
+  );
+
+  assert.equal(canonicalDuration, 145);
+  assert.equal(generated.generatedWorkshop.totalDuration, canonicalDuration);
+  assert.equal(generated.generatedWorkshop.durationMinutes, canonicalDuration);
 });
 
 test("Action-planning remains a truthful single-activity result", async () => {

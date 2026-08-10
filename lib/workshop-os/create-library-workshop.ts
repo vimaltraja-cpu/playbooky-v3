@@ -49,6 +49,7 @@ export const diagnosisRuleAdapter: Record<string, string[]> = {
   "lack-of-ownership": ["need-actions-and-ownership"],
   "make-decisions": ["need-clear-priorities", "need-alignment-on-options"],
   "new-ideas": ["need-more-ideas"],
+  "not-sure": ["root-cause-unknown", "problem-not-clearly-defined"],
   "outcome-focus-priorities": ["need-clear-priorities"],
   "outcome-not-sure-yet": ["problem-not-clearly-defined"],
   "performance-issues": ["root-cause-unknown", "need-team-reflection"],
@@ -97,7 +98,7 @@ function createGenerationCandidate(
 export function createLibraryWorkshop(
   dataset: LibraryDataset,
   selectedOptionIds: Record<string, string | string[]>,
-  durationLimit: number
+  durationLimit?: number
 ): GeneratedLibraryWorkshop {
   const trace = dataset.diagnosisQuestions.flatMap((question) => {
     const selected = selectedOptionIds[question.id];
@@ -196,7 +197,10 @@ export function createLibraryWorkshop(
       return;
     }
 
-    if (usedDuration + candidate.duration <= durationLimit) {
+    if (
+      durationLimit === undefined ||
+      usedDuration + candidate.duration <= durationLimit
+    ) {
       usedDuration += candidate.duration;
       selected.push(candidate);
       return;
@@ -212,6 +216,7 @@ export function createLibraryWorkshop(
 
   if (!selected.length) {
     warnings.push(
+      durationLimit !== undefined &&
       candidates.some((candidate) => candidate.block)
         ? `No compatible activities fit within the requested ${durationLimit}-minute workshop duration.`
         : "No compatible activities were found for this diagnosis."
@@ -224,7 +229,11 @@ export function createLibraryWorkshop(
     );
   }
 
-  if (usedDuration < durationLimit && selected.length > 0) {
+  if (
+    durationLimit !== undefined &&
+    usedDuration < durationLimit &&
+    selected.length > 0
+  ) {
     warnings.push(
       "The generated sequence does not yet fill the requested workshop duration."
     );
@@ -238,6 +247,126 @@ export function createLibraryWorkshop(
     selected,
     totalDuration: usedDuration,
     trace,
+    warnings
+  };
+}
+
+const playbookSequenceOrder: Record<string, number> = {
+  "block-objectives-and-key-results-okrs": 10,
+  "block-five-whys": 20,
+  "block-problem-statement": 30,
+  "block-how-might-we": 40,
+  "block-theme-sort": 50,
+  "block-impact-effort-map": 60,
+  "block-priority-map": 70,
+  "block-dot-vote": 80,
+  "block-blind-vote": 80,
+  "block-start-stop-continue": 90,
+  "block-who-what-when": 100
+};
+
+const justifiedContinuationBlocks: Record<string, string[]> = {
+  "need-more-ideas": ["block-impact-effort-map", "block-priority-map"],
+  "root-cause-unknown": ["block-problem-statement"],
+  "too-many-opportunities": ["block-priority-map"]
+};
+
+function isJustifiedContinuation(
+  candidate: GenerationCandidate,
+  matchedRuleIds: Set<string>
+) {
+  const blockId = candidate.block?.id;
+
+  if (!blockId || candidate.origin !== "what-next") {
+    return candidate.origin !== "what-next";
+  }
+
+  return Array.from(matchedRuleIds).some((ruleId) =>
+    justifiedContinuationBlocks[ruleId]?.includes(blockId)
+  );
+}
+
+/**
+ * Constructs the complete initial PlayBooky recommendation without an
+ * artificial duration cap. Directly matched blocks establish intent; only
+ * canonically linked continuations with an unambiguous dependency are added.
+ */
+export function createRecommendedPlaybook(
+  dataset: LibraryDataset,
+  selectedOptionIds: Record<string, string | string[]>
+): GeneratedLibraryWorkshop {
+  const generated = createLibraryWorkshop(dataset, selectedOptionIds);
+  const hasSelectedIntent = Object.values(selectedOptionIds).some((selected) =>
+    Array.isArray(selected) ? selected.length > 0 : Boolean(selected)
+  );
+
+  if (generated.fallbackUsed && hasSelectedIntent) {
+    return {
+      ...generated,
+      excluded: [
+        ...generated.excluded,
+        ...generated.selected.map((candidate) => ({
+          ...candidate,
+          excludedReason:
+            "Discovery fallback was not applied because the supplied intent has no approved canonical recommendation mapping."
+        }))
+      ],
+      selected: [],
+      totalDuration: 0,
+      warnings: [
+        "The supplied intent does not yet have enough approved canonical recommendation logic to construct a playbook."
+      ]
+    };
+  }
+
+  const matchedRuleIds = new Set(generated.matchedRules.map((rule) => rule.id));
+  const ambiguousContinuations = generated.selected.filter(
+    (candidate) => !isJustifiedContinuation(candidate, matchedRuleIds)
+  );
+  const selected = generated.selected
+    .filter((candidate) => isJustifiedContinuation(candidate, matchedRuleIds))
+    .map((candidate, index) => ({ candidate, index }))
+    .sort((a, b) => {
+      const orderA = a.candidate.block
+        ? (playbookSequenceOrder[a.candidate.block.id] ?? 50)
+        : 50;
+      const orderB = b.candidate.block
+        ? (playbookSequenceOrder[b.candidate.block.id] ?? 50)
+        : 50;
+
+      return orderA - orderB || a.index - b.index;
+    })
+    .map(({ candidate }) => candidate);
+  const totalDuration = selected.reduce(
+    (total, candidate) => total + candidate.duration,
+    0
+  );
+  const warnings = generated.warnings.filter(
+    (warning) => !warning.includes("Only one compatible activity")
+  );
+
+  if (selected.length === 1) {
+    const onlyBlockId = selected[0]?.block?.id;
+
+    warnings.push(
+      onlyBlockId === "block-who-what-when"
+        ? "Action-plan intent did not provide enough upstream workshop context to construct a complete multi-activity playbook."
+        : "Only one canonical activity is justified by the current recommendation signals."
+    );
+  }
+
+  return {
+    ...generated,
+    excluded: [
+      ...generated.excluded,
+      ...ambiguousContinuations.map((candidate) => ({
+        ...candidate,
+        excludedReason:
+          "This What Next relationship is a candidate continuation, but the canonical model does not establish it as required for this playbook."
+      }))
+    ],
+    selected,
+    totalDuration,
     warnings
   };
 }

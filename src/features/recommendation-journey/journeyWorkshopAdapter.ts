@@ -14,7 +14,7 @@ import type {
   LibraryDataset
 } from "@/lib/product-system/library-read-model";
 import {
-  createLibraryWorkshop,
+  createRecommendedPlaybook,
   type GenerationCandidate
 } from "@/lib/workshop-os/create-library-workshop";
 import type { DiagnosisQuestionId } from "@/lib/design-system/diagnosis-options";
@@ -24,7 +24,11 @@ import type {
   JourneyGeneratedWorkshop
 } from "@/src/features/recommendation-journey/journeySession";
 
-const DEFAULT_WORKSHOP_DURATION_MINUTES = 120;
+const playbookIntentQuestionIds = new Set<DiagnosisQuestionId>([
+  "goals",
+  "challenges",
+  "outcome"
+]);
 
 function normalizeTitle(value: string) {
   return value
@@ -272,6 +276,26 @@ export function diagnosisAnswersToSelectedOptionIds(
   return selectedOptionIds;
 }
 
+export function diagnosisAnswersToPlaybookOptionIds(
+  diagnosisAnswers?: Partial<Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>>
+) {
+  const selectedOptionIds = diagnosisAnswersToSelectedOptionIds(diagnosisAnswers);
+
+  return Object.fromEntries(
+    Object.entries(selectedOptionIds).flatMap(([questionId, optionIds]) => {
+      const playbookOptionIds = optionIds.filter(
+        (optionId) =>
+          playbookIntentQuestionIds.has(questionId as DiagnosisQuestionId) ||
+          optionId === "context-not-sure"
+      );
+
+      return playbookOptionIds.length > 0
+        ? [[questionId, playbookOptionIds]]
+        : [];
+    })
+  );
+}
+
 export function createSessionWorkshopFromDiagnosis({
   brief,
   dataset,
@@ -281,12 +305,8 @@ export function createSessionWorkshopFromDiagnosis({
   dataset: LibraryDataset;
   diagnosisAnswers?: Partial<Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>>;
 }) {
-  const selectedOptionIds = diagnosisAnswersToSelectedOptionIds(diagnosisAnswers);
-  const workshop = createLibraryWorkshop(
-    dataset,
-    selectedOptionIds,
-    DEFAULT_WORKSHOP_DURATION_MINUTES
-  );
+  const selectedOptionIds = diagnosisAnswersToPlaybookOptionIds(diagnosisAnswers);
+  const workshop = createRecommendedPlaybook(dataset, selectedOptionIds);
   const generatedCards = workshop.selected
     .map((candidate, index) => candidateToActivityCard(candidate, dataset, index))
     .filter(Boolean) as JourneyActivityCard[];
@@ -299,7 +319,7 @@ export function createSessionWorkshopFromDiagnosis({
       brief?.trim() ||
       workshop.selected[0]?.rule.reason ||
       "A workshop path shaped around the current diagnosis.",
-    durationMinutes: DEFAULT_WORKSHOP_DURATION_MINUTES,
+    durationMinutes: workshop.totalDuration,
     id: `journey-workshop-${workshop.selected
       .map((candidate) => candidate.block?.id)
       .filter(Boolean)
