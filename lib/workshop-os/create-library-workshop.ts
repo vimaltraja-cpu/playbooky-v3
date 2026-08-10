@@ -184,8 +184,9 @@ export function createLibraryWorkshop(
   let usedDuration = 0;
   const selected: GenerationCandidate[] = [];
   const excluded: GenerationCandidate[] = [];
+  const candidates = Array.from(candidateMap.values());
 
-  Array.from(candidateMap.values()).forEach((candidate) => {
+  candidates.forEach((candidate) => {
     if (!candidate.block) {
       excluded.push({
         ...candidate,
@@ -195,10 +196,7 @@ export function createLibraryWorkshop(
       return;
     }
 
-    if (
-      usedDuration + candidate.duration <= durationLimit ||
-      selected.length === 0
-    ) {
+    if (usedDuration + candidate.duration <= durationLimit) {
       usedDuration += candidate.duration;
       selected.push(candidate);
       return;
@@ -213,7 +211,11 @@ export function createLibraryWorkshop(
   const warnings: string[] = [];
 
   if (!selected.length) {
-    warnings.push("No compatible activities were found for this diagnosis.");
+    warnings.push(
+      candidates.some((candidate) => candidate.block)
+        ? `No compatible activities fit within the requested ${durationLimit}-minute workshop duration.`
+        : "No compatible activities were found for this diagnosis."
+    );
   }
 
   if (selected.length === 1) {
@@ -229,7 +231,7 @@ export function createLibraryWorkshop(
   }
 
   return {
-    candidates: Array.from(candidateMap.values()),
+    candidates,
     excluded,
     fallbackUsed,
     matchedRules,

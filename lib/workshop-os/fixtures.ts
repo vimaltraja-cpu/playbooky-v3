@@ -376,7 +376,7 @@ export const workshopDesignLogicRules: WorkshopDesignLogicRule[] = [
     nextBlockIds: ["how-might-we", "priority-map", "start-stop-continue"],
     reason:
       "Teams need a clear objective before they can effectively prioritise, plan, evaluate or execute work.",
-    recommendedBlockId: "objectives-and-key-results",
+    recommendedBlockId: "objectives-and-key-results-okrs",
     rule: "No Clear Goal",
     situation:
       "The team cannot clearly describe what success looks like, what they are trying to achieve, or how success will be measured."

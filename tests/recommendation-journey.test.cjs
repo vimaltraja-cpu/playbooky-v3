@@ -135,3 +135,178 @@ test("Recommendation engine remains compatible with single-value presets", async
     ["block-five-whys", "block-problem-statement"]
   );
 });
+
+test("Alignment resolves the canonical OKR block", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createLibraryWorkshop(
+    dataset,
+    { goals: ["align-a-team"] },
+    120
+  );
+
+  assert.deepEqual(
+    workshop.matchedRules.map((rule) => rule.id),
+    ["no-clear-goal", "need-alignment-on-options"]
+  );
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    [
+      "block-objectives-and-key-results-okrs",
+      "block-blind-vote",
+      "block-how-might-we",
+      "block-who-what-when"
+    ]
+  );
+  assert.equal(workshop.totalDuration, 120);
+  assert.equal(
+    workshop.excluded.some(
+      (candidate) => candidate.rule.id === "no-clear-goal" && !candidate.block
+    ),
+    false
+  );
+});
+
+test("Goal and Challenge signals compose in deterministic order", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createLibraryWorkshop(
+    dataset,
+    {
+      challenges: ["performance-issues"],
+      goals: ["understand-a-problem"]
+    },
+    120
+  );
+
+  assert.deepEqual(
+    workshop.matchedRules.map((rule) => rule.id),
+    [
+      "root-cause-unknown",
+      "problem-not-clearly-defined",
+      "need-team-reflection"
+    ]
+  );
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    ["block-five-whys", "block-problem-statement"]
+  );
+  assert.equal(workshop.totalDuration, 105);
+});
+
+test("Goal and Outcome signals combine core and closing work", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createLibraryWorkshop(
+    dataset,
+    {
+      goals: ["new-ideas"],
+      outcome: ["actionable-plan"]
+    },
+    120
+  );
+
+  assert.deepEqual(
+    workshop.matchedRules.map((rule) => rule.id),
+    ["need-more-ideas", "need-actions-and-ownership"]
+  );
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    ["block-how-might-we", "block-who-what-when", "block-impact-effort-map"]
+  );
+  assert.equal(workshop.totalDuration, 100);
+});
+
+test("Overlapping signals deduplicate rules and blocks", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createLibraryWorkshop(
+    dataset,
+    {
+      context: ["focus-priorities"],
+      outcome: ["outcome-focus-priorities"]
+    },
+    120
+  );
+
+  assert.deepEqual(
+    workshop.matchedRules.map((rule) => rule.id),
+    ["need-clear-priorities"]
+  );
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    ["block-priority-map", "block-start-stop-continue"]
+  );
+});
+
+test("Not-sure input uses the explicit deterministic fallback", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createLibraryWorkshop(
+    dataset,
+    { goals: ["not-sure"] },
+    120
+  );
+
+  assert.equal(workshop.fallbackUsed, true);
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    ["block-five-whys", "block-problem-statement"]
+  );
+});
+
+test("Action-planning remains a truthful single-activity result", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createLibraryWorkshop(
+    dataset,
+    { goals: ["create-an-action-plan"] },
+    120
+  );
+
+  assert.deepEqual(
+    workshop.selected.map((candidate) => candidate.block?.id),
+    ["block-who-what-when"]
+  );
+  assert.equal(workshop.totalDuration, 15);
+  assert.equal(
+    workshop.warnings.some((warning) => warning.includes("Only one compatible")),
+    true
+  );
+});
+
+test("No-fit duration returns no activities and an explicit warning", async () => {
+  const dataset = await getLibraryDataset();
+  const workshop = createLibraryWorkshop(
+    dataset,
+    { goals: ["understand-a-problem"] },
+    30
+  );
+
+  assert.deepEqual(workshop.selected, []);
+  assert.equal(workshop.totalDuration, 0);
+  assert.equal(
+    workshop.warnings.includes(
+      "No compatible activities fit within the requested 30-minute workshop duration."
+    ),
+    true
+  );
+});
+
+test("Constructor never knowingly exceeds its duration limit", async () => {
+  const dataset = await getLibraryDataset();
+  const cases = [
+    { goals: ["align-a-team"] },
+    { goals: ["understand-a-problem"] },
+    { goals: ["make-decisions", "create-an-action-plan"] },
+    { challenges: ["performance-issues", "too-many-ideas"] },
+    { outcome: ["clear-alignment", "actionable-plan"] },
+    {}
+  ];
+
+  for (const duration of [0, 15, 30, 45, 60, 90, 120]) {
+    for (const selections of cases) {
+      const workshop = createLibraryWorkshop(dataset, selections, duration);
+
+      assert.equal(
+        workshop.totalDuration <= duration,
+        true,
+        `${workshop.totalDuration} exceeded ${duration} for ${JSON.stringify(selections)}`
+      );
+    }
+  }
+});
