@@ -81,6 +81,91 @@ function formatDurationLabel(minutes?: number) {
   return `${minutes} MINUTES`;
 }
 
+function splitActivityInstructions(instructions?: string) {
+  const normalizedInstructions = instructions?.trim() ?? "";
+
+  if (!normalizedInstructions) {
+    return [];
+  }
+
+  return normalizedInstructions
+    .split(/\n\s*\n/)
+    .map((line) => line.trim().replace(/^\d+\.\s*/, ""))
+    .filter(Boolean);
+}
+
+function titleFromInstruction(instruction: string) {
+  const [firstSentence = instruction] = instruction.split(/(?<=[.!?])\s+/);
+  const words = firstSentence.replace(/[.!?]+$/, "").split(/\s+/);
+
+  return words.slice(0, 5).join(" ");
+}
+
+function formatInstructionDuration(
+  totalMinutes: number | undefined,
+  stepCount: number
+) {
+  if (!totalMinutes || totalMinutes <= 0 || stepCount <= 0) {
+    return "DURATION TBC";
+  }
+
+  return formatDurationLabel(Math.max(1, Math.round(totalMinutes / stepCount)));
+}
+
+export function mapActivityRecordToFacilitatorGuideActivity(
+  activity: ActivityRecord,
+  id = activity.id
+): FacilitatorGuideActivityContent {
+  const instructions = splitActivityInstructions(activity.instructions);
+  const steps =
+    instructions.length > 0
+      ? instructions
+      : [
+          activity.description?.trim() ||
+            activity.bestUsedWhen?.trim() ||
+            "Run this activity using the canonical activity guidance."
+        ];
+  const outputSummary =
+    activity.outputs.length > 0
+      ? `Expected output: ${activity.outputs.join(", ")}.`
+      : activity.description ||
+        "The group captures a useful output from this activity.";
+  const discussionPrompt =
+    activity.bestUsedWhen ||
+    "What does this activity reveal about the work the group needs to do next?";
+
+  return {
+    hero: {
+      description:
+        activity.description ||
+        activity.bestUsedWhen ||
+        "Activity purpose is not documented in the canonical library.",
+      illustration: {
+        alt: `${activity.title} illustration`,
+        src: resolveIllustrationSrc(activity.title) ?? "/assets/activities/Problem Framing.png"
+      },
+      title: activity.title,
+      type: activity.phase || activity.category || "Activity"
+    },
+    id,
+    steps: steps.map((instruction, index) => ({
+      description: instruction,
+      discussionPrompt,
+      durationLabel: formatInstructionDuration(
+        activity.durationMinutes,
+        steps.length
+      ),
+      expectedOutcome: outputSummary,
+      id: `${id}-activity-step-${index + 1}`,
+      title: titleFromInstruction(instruction),
+      whatToSay:
+        activity.facilitatorNotes ||
+        "Introduce the activity, connect it to the workshop goal, and guide the group through the expected output."
+    })),
+    title: activity.title
+  };
+}
+
 function mapStep(
   step: BuildingBlockStepRecord,
   activityId: string,

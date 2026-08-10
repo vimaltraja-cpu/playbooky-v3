@@ -4,6 +4,7 @@ import type {
   FacilitatorGuideContent
 } from "@/lib/facilitator-guide/map-workshop-to-guide";
 import {
+  mapActivityRecordToFacilitatorGuideActivity,
   mapWorkshopToFacilitatorGuide
 } from "@/lib/facilitator-guide/map-workshop-to-guide";
 import { temporaryActivityIllustrationMap } from "@/lib/data/activity-illustration-map";
@@ -356,6 +357,26 @@ export function mapJourneyCardsToFacilitatorGuide(
   selectedBlockIds: string[] = []
 ): FacilitatorGuideContent {
   const activities = cards.map((card, index) => {
+    const activityRecord = findActivityForJourneyCard(dataset, card);
+
+    if (card.source === "library" && activityRecord) {
+      const guideActivity = mapActivityRecordToFacilitatorGuideActivity(
+        activityRecord,
+        card.id
+      );
+
+      return {
+        ...guideActivity,
+        hero: {
+          ...guideActivity.hero,
+          illustration: {
+            alt: `${card.activity.title} illustration`,
+            src: card.activity.illustration
+          }
+        }
+      };
+    }
+
     const block = findBlockForJourneyCard(
       dataset,
       card,
@@ -385,6 +406,24 @@ export function mapJourneyCardsToFacilitatorGuide(
           title: card.activity.title
         };
       }
+    }
+
+    if (activityRecord) {
+      const guideActivity = mapActivityRecordToFacilitatorGuideActivity(
+        activityRecord,
+        card.id
+      );
+
+      return {
+        ...guideActivity,
+        hero: {
+          ...guideActivity.hero,
+          illustration: {
+            alt: `${card.activity.title} illustration`,
+            src: card.activity.illustration
+          }
+        }
+      };
     }
 
     return genericGuideActivity(card);
