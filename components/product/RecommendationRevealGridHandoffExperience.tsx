@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -120,6 +121,7 @@ export function RecommendationRevealGridHandoffExperience({
   onContinue?: () => void;
   workshop?: JourneyGeneratedWorkshop;
 }) {
+  const router = useRouter();
   const [viewport, setViewport] = useState<ActivityGridViewportMode>("desktop");
   const [revealPhase, setRevealPhase] =
     useState<RecommendationCardRevealPhase>("pending");
@@ -147,6 +149,15 @@ export function RecommendationRevealGridHandoffExperience({
   const isFlying = handoffPhase === "armed" || handoffPhase === "moving";
   const showGrid = handoffPhase !== "reveal";
   const gridInteractive = handoffPhase === "grid";
+
+  const handleContinue = useCallback(() => {
+    if (onContinue) {
+      onContinue();
+      return;
+    }
+
+    router.push("/facilitator-guide");
+  }, [onContinue, router]);
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((timer) => window.clearTimeout(timer));
@@ -298,7 +309,7 @@ export function RecommendationRevealGridHandoffExperience({
           libraryActivities={libraryActivities}
           onActivityMutation={onActivityMutation}
           onCardsChange={onCardsChange}
-          onContinue={onContinue}
+          onContinue={handleContinue}
           registerCard={registerGridCard}
           showContinue={gridInteractive}
           viewport={viewport}
