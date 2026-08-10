@@ -310,7 +310,6 @@ export function JourneyFullPage({
   libraryActivities: ActivityLibraryModalItem[];
   stage: JourneyStage;
 }) {
-  const router = useRouter();
   const [session, setSession] = useState<JourneySessionPayload | null>(null);
 
   useEffect(() => {
@@ -380,6 +379,10 @@ export function JourneyFullPage({
     setSession(nextSession);
   }, []);
 
+  const handleGridContinue = useCallback(() => {
+    window.location.assign("/facilitator-guide");
+  }, []);
+
   return renderStage(
     stage.id,
     sessionCards,
@@ -387,6 +390,6 @@ export function JourneyFullPage({
     libraryActivities,
     handleCardsChange,
     handleActivityMutation,
-    () => router.push("/facilitator-guide")
+    handleGridContinue
   );
 }

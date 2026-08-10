@@ -110,7 +110,7 @@ export function ActivityGridExperience({
           viewport={effectiveViewport}
         />
         {showContinue ? (
-          <div className="activity-grid-experience__actions mt-8 flex justify-center">
+          <div className="activity-grid-experience__actions relative z-30 mt-8 flex justify-center">
             <DiagnosisPrimaryCTA
               className="activity-grid-experience__continue"
               disabled={inert}
