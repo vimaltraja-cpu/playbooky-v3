@@ -259,13 +259,13 @@ function findBlockForJourneyCard(
 export function diagnosisAnswersToSelectedOptionIds(
   diagnosisAnswers?: Partial<Record<DiagnosisQuestionId, DiagnosisAnswerProvenance>>
 ) {
-  const selectedOptionIds: Record<string, string> = {};
+  const selectedOptionIds: Record<string, string[]> = {};
 
   Object.entries(diagnosisAnswers ?? {}).forEach(([questionId, answer]) => {
-    const optionId = answer?.optionIds?.[0];
+    const optionIds = answer?.optionIds?.filter(Boolean) ?? [];
 
-    if (optionId) {
-      selectedOptionIds[questionId] = optionId;
+    if (optionIds.length > 0) {
+      selectedOptionIds[questionId] = optionIds;
     }
   });
 

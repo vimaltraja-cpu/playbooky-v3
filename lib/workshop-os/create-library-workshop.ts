@@ -96,26 +96,34 @@ function createGenerationCandidate(
 
 export function createLibraryWorkshop(
   dataset: LibraryDataset,
-  selectedOptionIds: Record<string, string>,
+  selectedOptionIds: Record<string, string | string[]>,
   durationLimit: number
 ): GeneratedLibraryWorkshop {
-  const trace = dataset.diagnosisQuestions.map((question) => {
-    const optionId = selectedOptionIds[question.id] ?? "";
-    const option = question.options.find(
-      (candidate) => candidate.id === optionId
-    );
-    const mappedRuleIds = diagnosisRuleAdapter[optionId] ?? [];
+  const trace = dataset.diagnosisQuestions.flatMap((question) => {
+    const selected = selectedOptionIds[question.id];
+    const optionIds = Array.isArray(selected)
+      ? selected
+      : selected
+        ? [selected]
+        : [""];
 
-    return {
-      mappedRuleIds,
-      optionId,
-      optionLabel: option?.label ?? optionId,
-      questionId: question.id,
-      questionLabel: question.label,
-      status: mappedRuleIds.length
-        ? ("mapped" as const)
-        : ("unmapped" as const)
-    };
+    return optionIds.map((optionId) => {
+      const option = question.options.find(
+        (candidate) => candidate.id === optionId
+      );
+      const mappedRuleIds = diagnosisRuleAdapter[optionId] ?? [];
+
+      return {
+        mappedRuleIds,
+        optionId,
+        optionLabel: option?.label ?? optionId,
+        questionId: question.id,
+        questionLabel: question.label,
+        status: mappedRuleIds.length
+          ? ("mapped" as const)
+          : ("unmapped" as const)
+      };
+    });
   });
 
   const matchedRuleIds = Array.from(
