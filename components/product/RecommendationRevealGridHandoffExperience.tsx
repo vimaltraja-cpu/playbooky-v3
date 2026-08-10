@@ -16,6 +16,11 @@ import { RecommendationRevealTemplateExperience } from "@/components/product/Rec
 import { ActivityCard, type ActivityCardData } from "@/components/ui/ActivityCard";
 import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-library-modal";
 import { ActiveGridWithLibrary } from "@/src/features/recommendation-journey/ActiveGridWithLibrary";
+import type {
+  JourneyActivityCard,
+  JourneyActivityMutation,
+  JourneyGeneratedWorkshop
+} from "@/src/features/recommendation-journey/journeySession";
 import styles from "./RecommendationScreens.module.css";
 
 type HandoffPhase = "reveal" | "armed" | "moving" | "grid";
@@ -32,7 +37,7 @@ type TransitionCard = {
   activity: ActivityCardData;
   delayMs: number;
   from: CardPlacement;
-  id: RecommendationRevealCardId;
+  id: string;
   to: CardPlacement;
   zIndex: number;
 };
@@ -101,11 +106,19 @@ function cardTransform(
 }
 
 export function RecommendationRevealGridHandoffExperience({
+  activityCards,
   libraryActivities = [],
-  onContinue
+  onActivityMutation,
+  onCardsChange,
+  onContinue,
+  workshop
 }: {
+  activityCards?: JourneyActivityCard[];
   libraryActivities?: ActivityLibraryModalItem[];
+  onActivityMutation?: (mutation: JourneyActivityMutation) => void;
+  onCardsChange?: (cards: JourneyActivityCard[]) => void;
   onContinue?: () => void;
+  workshop?: JourneyGeneratedWorkshop;
 }) {
   const [viewport, setViewport] = useState<ActivityGridViewportMode>("desktop");
   const [revealPhase, setRevealPhase] =
@@ -118,9 +131,18 @@ export function RecommendationRevealGridHandoffExperience({
   const timersRef = useRef<number[]>([]);
   const resultViewport = gridToResultViewport[viewport];
   const gridGeometry = activityGridViewports[viewport];
+  const revealCards = useMemo(
+    () =>
+      recommendationRevealCards.map((card, index) => ({
+        ...card,
+        activity: activityCards?.[index]?.activity ?? card.activity,
+        id: activityCards?.[index]?.id ?? card.id
+      })),
+    [activityCards]
+  );
   const hiddenCardIds = useMemo(
-    () => recommendationRevealCards.map((card) => card.id),
-    []
+    () => revealCards.map((card) => card.id),
+    [revealCards]
   );
   const isFlying = handoffPhase === "armed" || handoffPhase === "moving";
   const showGrid = handoffPhase !== "reveal";
@@ -185,7 +207,7 @@ export function RecommendationRevealGridHandoffExperience({
       return [];
     }
 
-    return recommendationRevealCards.flatMap((card) => {
+    return revealCards.flatMap((card) => {
       const source = sourceRefs.current.get(card.id);
       const destination = gridRefs.current.get(card.id);
 
@@ -212,7 +234,7 @@ export function RecommendationRevealGridHandoffExperience({
         zIndex: card.zIndex
       };
     });
-  }, [gridGeometry.cardHeight, gridGeometry.cardWidth, resultViewport, viewport]);
+  }, [gridGeometry.cardHeight, gridGeometry.cardWidth, resultViewport, revealCards, viewport]);
 
   const beginHandoff = useCallback(() => {
     if (handoffPhase !== "reveal") {
@@ -221,7 +243,7 @@ export function RecommendationRevealGridHandoffExperience({
 
     const measuredCards = measureCards();
 
-    if (measuredCards.length !== recommendationRevealCards.length) {
+    if (measuredCards.length !== revealCards.length) {
       return;
     }
 
@@ -243,7 +265,7 @@ export function RecommendationRevealGridHandoffExperience({
         MOTION.armMs + longestCardMs
       )
     ];
-  }, [clearTimers, handoffPhase, measureCards]);
+  }, [clearTimers, handoffPhase, measureCards, revealCards.length]);
 
   useEffect(() => {
     if (revealPhase !== "complete" || handoffPhase !== "reveal") {
@@ -271,8 +293,11 @@ export function RecommendationRevealGridHandoffExperience({
       >
         <ActiveGridWithLibrary
           hiddenCardIds={gridInteractive ? [] : hiddenCardIds}
+          initialCards={activityCards}
           inert={!gridInteractive}
           libraryActivities={libraryActivities}
+          onActivityMutation={onActivityMutation}
+          onCardsChange={onCardsChange}
           onContinue={onContinue}
           registerCard={registerGridCard}
           showContinue={gridInteractive}
@@ -286,11 +311,13 @@ export function RecommendationRevealGridHandoffExperience({
           data-exiting={showGrid ? "true" : "false"}
         >
           <RecommendationRevealTemplateExperience
+            activityCards={activityCards}
             hiddenCardIds={isFlying ? hiddenCardIds : []}
             interactive={handoffPhase === "reveal"}
             onRevealPhaseChange={setRevealPhase}
             registerCard={registerSourceCard}
             viewport={resultViewport}
+            workshop={workshop}
           />
         </div>
       ) : null}

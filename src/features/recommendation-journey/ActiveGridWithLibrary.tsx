@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type {
   ActivityGridViewportMode,
@@ -12,12 +12,19 @@ import {
 } from "@/components/product/RecommendationCardReveal";
 import { ActivityLibraryPacks } from "@/components/ui/ActivityLibraryPacks";
 import type { ActivityLibraryModalItem } from "@/lib/design-system/activity-library-modal";
+import type {
+  JourneyActivityCard,
+  JourneyActivityMutation
+} from "@/src/features/recommendation-journey/journeySession";
 
 type ActiveGridWithLibraryProps = {
   hiddenCardIds?: string[];
   inert?: boolean;
+  initialCards?: JourneyActivityCard[];
   initialOpenCardId?: string;
   libraryActivities: ActivityLibraryModalItem[];
+  onActivityMutation?: (mutation: JourneyActivityMutation) => void;
+  onCardsChange?: (cards: JourneyActivityCard[]) => void;
   onContinue?: () => void;
   registerCard?: (id: string, element: HTMLButtonElement | null) => void;
   showContinue?: boolean;
@@ -30,7 +37,7 @@ function slugFromCardId(id: string) {
 
 function toVisualCardFromLibrary(
   item: ActivityLibraryModalItem
-): ActivityGridVisualCard {
+): JourneyActivityCard {
   return {
     activity: {
       description: item.outcome,
@@ -40,7 +47,8 @@ function toVisualCardFromLibrary(
       workshopType: item.stageDisplay
     },
     id: item.slug,
-    label: item.title
+    label: item.title,
+    source: "library"
   };
 }
 
@@ -51,8 +59,11 @@ function toVisualCardFromLibrary(
 export function ActiveGridWithLibrary({
   hiddenCardIds,
   inert,
+  initialCards,
   initialOpenCardId,
   libraryActivities,
+  onActivityMutation,
+  onCardsChange,
   onContinue,
   registerCard,
   showContinue,
@@ -63,13 +74,24 @@ export function ActiveGridWithLibrary({
       recommendationRevealCards.map((card) => ({
         activity: card.activity,
         id: card.id,
-        label: card.activity.title
+        label: card.activity.title,
+        source: "fallback" as const
       })),
     []
   );
   const [workshopCards, setWorkshopCards] =
-    useState<ActivityGridVisualCard[]>(starterCards);
+    useState<JourneyActivityCard[]>(initialCards ?? starterCards);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
+
+  useEffect(() => {
+    if (initialCards && initialCards.length > 0) {
+      setWorkshopCards(initialCards);
+    }
+  }, [initialCards]);
+
+  useEffect(() => {
+    onCardsChange?.(workshopCards);
+  }, [onCardsChange, workshopCards]);
 
   const workshopActivityIds = useMemo(
     () =>
@@ -102,18 +124,36 @@ export function ActiveGridWithLibrary({
       }
       return [...current, nextCard];
     });
+    onActivityMutation?.({
+      activityId: nextCard.id,
+      at: new Date().toISOString(),
+      title: nextCard.activity.title,
+      type: "add"
+    });
   }
 
   function handleRemove(activity: ActivityLibraryModalItem) {
     setWorkshopCards((current) =>
       current.filter((card) => slugFromCardId(card.id) !== activity.slug)
     );
+    onActivityMutation?.({
+      activityId: activity.slug,
+      at: new Date().toISOString(),
+      title: activity.title,
+      type: "remove"
+    });
   }
 
   function handleRemoveFromModal(card: ActivityGridVisualCard) {
     setWorkshopCards((current) =>
       current.filter((item) => item.id !== card.id)
     );
+    onActivityMutation?.({
+      activityId: card.id,
+      at: new Date().toISOString(),
+      title: card.activity.title,
+      type: "remove"
+    });
   }
 
   return (

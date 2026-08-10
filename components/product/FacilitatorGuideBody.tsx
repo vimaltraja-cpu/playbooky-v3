@@ -12,6 +12,13 @@ import {
 } from "@/lib/facilitator-guide/map-workshop-to-guide";
 import type { LibraryDataset } from "@/lib/product-system/library-read-model";
 import { createLibraryWorkshop } from "@/lib/workshop-os/create-library-workshop";
+import {
+  mapJourneyCardsToFacilitatorGuide
+} from "@/src/features/recommendation-journey/journeyWorkshopAdapter";
+import {
+  readJourneySession,
+  type JourneySessionPayload
+} from "@/src/features/recommendation-journey/journeySession";
 
 type FacilitatorGuideBodyProps = {
   dataset: LibraryDataset;
@@ -19,6 +26,12 @@ type FacilitatorGuideBodyProps = {
 
 export function FacilitatorGuideBody({ dataset }: FacilitatorGuideBodyProps) {
   const preset = facilitatorGuideDemoPresets[0];
+  const [journeySession, setJourneySession] =
+    useState<JourneySessionPayload | null>(null);
+
+  useEffect(() => {
+    setJourneySession(readJourneySession());
+  }, []);
 
   const workshop = useMemo(
     () =>
@@ -31,8 +44,23 @@ export function FacilitatorGuideBody({ dataset }: FacilitatorGuideBodyProps) {
   );
 
   const guide: FacilitatorGuideContent = useMemo(
-    () => mapWorkshopToFacilitatorGuide(dataset, workshop.selected),
-    [dataset, workshop.selected]
+    () => {
+      if (journeySession?.activityCards?.length) {
+        return mapJourneyCardsToFacilitatorGuide(
+          dataset,
+          journeySession.activityCards,
+          journeySession.generatedWorkshop?.selectedBlockIds
+        );
+      }
+
+      return mapWorkshopToFacilitatorGuide(dataset, workshop.selected);
+    },
+    [
+      dataset,
+      journeySession?.activityCards,
+      journeySession?.generatedWorkshop?.selectedBlockIds,
+      workshop.selected
+    ]
   );
 
   const [activeActivityId, setActiveActivityId] = useState(
