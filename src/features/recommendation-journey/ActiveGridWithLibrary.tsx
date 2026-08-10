@@ -32,7 +32,20 @@ type ActiveGridWithLibraryProps = {
 };
 
 function slugFromCardId(id: string) {
-  return id.replace(/^canonical-activity-/, "").replace(/^activity-/, "");
+  return id
+    .replace(/^canonical-activity-/, "")
+    .replace(/^activity-/, "")
+    .replace(/^block-/, "");
+}
+
+function slugFromText(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, "-");
 }
 
 function toVisualCardFromLibrary(
@@ -103,7 +116,25 @@ export function ActiveGridWithLibrary({
     () =>
       workshopCards.flatMap((card) => {
         const slug = slugFromCardId(card.id);
-        return [card.id, slug, `activity-${slug}`];
+        const titleSlug = slugFromText(card.activity.title);
+        const labelSlug = slugFromText(card.label);
+        const candidateBlockSlug = card.candidateBlockId
+          ? slugFromCardId(card.candidateBlockId)
+          : "";
+
+        return [
+          card.id,
+          slug,
+          `activity-${slug}`,
+          card.candidateBlockId,
+          candidateBlockSlug,
+          candidateBlockSlug ? `activity-${candidateBlockSlug}` : undefined,
+          candidateBlockSlug ? `block-${candidateBlockSlug}` : undefined,
+          titleSlug,
+          `activity-${titleSlug}`,
+          labelSlug,
+          `activity-${labelSlug}`
+        ].filter(Boolean) as string[];
       }),
     [workshopCards]
   );
