@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type {
   ActivityGridViewportMode,
@@ -52,6 +52,10 @@ function toVisualCardFromLibrary(
   };
 }
 
+function getCardSignature(cards: JourneyActivityCard[]) {
+  return cards.map((card) => card.id).join("|");
+}
+
 /**
  * Thin overlay on the committed ActivityGridExperience foundation.
  * Does not rewrite the experience shell, header, or grid motion.
@@ -81,17 +85,19 @@ export function ActiveGridWithLibrary({
   );
   const [workshopCards, setWorkshopCards] =
     useState<JourneyActivityCard[]>(initialCards ?? starterCards);
+  const workshopCardsRef = useRef(workshopCards);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
 
   useEffect(() => {
-    if (initialCards && initialCards.length > 0) {
+    if (
+      initialCards &&
+      initialCards.length > 0 &&
+      getCardSignature(initialCards) !== getCardSignature(workshopCardsRef.current)
+    ) {
+      workshopCardsRef.current = initialCards;
       setWorkshopCards(initialCards);
     }
   }, [initialCards]);
-
-  useEffect(() => {
-    onCardsChange?.(workshopCards);
-  }, [onCardsChange, workshopCards]);
 
   const workshopActivityIds = useMemo(
     () =>
@@ -113,17 +119,21 @@ export function ActiveGridWithLibrary({
 
   function handleAdd(activity: ActivityLibraryModalItem) {
     const nextCard = toVisualCardFromLibrary(activity);
-    setWorkshopCards((current) => {
-      if (
-        current.some(
-          (card) =>
-            slugFromCardId(card.id) === activity.slug || card.id === nextCard.id
-        )
-      ) {
-        return current;
-      }
-      return [...current, nextCard];
-    });
+    const currentCards = workshopCardsRef.current;
+
+    if (
+      currentCards.some(
+        (card) =>
+          slugFromCardId(card.id) === activity.slug || card.id === nextCard.id
+      )
+    ) {
+      return;
+    }
+
+    const nextCards = [...currentCards, nextCard];
+    workshopCardsRef.current = nextCards;
+    setWorkshopCards(nextCards);
+    onCardsChange?.(nextCards);
     onActivityMutation?.({
       activityId: nextCard.id,
       at: new Date().toISOString(),
@@ -133,9 +143,18 @@ export function ActiveGridWithLibrary({
   }
 
   function handleRemove(activity: ActivityLibraryModalItem) {
-    setWorkshopCards((current) =>
-      current.filter((card) => slugFromCardId(card.id) !== activity.slug)
+    const currentCards = workshopCardsRef.current;
+    const nextCards = currentCards.filter(
+      (card) => slugFromCardId(card.id) !== activity.slug
     );
+
+    if (nextCards.length === currentCards.length) {
+      return;
+    }
+
+    workshopCardsRef.current = nextCards;
+    setWorkshopCards(nextCards);
+    onCardsChange?.(nextCards);
     onActivityMutation?.({
       activityId: activity.slug,
       at: new Date().toISOString(),
@@ -145,9 +164,16 @@ export function ActiveGridWithLibrary({
   }
 
   function handleRemoveFromModal(card: ActivityGridVisualCard) {
-    setWorkshopCards((current) =>
-      current.filter((item) => item.id !== card.id)
-    );
+    const currentCards = workshopCardsRef.current;
+    const nextCards = currentCards.filter((item) => item.id !== card.id);
+
+    if (nextCards.length === currentCards.length) {
+      return;
+    }
+
+    workshopCardsRef.current = nextCards;
+    setWorkshopCards(nextCards);
+    onCardsChange?.(nextCards);
     onActivityMutation?.({
       activityId: card.id,
       at: new Date().toISOString(),
