@@ -7,6 +7,7 @@ import {
   type ActivityGridViewportMode
 } from "@/components/product/ActivityGridVisualLayer";
 import {
+  getRecommendationRevealSlots,
   recommendationRevealCards,
   type RecommendationCardRevealPhase,
   type RecommendationRevealCardId
@@ -132,12 +133,22 @@ export function RecommendationRevealGridHandoffExperience({
   const resultViewport = gridToResultViewport[viewport];
   const gridGeometry = activityGridViewports[viewport];
   const revealCards = useMemo(
-    () =>
-      recommendationRevealCards.map((card, index) => ({
+    () => {
+      const cardSources =
+        activityCards && activityCards.length > 0
+          ? activityCards
+          : recommendationRevealCards.map((card) => ({
+              activity: card.activity,
+              id: card.id
+            }));
+      const revealSlots = getRecommendationRevealSlots(cardSources.length);
+
+      return revealSlots.map((card, index) => ({
         ...card,
-        activity: activityCards?.[index]?.activity ?? card.activity,
-        id: activityCards?.[index]?.id ?? card.id
-      })),
+        activity: cardSources[index]?.activity ?? card.activity,
+        id: cardSources[index]?.id ?? card.id
+      }));
+    },
     [activityCards]
   );
   const hiddenCardIds = useMemo(

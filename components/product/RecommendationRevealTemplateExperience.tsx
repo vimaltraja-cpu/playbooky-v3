@@ -136,6 +136,10 @@ export function RecommendationRevealTemplateExperience({
       recommendationRevealWorkshop.activityCards,
     [activityCards]
   );
+  const effectiveActivityCardIds = useMemo(
+    () => activityCards?.map((card) => card.id),
+    [activityCards]
+  );
   const effectiveWorkshop = useMemo(
     () => ({
       description:
@@ -238,6 +242,7 @@ export function RecommendationRevealTemplateExperience({
         <div className="recommendation-reveal-template-scale">
           <RecommendationCardReveal
             activityCards={effectiveActivityCards}
+            activityCardIds={effectiveActivityCardIds}
             hiddenCardIds={hiddenCardIds}
             interactive={interactive && revealPhase === "complete"}
             phase={revealPhase}

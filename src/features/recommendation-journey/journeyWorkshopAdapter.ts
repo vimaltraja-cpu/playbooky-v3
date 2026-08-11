@@ -1,4 +1,3 @@
-import { recommendationRevealCards } from "@/components/product/RecommendationCardReveal";
 import type {
   FacilitatorGuideActivityContent,
   FacilitatorGuideContent
@@ -91,18 +90,6 @@ function toSentenceCase(value: string) {
     .toLowerCase()}`;
 }
 
-function fallbackCardAt(index: number): JourneyActivityCard {
-  const fallback =
-    recommendationRevealCards[index % recommendationRevealCards.length];
-
-  return {
-    activity: fallback.activity,
-    id: fallback.id,
-    label: fallback.activity.title,
-    source: "fallback"
-  };
-}
-
 function candidateToActivityCard(
   candidate: GenerationCandidate,
   dataset: LibraryDataset,
@@ -116,7 +103,6 @@ function candidateToActivityCard(
   const activity =
     candidate.activity ??
     (block ? findActivityRecord(dataset, block) : undefined);
-  const revealSlot = recommendationRevealCards[index];
   const duration =
     candidate.duration ||
     activity?.durationMinutes ||
@@ -138,7 +124,6 @@ function candidateToActivityCard(
     },
     candidateBlockId: block?.id,
     id:
-      revealSlot?.id ??
       candidate.canonicalItemId ??
       block?.id ??
       activity?.id ??
@@ -146,26 +131,6 @@ function candidateToActivityCard(
     label: title,
     source: "generated"
   };
-}
-
-function createFallbackPaddedCards(cards: JourneyActivityCard[]) {
-  const nextCards = [...cards];
-
-  while (nextCards.length < recommendationRevealCards.length) {
-    const fallback = fallbackCardAt(nextCards.length);
-    const alreadyUsed = nextCards.some((card) => card.id === fallback.id);
-
-    nextCards.push(
-      alreadyUsed
-        ? {
-            ...fallback,
-            id: `${fallback.id}-${nextCards.length}`
-          }
-        : fallback
-    );
-  }
-
-  return nextCards;
 }
 
 function createCandidateFromBlock(
@@ -332,7 +297,6 @@ export function createSessionWorkshopFromDiagnosis({
       candidateToActivityCard(candidate, dataset, index)
     )
     .filter(Boolean) as JourneyActivityCard[];
-  const cards = createFallbackPaddedCards(generatedCards);
   const title =
     workshop.selectedRoute?.name ??
     workshop.selected[0]?.activity?.title ??
@@ -360,7 +324,7 @@ export function createSessionWorkshopFromDiagnosis({
   };
 
   return {
-    activityCards: cards,
+    activityCards: generatedCards,
     generatedWorkshop,
     workshop
   };

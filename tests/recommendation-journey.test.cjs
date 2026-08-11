@@ -471,6 +471,91 @@ test("Real journey duration equals the sum of canonical route activities", async
   assert.equal(generated.generatedWorkshop.durationMinutes, canonicalDuration);
 });
 
+test("Journey activity state contains only genuine canonical route items", async () => {
+  const dataset = await getLibraryDataset();
+  const cases = [
+    {
+      diagnosisAnswers: {
+        goals: {
+          optionIds: ["understand-a-problem"],
+          questionId: "goals",
+          source: "diagnosis"
+        }
+      },
+      routeId: "discovery-problem-understanding"
+    },
+    {
+      diagnosisAnswers: {
+        goals: {
+          optionIds: ["new-ideas"],
+          questionId: "goals",
+          source: "diagnosis"
+        }
+      },
+      routeId: "ideation"
+    },
+    {
+      diagnosisAnswers: {
+        goals: {
+          optionIds: ["make-decisions"],
+          questionId: "goals",
+          source: "diagnosis"
+        },
+        outcome: {
+          optionIds: ["better-decisions"],
+          questionId: "outcome",
+          source: "diagnosis"
+        }
+      },
+      routeId: "prioritisation-and-decision"
+    },
+    {
+      diagnosisAnswers: {
+        goals: {
+          optionIds: ["align-a-team"],
+          questionId: "goals",
+          source: "diagnosis"
+        },
+        outcome: {
+          optionIds: ["clear-alignment"],
+          questionId: "outcome",
+          source: "diagnosis"
+        }
+      },
+      routeId: "product-strategy-alignment"
+    }
+  ];
+
+  for (const { diagnosisAnswers, routeId } of cases) {
+    const route = dataset.playbookRoutes.find((item) => item.id === routeId);
+    const generated = createSessionWorkshopFromDiagnosis({
+      brief: routeId,
+      dataset,
+      diagnosisAnswers
+    });
+    const expectedIds = route.itemReferences.map((reference) => reference.id);
+
+    assert.equal(generated.workshop.selectedRoute?.id, routeId);
+    assert.equal(generated.activityCards.length, expectedIds.length);
+    assert.deepEqual(
+      generated.activityCards.map((card) => card.id),
+      expectedIds
+    );
+    assert.deepEqual(
+      generated.activityCards.map((card) => card.source),
+      expectedIds.map(() => "generated")
+    );
+    assert.equal(
+      generated.activityCards.some((card) => card.source === "fallback"),
+      false
+    );
+    assert.equal(
+      generated.activityCards.length >= 2 && generated.activityCards.length <= 7,
+      true
+    );
+  }
+});
+
 test("Action-planning remains a truthful single-activity result", async () => {
   const dataset = await getLibraryDataset();
   const workshop = createLibraryWorkshop(
