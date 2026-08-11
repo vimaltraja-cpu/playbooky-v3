@@ -89,12 +89,37 @@ export type WorkshopTypeRecord = {
   whenToUse?: string;
 };
 
+export type PlaybookRouteItemReference = {
+  id: string;
+  source: "activity" | "building-block";
+};
+
+export type PlaybookRouteRecord = {
+  id: string;
+  intendedOutcomes: string[];
+  itemReferences: PlaybookRouteItemReference[];
+  maximumActivities: number;
+  minimumActivities: number;
+  name: string;
+  naturalDurationMinutes?: number;
+  notes?: string;
+  outcomeOptionIds: string[];
+  primaryStage: string;
+  provenanceRuleIds: string[];
+  requiredInputs: string[];
+  secondaryStage?: string;
+  sourceEvidence: string;
+  triggerOptionIds: string[];
+  workshopType?: string;
+};
+
 export type LibraryDataset = {
   activities: ActivityRecord[];
   buildingBlocks: BuildingBlockRecord[];
   decisionRows: CsvRow[];
   diagnosisQuestions: typeof diagnosisQuestions;
   items: LibraryItem[];
+  playbookRoutes: PlaybookRouteRecord[];
   sources: Record<string, string>;
   steps: BuildingBlockStepRecord[];
   workshopRules: WorkshopRuleRecord[];
@@ -106,6 +131,7 @@ const stepSource = "data/canonical/workshop-os/building-block-steps.csv";
 const buildingBlockSource = workshopOsFixtureSource.buildingBlockLibrary;
 const decisionSource = "data/canonical/decision-engine.csv";
 const workshopTypeSource = "data/canonical/workshop-types.csv";
+const playbookRouteSource = "data/canonical/playbook-routes.csv";
 
 function slugify(value: string) {
   return value
@@ -150,13 +176,24 @@ async function readCsv(relativePath: string) {
 
 function getRuleIdsForBlock(blockName: string, blockId: string) {
   return workshopDesignLogicRules
-    .filter((rule) => rule.recommendedBlockId === blockId || rule.recommendedBlockId === slugify(blockName))
+    .filter(
+      (rule) =>
+        rule.recommendedBlockId === blockId ||
+        rule.recommendedBlockId === slugify(blockName)
+    )
     .map((rule) => rule.id);
 }
 
-function getSignalsForBlock(blockName: string, blockId: string): DiagnosisSignal[] {
+function getSignalsForBlock(
+  blockName: string,
+  blockId: string
+): DiagnosisSignal[] {
   return workshopDesignLogicRules
-    .filter((rule) => rule.recommendedBlockId === blockId || rule.recommendedBlockId === slugify(blockName))
+    .filter(
+      (rule) =>
+        rule.recommendedBlockId === blockId ||
+        rule.recommendedBlockId === slugify(blockName)
+    )
     .map((rule) => ({
       label: rule.rule,
       ruleId: rule.id,
@@ -165,14 +202,21 @@ function getSignalsForBlock(blockName: string, blockId: string): DiagnosisSignal
 }
 
 export async function getLibraryDataset(): Promise<LibraryDataset> {
-  const [activityRows, stepRows, buildingBlockRows, decisionRows, workshopTypeRows] =
-    await Promise.all([
-      readCsv(activitySource),
-      readCsv(stepSource),
-      readCsv(buildingBlockSource),
-      readCsv(decisionSource),
-      readCsv(workshopTypeSource)
-    ]);
+  const [
+    activityRows,
+    stepRows,
+    buildingBlockRows,
+    decisionRows,
+    workshopTypeRows,
+    playbookRouteRows
+  ] = await Promise.all([
+    readCsv(activitySource),
+    readCsv(stepSource),
+    readCsv(buildingBlockSource),
+    readCsv(decisionSource),
+    readCsv(workshopTypeSource),
+    readCsv(playbookRouteSource)
+  ]);
 
   const steps: BuildingBlockStepRecord[] = stepRows.map((row) => {
     const parentTitle = row["Parent Block"] || "Missing parent block";
@@ -208,7 +252,14 @@ export async function getLibraryDataset(): Promise<LibraryDataset> {
         row["Technique Used"]
       ]),
       source: stepSource,
-      status: hasMissing(row, ["Step Name", "Parent Block", "Step Order", "Duration", "Purpose", "Instructions"])
+      status: hasMissing(row, [
+        "Step Name",
+        "Parent Block",
+        "Step Order",
+        "Duration",
+        "Purpose",
+        "Instructions"
+      ])
         ? "incomplete"
         : "active",
       tags,
@@ -223,7 +274,9 @@ export async function getLibraryDataset(): Promise<LibraryDataset> {
     stepsByBlockTitle.set(key, [...(stepsByBlockTitle.get(key) ?? []), step]);
   });
 
-  const fixtureByName = new Map(fixtureBuildingBlocks.map((block) => [block.name, block]));
+  const fixtureByName = new Map(
+    fixtureBuildingBlocks.map((block) => [block.name, block])
+  );
 
   const buildingBlocks: BuildingBlockRecord[] = buildingBlockRows.map((row) => {
     const title = row.Name || "Untitled building block";
@@ -269,22 +322,38 @@ export async function getLibraryDataset(): Promise<LibraryDataset> {
         rules
       ]),
       source: buildingBlockSource,
-      status: hasMissing(row, ["Name", "Block Type", "Stage", "Purpose", "Typical Duration"])
+      status: hasMissing(row, [
+        "Name",
+        "Block Type",
+        "Stage",
+        "Purpose",
+        "Typical Duration"
+      ])
         ? "incomplete"
         : "active",
       stepIds: blockSteps.map((step) => step.id),
-      tags: Array.from(new Set([...stages, ...outcomes, ...inputs, row["Energy Level"]].filter(Boolean))),
+      tags: Array.from(
+        new Set(
+          [...stages, ...outcomes, ...inputs, row["Energy Level"]].filter(
+            Boolean
+          )
+        )
+      ),
       title,
       type: row["Block Type"] || fixture?.type,
       workshopDesignRules: rules
     };
   });
 
-  const blockByTitle = new Map(buildingBlocks.map((block) => [block.title, block]));
+  const blockByTitle = new Map(
+    buildingBlocks.map((block) => [block.title, block])
+  );
   const blockById = new Map(buildingBlocks.map((block) => [block.id, block]));
 
   const enrichedSteps = steps.map((step) => {
-    const parent = blockByTitle.get(step.parentTitle ?? "") ?? blockById.get(step.parentId ?? "");
+    const parent =
+      blockByTitle.get(step.parentTitle ?? "") ??
+      blockById.get(step.parentId ?? "");
     return {
       ...step,
       diagnosisSignals: parent?.diagnosisSignals ?? [],
@@ -298,7 +367,15 @@ export async function getLibraryDataset(): Promise<LibraryDataset> {
     const inputs = splitList(row["Inputs Required"]);
     const outputs = splitList(row["Outputs Produced"]);
     const tags = Array.from(
-      new Set([...splitList(row.Stage), ...inputs, ...outputs, row["Layout Type"], row["Remote Friendly"]].filter(Boolean))
+      new Set(
+        [
+          ...splitList(row.Stage),
+          ...inputs,
+          ...outputs,
+          row["Layout Type"],
+          row["Remote Friendly"]
+        ].filter(Boolean)
+      )
     );
 
     return {
@@ -360,18 +437,56 @@ export async function getLibraryDataset(): Promise<LibraryDataset> {
     whenToUse: row["When to Use"] || undefined
   }));
 
+  const playbookRoutes: PlaybookRouteRecord[] = playbookRouteRows.map(
+    (row) => ({
+      id: row["Route ID"],
+      intendedOutcomes: splitList(row["Intended Outcome"]),
+      itemReferences: splitList(row["Ordered Item References"]).map(
+        (reference) => {
+          const [source, id] = reference.split(":", 2);
+
+          if ((source !== "activity" && source !== "block") || !id) {
+            throw new Error(
+              `Invalid canonical playbook route item: ${reference}`
+            );
+          }
+
+          return {
+            id,
+            source: source === "block" ? "building-block" : "activity"
+          };
+        }
+      ),
+      maximumActivities: numberFromText(row["Maximum Activities"]) ?? 0,
+      minimumActivities: numberFromText(row["Minimum Activities"]) ?? 0,
+      name: row["Route Name"],
+      naturalDurationMinutes: numberFromText(row["Natural Duration"]),
+      notes: row.Notes || undefined,
+      outcomeOptionIds: splitList(row["Outcome Option IDs"]),
+      primaryStage: row["Primary Stage"],
+      provenanceRuleIds: splitList(row["Rule IDs"]),
+      requiredInputs: splitList(row["Required Inputs"]),
+      secondaryStage: row["Secondary Stage"] || undefined,
+      sourceEvidence: row["Source Evidence"],
+      triggerOptionIds: splitList(row["Trigger Option IDs"]),
+      workshopType: row["Workshop Type"] || undefined
+    })
+  );
+
   return {
     activities,
     buildingBlocks,
     decisionRows,
     diagnosisQuestions,
     items: [...buildingBlocks, ...enrichedSteps, ...activities],
+    playbookRoutes,
     sources: {
       activities: activitySource,
       buildingBlocks: buildingBlockSource,
       decisionEngine: decisionSource,
       generatedWorkshop: "lib/workshop-os/generate-workshop-flow.ts",
       generationFixture: "lib/workshop-os/fixtures.ts",
+      playbookRoutes: playbookRouteSource,
       steps: stepSource,
       workshopTypes: workshopTypeSource
     },

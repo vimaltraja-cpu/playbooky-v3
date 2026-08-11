@@ -151,6 +151,58 @@ function toDisplayStage(stage: string) {
   return (stage || "Stage pending").trim().toUpperCase();
 }
 
+function normalizeActivityIdentity(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/^canonical-activity-/, "")
+    .replace(/^activity-/, "")
+    .replace(/^block-/, "")
+    .replace(/&/g, " and ")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+function getActivityIdentityKeys(activity: ActivityLibraryModalItem) {
+  const titleSlug = normalizeActivityIdentity(activity.title);
+  const slug = normalizeActivityIdentity(activity.slug);
+  const idSlug = normalizeActivityIdentity(activity.id);
+
+  return new Set([
+    activity.id,
+    activity.slug,
+    `activity-${activity.slug}`,
+    idSlug,
+    slug,
+    titleSlug,
+    `activity-${idSlug}`,
+    `activity-${slug}`,
+    `activity-${titleSlug}`,
+    `block-${idSlug}`,
+    `block-${slug}`,
+    `block-${titleSlug}`
+  ]);
+}
+
+export function isActivityLibraryItemInWorkshop(
+  activity: ActivityLibraryModalItem,
+  workshopActivityIds: string[]
+) {
+  const activityKeys = getActivityIdentityKeys(activity);
+
+  return workshopActivityIds.some((workshopId) => {
+    const normalizedWorkshopId = normalizeActivityIdentity(workshopId);
+
+    return (
+      activityKeys.has(workshopId) ||
+      activityKeys.has(normalizedWorkshopId) ||
+      activityKeys.has(`activity-${normalizedWorkshopId}`) ||
+      activityKeys.has(`block-${normalizedWorkshopId}`)
+    );
+  });
+}
+
 function makePlaceholderIllustration(title: string) {
   const encodedTitle = encodeURIComponent(title || "Activity");
 
@@ -250,6 +302,24 @@ function durationMinutesFromDisplay(duration: string) {
   return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
 }
 
+function createPackDeduper() {
+  const usedKeys = new Set<string>();
+
+  return function uniqueForPack(items: ActivityLibraryModalItem[]) {
+    return items.filter((item) => {
+      const keys = getActivityIdentityKeys(item);
+      const alreadyUsed = Array.from(keys).some((key) => usedKeys.has(key));
+
+      if (alreadyUsed) {
+        return false;
+      }
+
+      keys.forEach((key) => usedKeys.add(key));
+      return true;
+    });
+  };
+}
+
 export function groupActivityLibraryShelves(
   items: ActivityLibraryModalItem[],
   suggestedIds: string[] = []
@@ -327,6 +397,7 @@ export function groupActivityLibraryPacks(
   items: ActivityLibraryModalItem[],
   suggestedIds: string[] = []
 ): ActivityLibraryPack[] {
+  const uniqueForPack = createPackDeduper();
   const suggestedFromIds = suggestedIds
     .map((id) => items.find((item) => item.id === id || item.slug === id))
     .filter((item): item is ActivityLibraryModalItem => Boolean(item));
@@ -348,7 +419,7 @@ export function groupActivityLibraryPacks(
       ? "Suggested for this workshop"
       : "Quick swaps",
     "suggested",
-    suggestedItems
+    uniqueForPack(suggestedItems)
   );
 
   if (suggestedPack) {
@@ -356,8 +427,10 @@ export function groupActivityLibraryPacks(
   }
 
   ACTIVITY_LIBRARY_SHELF_STAGES.forEach((stage) => {
-    const stageItems = items.filter(
-      (item) => item.stage.trim().toLowerCase() === stage.toLowerCase()
+    const stageItems = uniqueForPack(
+      items.filter(
+        (item) => item.stage.trim().toLowerCase() === stage.toLowerCase()
+      )
     );
     const pack = packFromItems(
       `stage-${stage.toLowerCase()}`,
