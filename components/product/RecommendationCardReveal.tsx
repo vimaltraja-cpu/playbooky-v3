@@ -19,14 +19,7 @@ export type RecommendationCardRevealPhase =
 export type RecommendationCardRevealPlayback = "normal" | "slow";
 export type RecommendationCardRevealMotion = "paired" | "reduced";
 
-export type RecommendationRevealCardId =
-  | "problem-framing"
-  | "pain-point-identification"
-  | "roadmap-sequencing"
-  | "commitment-check"
-  | "priority-mapping"
-  | "reflection-learning"
-  | "final-card";
+export type RecommendationRevealCardId = string;
 
 export type RecommendationRevealCard = {
   activity: ActivityCardData;
@@ -226,9 +219,9 @@ export function preloadRecommendationRevealAssets(
     return Promise.resolve();
   }
 
-  const sources = recommendationRevealCards.map(
-    (card, index) => activityCards?.[index]?.illustration ?? card.activity.illustration
-  );
+  const sources =
+    activityCards?.map((activity) => activity.illustration) ??
+    recommendationRevealCards.map((card) => card.activity.illustration);
 
   return Promise.all(
     sources.map(
@@ -243,8 +236,21 @@ export function preloadRecommendationRevealAssets(
   ).then(() => undefined);
 }
 
+export function getRecommendationRevealSlots(cardCount: number) {
+  const safeCount = Math.min(
+    Math.max(cardCount, 0),
+    recommendationRevealCards.length
+  );
+  const startIndex = Math.floor(
+    (recommendationRevealCards.length - safeCount) / 2
+  );
+
+  return recommendationRevealCards.slice(startIndex, startIndex + safeCount);
+}
+
 export function RecommendationCardReveal({
   activityCards,
+  activityCardIds,
   className = "",
   hiddenCardIds = [],
   interactive,
@@ -255,6 +261,7 @@ export function RecommendationCardReveal({
   viewport = "desktop"
 }: {
   activityCards?: RecommendationRevealActivityCard[];
+  activityCardIds?: string[];
   className?: string;
   hiddenCardIds?: string[];
   interactive?: boolean;
@@ -269,9 +276,15 @@ export function RecommendationCardReveal({
 }) {
   const isInteractive = interactive ?? phase === "complete";
   const hiddenCards = new Set(hiddenCardIds);
-  const cards = recommendationRevealCards.map((card, index) => ({
+  const cardSources =
+    activityCards && activityCards.length > 0
+      ? activityCards
+      : recommendationRevealCards.map((card) => card.activity);
+  const revealSlots = getRecommendationRevealSlots(cardSources.length);
+  const cards = revealSlots.map((card, index) => ({
     ...card,
-    activity: activityCards?.[index] ?? card.activity
+    activity: cardSources[index] ?? card.activity,
+    id: activityCardIds?.[index] ?? card.id
   }));
   const centreCardId = cards.find((card) => card.pair === 0)?.id ?? "commitment-check";
   // The card shown in the reveal deck must be the same real size as the
@@ -293,7 +306,10 @@ export function RecommendationCardReveal({
       data-viewport={viewport}
       role="group"
     >
-      <div className="recommendation-reveal-fan">
+      <div
+        className="recommendation-reveal-fan"
+        data-card-count={cards.length}
+      >
         {cards.map((card, index) => (
           <div
             className={[
