@@ -6,6 +6,7 @@
     "dev": "WATCHPACK_POLLING=true next dev",
     "build": "next build",
     "lint": "eslint .",
+    "test:recommendation-journey": "node --test tests/recommendation-journey.test.cjs",
     "typecheck": "tsc --noEmit",
     "illustrations:audit": "node scripts/activity-illustrations.cjs",
     "illustrations:process": "node scripts/activity-illustrations.cjs --process",

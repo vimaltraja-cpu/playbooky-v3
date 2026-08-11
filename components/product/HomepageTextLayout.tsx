@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import playbookyLogo from "@/assets/logos/Logo_icon.svg";
 import { HomepageComposerController } from "@/components/product/HomepageComposerController";
+import { GuideMeInsteadLink } from "@/components/product/GuideMeInsteadLink";
 import { AIComposer } from "@/components/ui/AIComposer";
 import { SiteBackgroundWash } from "@/components/ui/SiteBackgroundWash";
 import { SiteHeader } from "@/components/ui/SiteHeader";
@@ -12,8 +12,6 @@ export type HomepageTextLayoutViewport =
   | "tablet-portrait"
   | "tablet-landscape"
   | "desktop";
-
-const diagnosisRoute = "/design-system/core-experience/diagnosis-grid";
 
 export function HomepageHeroText() {
   return (
@@ -129,12 +127,7 @@ export function HomepageComposerLayout({
             <div className="homepage-composer-guidance">
               <p>Not sure what workshop you need?</p>
 
-              <Link
-                className="homepage-composer-guidance__link"
-                href={diagnosisRoute}
-              >
-                Guide me instead
-              </Link>
+              <GuideMeInsteadLink />
             </div>
 
             <div className="homepage-composer-layout__composer-shell">
