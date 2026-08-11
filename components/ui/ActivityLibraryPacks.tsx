@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 
 import {
   groupActivityLibraryPacks,
+  isActivityLibraryItemInWorkshop,
   type ActivityLibraryModalItem,
   type ActivityLibraryPack
 } from "@/lib/design-system/activity-library-modal";
@@ -26,25 +27,11 @@ type ActivityLibraryPacksProps = {
   workshopActivityIds?: string[];
 };
 
-function activityMatchesWorkshopId(
-  activity: ActivityLibraryModalItem,
-  workshopId: string
-) {
-  return (
-    activity.id === workshopId ||
-    activity.slug === workshopId ||
-    activity.id === `activity-${workshopId}` ||
-    `activity-${activity.slug}` === workshopId
-  );
-}
-
 function isActivityInWorkshop(
   activity: ActivityLibraryModalItem,
   workshopActivityIds: string[]
 ) {
-  return workshopActivityIds.some((id) =>
-    activityMatchesWorkshopId(activity, id)
-  );
+  return isActivityLibraryItemInWorkshop(activity, workshopActivityIds);
 }
 
 const brandGradient = "linear-gradient(45deg, #7D5330 0%, #D99C56 100%)";
@@ -405,9 +392,16 @@ export function ActivityLibraryPacks({
   suggestedIds = [],
   workshopActivityIds = []
 }: ActivityLibraryPacksProps) {
+  const availableActivities = useMemo(
+    () =>
+      activities.filter(
+        (activity) => !isActivityInWorkshop(activity, workshopActivityIds)
+      ),
+    [activities, workshopActivityIds]
+  );
   const packs = useMemo(
-    () => groupActivityLibraryPacks(activities, suggestedIds),
-    [activities, suggestedIds]
+    () => groupActivityLibraryPacks(availableActivities, suggestedIds),
+    [availableActivities, suggestedIds]
   );
 
   const [mounted, setMounted] = useState(false);
