@@ -3,7 +3,10 @@ import type {
   FacilitatorGuideActivityContent,
   FacilitatorGuideContent
 } from "@/lib/facilitator-guide/map-workshop-to-guide";
-import { mapWorkshopToFacilitatorGuide } from "@/lib/facilitator-guide/map-workshop-to-guide";
+import {
+  mapActivityRecordToFacilitatorGuideActivity,
+  mapWorkshopToFacilitatorGuide
+} from "@/lib/facilitator-guide/map-workshop-to-guide";
 import { temporaryActivityIllustrationMap } from "@/lib/data/activity-illustration-map";
 import type {
   ActivityRecord,
@@ -395,16 +398,51 @@ function genericGuideActivity(
   };
 }
 
+function mapActivityRecordForJourneyCard(
+  activityRecord: ActivityRecord,
+  card: JourneyActivityCard
+): FacilitatorGuideActivityContent {
+  const guideActivity = mapActivityRecordToFacilitatorGuideActivity(
+    activityRecord,
+    card.id
+  );
+
+  return {
+    ...guideActivity,
+    hero: {
+      ...guideActivity.hero,
+      illustration: {
+        alt: `${card.activity.title} illustration`,
+        src: card.activity.illustration
+      }
+    }
+  };
+}
+
 export function mapJourneyCardsToFacilitatorGuide(
   dataset: LibraryDataset,
   cards: JourneyActivityCard[],
   selectedBlockIds: string[] = []
 ): FacilitatorGuideContent {
   const activities = cards.map((card, index) => {
+    const selectedBlockId =
+      card.source === "generated" ? selectedBlockIds[index] : undefined;
+    const activityRecord = findActivityForJourneyCard(dataset, card);
+    const hasCanonicalBlockIdentity = Boolean(
+      card.candidateBlockId ?? selectedBlockId
+    );
+
+    if (
+      activityRecord &&
+      (card.source === "library" || !hasCanonicalBlockIdentity)
+    ) {
+      return mapActivityRecordForJourneyCard(activityRecord, card);
+    }
+
     const block = findBlockForJourneyCard(
       dataset,
       card,
-      card.source === "generated" ? selectedBlockIds[index] : undefined
+      selectedBlockId
     );
 
     if (block) {
@@ -432,6 +470,10 @@ export function mapJourneyCardsToFacilitatorGuide(
           title: card.activity.title
         };
       }
+    }
+
+    if (activityRecord) {
+      return mapActivityRecordForJourneyCard(activityRecord, card);
     }
 
     return genericGuideActivity(card);
