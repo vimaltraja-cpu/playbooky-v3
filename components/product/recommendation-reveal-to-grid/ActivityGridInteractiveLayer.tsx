@@ -9,6 +9,7 @@ import {
   type ActivityGridViewportMode,
   type ActivityGridVisualCard
 } from "@/components/product/ActivityGridVisualLayer";
+import { getActivityGridRowCount } from "@/lib/design-system/activity-grid-layout";
 import {
   useActivityModalShellTransition,
   type ActivityModalShellCard
@@ -364,7 +365,11 @@ export function ActivityGridInteractiveLayer({
   }, [cardsById, inert, isInteractionLocked, openCard]);
 
   const easeValue = toEase(MOTION_FINAL.ease);
-  const rows = Math.ceil((orderedCards.length + 1) / columns);
+  const rows = getActivityGridRowCount(
+    viewport,
+    orderedCards.length + 1,
+    columns
+  );
   const gridWidth = columns * cardWidth + (columns - 1) * gap;
   const gridHeight = rows * cardHeight + (rows - 1) * gap;
   const addSlot = getSlotPosition(orderedCards.length);

@@ -4784,6 +4784,32 @@ a {
   }
 }
 
+/* Desktop Activity Grid is a fixed two-row workshop workspace. */
+.activity-grid-experience[data-viewport="desktop"] {
+  height: 900px;
+  min-height: 900px;
+}
+
+.activity-grid-experience[data-viewport="desktop"]
+  .activity-grid-experience__surface {
+  box-sizing: border-box;
+  height: 820px;
+  padding-bottom: 40px;
+  position: relative;
+}
+
+.activity-grid-experience[data-viewport="desktop"]
+  .activity-grid-experience__actions {
+  bottom: 40px;
+  align-items: center;
+  box-sizing: border-box;
+  height: 370px;
+  margin-top: 0;
+  position: absolute;
+  right: 32px;
+  width: 256px;
+}
+
 .recommendation-grid-transition-scale-wrap {
   overflow: visible;
   width: 100%;

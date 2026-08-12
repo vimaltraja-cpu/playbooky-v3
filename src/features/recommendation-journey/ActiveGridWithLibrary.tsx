@@ -65,10 +65,6 @@ function toVisualCardFromLibrary(
   };
 }
 
-function getCardSignature(cards: JourneyActivityCard[]) {
-  return cards.map((card) => card.id).join("|");
-}
-
 /**
  * Thin overlay on the committed ActivityGridExperience foundation.
  * Does not rewrite the experience shell, header, or grid motion.
@@ -99,18 +95,19 @@ export function ActiveGridWithLibrary({
   const [workshopCards, setWorkshopCards] =
     useState<JourneyActivityCard[]>(initialCards ?? starterCards);
   const workshopCardsRef = useRef(workshopCards);
+  const hasLocalCardChangesRef = useRef(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
 
   useEffect(() => {
     if (
       initialCards &&
       initialCards.length > 0 &&
-      getCardSignature(initialCards) !== getCardSignature(workshopCardsRef.current)
+      !hasLocalCardChangesRef.current
     ) {
       workshopCardsRef.current = initialCards;
       setWorkshopCards(initialCards);
     }
-  }, [initialCards]);
+  }, [initialCards, starterCards]);
 
   const workshopActivityIds = useMemo(
     () =>
@@ -162,6 +159,7 @@ export function ActiveGridWithLibrary({
     }
 
     const nextCards = [...currentCards, nextCard];
+    hasLocalCardChangesRef.current = true;
     workshopCardsRef.current = nextCards;
     setWorkshopCards(nextCards);
     onCardsChange?.(nextCards);
@@ -183,6 +181,7 @@ export function ActiveGridWithLibrary({
       return;
     }
 
+    hasLocalCardChangesRef.current = true;
     workshopCardsRef.current = nextCards;
     setWorkshopCards(nextCards);
     onCardsChange?.(nextCards);
@@ -202,6 +201,7 @@ export function ActiveGridWithLibrary({
       return;
     }
 
+    hasLocalCardChangesRef.current = true;
     workshopCardsRef.current = nextCards;
     setWorkshopCards(nextCards);
     onCardsChange?.(nextCards);

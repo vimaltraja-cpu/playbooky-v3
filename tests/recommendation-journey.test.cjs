@@ -67,6 +67,20 @@ const {
   createLibraryWorkshop,
   createRecommendedPlaybook
 } = require("../lib/workshop-os/create-library-workshop.ts");
+const {
+  getActivityGridRowCount
+} = require("../lib/design-system/activity-grid-layout.ts");
+
+test("Desktop Activity Grid reserves two rows for every supported card count", () => {
+  for (let cardCount = 2; cardCount <= 7; cardCount += 1) {
+    assert.equal(getActivityGridRowCount("desktop", cardCount + 1, 5), 2);
+  }
+});
+
+test("Responsive Activity Grid row counts continue to follow their columns", () => {
+  assert.equal(getActivityGridRowCount("tablet", 5, 3), 2);
+  assert.equal(getActivityGridRowCount("mobile", 5, 1), 5);
+});
 
 test("Composer interpretation preserves multiple resolved signals", () => {
   const interpretation = interpretComposerChallenge(

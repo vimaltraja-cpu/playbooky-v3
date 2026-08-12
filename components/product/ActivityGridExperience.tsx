@@ -96,7 +96,10 @@ export function ActivityGridExperience({
   const cards = cardsProp ?? defaultCards;
 
   return (
-    <main className="activity-grid-experience min-h-screen overflow-x-hidden bg-[#F6F1E8] text-[#171614]">
+    <main
+      className="activity-grid-experience min-h-screen overflow-x-hidden bg-[#F6F1E8] text-[#171614]"
+      data-viewport={effectiveViewport}
+    >
       <ActivityGridHeader onAddActivity={onAddActivity} />
       <section className="activity-grid-experience__surface px-4 pb-12 pt-4 md:px-8">
         <ActivityGridInteractiveLayer
