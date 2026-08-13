@@ -354,7 +354,7 @@ export function JourneyFullPage({
   }, [generatedSessionWorkshop, session]);
 
   const handleCardsChange = useCallback((cards: JourneyActivityCard[]) => {
-    const nextSession = patchJourneySession((current) => ({
+    patchJourneySession((current) => ({
       activityCards: cards,
       activityOrder: cards.map((card) => card.id),
       generatedWorkshop:
@@ -368,15 +368,14 @@ export function JourneyFullPage({
         generatedSessionWorkshop?.generatedWorkshop.reasoning
     }));
 
-    setSession(nextSession);
+    // The active grid owns its live card state. Persist the handoff without
+    // remounting the reveal/grid journey around every local edit.
   }, [generatedSessionWorkshop]);
 
   const handleActivityMutation = useCallback((mutation: JourneyActivityMutation) => {
-    const nextSession = patchJourneySession((current) => ({
+    patchJourneySession((current) => ({
       activityMutations: [...(current?.activityMutations ?? []), mutation]
     }));
-
-    setSession(nextSession);
   }, []);
 
   const handleGridContinue = useCallback(() => {

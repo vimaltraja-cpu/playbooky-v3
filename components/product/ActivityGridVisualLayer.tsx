@@ -1,6 +1,7 @@
 "use client";
 
 import { ActivityCard, type ActivityCardData } from "@/components/ui/ActivityCard";
+import { getActivityGridRowCount } from "@/lib/design-system/activity-grid-layout";
 
 export type ActivityGridVisualCard = {
   activity: ActivityCardData;
@@ -91,7 +92,7 @@ export function ActivityGridResponsiveVisualLayer({
   const geometry = activityGridViewports[viewport];
   const { cardHeight, cardWidth, columns, gap } = geometry;
   const itemCount = cards.length + 1;
-  const rows = Math.ceil(itemCount / columns);
+  const rows = getActivityGridRowCount(viewport, itemCount, columns);
   const gridWidth = columns * cardWidth + (columns - 1) * gap;
   const gridHeight = rows * cardHeight + (rows - 1) * gap;
 
