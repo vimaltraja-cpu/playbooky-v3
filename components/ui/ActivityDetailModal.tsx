@@ -261,7 +261,7 @@ function ActivityModalActions({
   onReplace
 }: Pick<ActivityDetailModalProps, "onRemove" | "onReplace">) {
   return (
-    <footer className="flex h-[52px] w-[1364px] shrink-0 items-center justify-center rounded-b-[8px] px-4 py-3">
+    <footer className="pointer-events-auto relative z-20 flex h-[52px] w-[1364px] shrink-0 items-center justify-center rounded-b-[8px] px-4 py-3">
       <div className="flex h-5 items-center justify-center gap-8">
         <button
           className="flex h-5 items-center gap-4 text-[12px] font-semibold leading-[14px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D99C56]"

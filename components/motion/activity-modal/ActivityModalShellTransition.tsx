@@ -632,7 +632,10 @@ export function useActivityModalShellTransition({
             activity={shell.card.modalData}
             contentOnly
             isOpen
-            onRemove={() => onRemoveActivity?.(shell.card)}
+            onRemove={() => {
+              closeShell();
+              onRemoveActivity?.(shell.card);
+            }}
             onReplace={() => onReplaceActivity?.(shell.card)}
           />
         </div>
