@@ -66,27 +66,10 @@ export function FacilitatorGuideBody({ dataset }: FacilitatorGuideBodyProps) {
   const [activeActivityId, setActiveActivityId] = useState(
     guide.activities[0]?.id ?? ""
   );
-  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     setActiveActivityId(guide.activities[0]?.id ?? "");
   }, [guide.activities]);
-
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      setRevealed(true);
-      return;
-    }
-
-    const frame = window.requestAnimationFrame(() => {
-      setRevealed(true);
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
 
   const activeIndex = Math.max(
     0,
@@ -117,7 +100,6 @@ export function FacilitatorGuideBody({ dataset }: FacilitatorGuideBodyProps) {
           {activeActivity.steps.length > 0 ? (
             <FacilitatorActivitySteps
               activityKey={activeActivity.id}
-              reveal={revealed}
               steps={activeActivity.steps}
             />
           ) : (

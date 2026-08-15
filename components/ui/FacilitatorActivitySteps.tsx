@@ -17,13 +17,12 @@ import {
   type ReactElement
 } from "react";
 
+import {
+  getFacilitatorStepsIdentity,
+  getFacilitatorStepsReadyDelay
+} from "@/lib/facilitator-guide/steps-render-lifecycle";
+
 const SYSTEM_ICON_PATH = "/assets/icons/system Icons";
-
-/** Short enough to feel crafted, not like a spinner wait. */
-const BUILD_DURATION_MS = 1280;
-
-/** Wait for the page entrance stagger before the shimmer is “seen”. */
-const BUILD_START_DELAY_MS = 360;
 
 export type FacilitatorActivityStepInsightKey =
   | "whatToSay"
@@ -44,8 +43,6 @@ export type FacilitatorActivityStepsProps = {
   /** Changes when the selected activity changes — retriggers the build reveal. */
   activityKey?: string;
   className?: string;
-  /** Gate the build timer until the page entrance has started revealing. */
-  reveal?: boolean;
   steps: FacilitatorActivityStep[];
 };
 
@@ -182,38 +179,39 @@ function BuildingSkeleton() {
 export function FacilitatorActivitySteps({
   activityKey,
   className,
-  reveal = true,
   steps
 }: FacilitatorActivityStepsProps): ReactElement | null {
-  const stepsSignature = activityKey ?? steps.map((step) => step.id).join("|");
+  const stepsSignature = getFacilitatorStepsIdentity(
+    activityKey,
+    steps.map((step) => step.id)
+  );
   const [phase, setPhase] = useState<"building" | "ready">("building");
   const hasPlayedEntranceBuild = useRef(false);
 
   useEffect(() => {
     setPhase("building");
 
-    if (!reveal) {
-      return;
-    }
-
-    if (
+    const prefersReducedMotion =
       typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const readyDelay = getFacilitatorStepsReadyDelay(
+      hasPlayedEntranceBuild.current,
+      prefersReducedMotion
+    );
+
+    if (readyDelay === 0) {
       hasPlayedEntranceBuild.current = true;
       setPhase("ready");
       return;
     }
-
-    const startDelay = hasPlayedEntranceBuild.current ? 0 : BUILD_START_DELAY_MS;
 
     const timeout = window.setTimeout(() => {
       hasPlayedEntranceBuild.current = true;
       setPhase("ready");
-    }, startDelay + BUILD_DURATION_MS);
+    }, readyDelay);
 
     return () => window.clearTimeout(timeout);
-  }, [reveal, stepsSignature]);
+  }, [stepsSignature]);
 
   if (steps.length === 0) {
     return null;
